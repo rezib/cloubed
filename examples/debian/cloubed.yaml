@@ -1,0 +1,41 @@
+testbed: debian
+storagepools:
+    - name: debian-pool
+      path: pool
+storagevolumes:
+    - name: debian-vol-server
+      storagepool: debian-pool
+      size: 70
+      format: qcow2
+networks:
+    - name: debian-net
+      nat: true
+      ip_host: 10.5.0.1
+      netmask: 255.255.255.0
+      dhcp:
+        start: 10.5.0.100
+        end: 10.5.0.110
+      pxe:
+        tftp_dir: http
+        boot_file: debian.ipxe
+domains:
+    - name: vmtest
+      cpu: 2
+      memory: 1
+      netifs:
+          - network: debian-net   # eth0
+      graphics: spice
+      disks:
+          - device: sda
+            storage_volume: debian-vol-server
+      templates:
+          vars:
+              netif: eth0
+              ip_vm: 10.5.0.10
+          files:
+              - name: preseed
+                input: templates/preseed.cfg
+                output: http/preseed.cfg
+              - name: ipxe
+                input: templates/debian.ipxe
+                output: http/debian.ipxe

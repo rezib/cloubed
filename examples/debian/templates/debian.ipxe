@@ -1,0 +1,4 @@
+#!ipxe
+kernel http://${network.debiannet.ip_host}:5432/http/debian-installer/amd64/linux url=http://${network.debiannet.ip_host}:5432/http/preseed.cfg locale=en_US auto=true hostname=vmtest domain=cloubed.local keymap=us netcfg/get_ipaddress=${domain.vmtest.tpl.ip_vm} netcfg/get_netmask=${network.debiannet.netmask} netcfg/get_gateway=${network.debiannet.ip_host} netcfg/get_nameservers=${network.debiannet.ip_host} netcfg/disable_dhcp=true
+initrd http://${network.debiannet.ip_host}:5432/http/debian-installer/amd64/initrd.gz
+boot
