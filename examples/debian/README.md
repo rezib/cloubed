@@ -1,7 +1,7 @@
 Minimal Debian example
 ======================
 
-## Description
+## Description
 
 This directory contains the minimal set of files for a simple « ClouBed » with
 Debian Wheezy amd64.
@@ -20,7 +20,7 @@ Here is the diff applied against this reference:
  # Alternatively, to skip creation of a normal user account.
 -#d-i passwd/make-user boolean false
 +d-i passwd/make-user boolean false
- 
+
  # Root password, either in clear text
 -#d-i passwd/root-password password r00tme
 -#d-i passwd/root-password-again password r00tme
@@ -40,12 +40,12 @@ Here is the diff applied against this reference:
 +# This is fairly safe to set, it makes grub install automatically to the MBR
 +# if no other operating system is detected on the machine.
 +d-i grub-installer/only_debian boolean true
- 
+
 @@ -351,3 +355,3 @@
  # This will power off the machine instead of just halting it.
 -#d-i debian-installer/exit/poweroff boolean true
 +d-i debian-installer/exit/poweroff boolean true
- 
+
 @@ -384,3 +388,3 @@
  # packages and run commands in the target system.
 -#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
@@ -81,7 +81,7 @@ wget http://ftp.nl.debian.org/debian/dists/wheezy/main/installer-amd64/current/i
 tar -C http -xzf http/netboot.tar.gz
 ```
 
-### Initialize storage pool directory 
+### Initialize storage pool directory
 
 ```sh
 mkdir pool

@@ -1,7 +1,7 @@
-Minimal CentOS example 
+Minimal CentOS example
 ======================
 
-## Description
+## Description
 
 This directory contains the minimal set of files for a simple « ClouBed » with
 CentOS 6.4 amd64.
@@ -43,7 +43,7 @@ wget http://mirror.centos.org/centos/6.4/os/x86_64/images/pxeboot/vmlinuz -O htt
 Then, launch the ClouBed python script that will sequentially:
 
 1. boot your VM on PXE
-2. wait for the CentOS installation to finish and the VM to shutdown 
+2. wait for the CentOS installation to finish and the VM to shutdown
 3. reboot your VM on the freshly installed CentOS system
 
 ```sh
