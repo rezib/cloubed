@@ -2,7 +2,7 @@ ClouBed
 =======
 
 ClouBed is a python library that intends to help you create and manage *virtual
-testbeds*.
+testbeds*. ClouBed basically stands for « CLOUd testBED ».
 
 The big picture is: programmable Vagrant on multiple KVM.
 
