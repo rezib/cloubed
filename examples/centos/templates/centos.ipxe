@@ -1,0 +1,4 @@
+#!ipxe
+kernel http://${network.centosnet.ip_host}:5432/http/vmlinuz ksdevice=eth0 lang=en ip=dhcp ks=http://${network.centosnet.ip_host}:5432/http/centos.ks
+initrd http://${network.centosnet.ip_host}:5432/http/initrd.img
+boot

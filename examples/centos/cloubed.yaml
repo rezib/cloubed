@@ -1,0 +1,40 @@
+testbed: centos
+storagepools:
+    - name: centos-pool
+      path: pool
+storagevolumes:
+    - name: centos-vol-server
+      storagepool: centos-pool
+      size: 70
+      format: qcow2
+networks:
+    - name: centos-net
+      nat: true
+      ip_host: 10.5.0.1
+      netmask: 255.255.255.0
+      dhcp:
+        start: 10.5.0.100
+        end: 10.5.0.110
+      pxe:
+        tftp_dir: http
+        boot_file: centos.ipxe
+domains:
+    - name: vmtest
+      cpu: 2
+      memory: 1
+      netifs:
+          - network: centos-net   # eth0
+      graphics: spice
+      disks:
+          - device: sda
+            storage_volume: centos-vol-server
+      templates:
+          vars:
+              ip_vm: 10.5.0.10
+          files:
+              - name: kickstart
+                input: templates/centos.ks
+                output: http/centos.ks
+              - name: ipxe
+                input: templates/centos.ipxe
+                output: http/centos.ipxe
