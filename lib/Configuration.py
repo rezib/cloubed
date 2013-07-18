@@ -31,7 +31,8 @@ class Configuration:
 
     def __init__(self, conf_file):
 
-        yaml_file = open(conf_file)
+        self._file_path = conf_file
+        yaml_file = open(self._file_path)
         self._yaml = yaml.load(yaml_file)
         yaml_file.close()
 
@@ -54,6 +55,12 @@ class Configuration:
         for domain_item in self._yaml['domains']:
             self._domains_list \
                 .append(ConfigurationDomain(domain_item))
+
+    def get_file_path(self):
+
+        """ get_file_path: Returns the absolute path of the configuration file """
+
+        return self._file_path
 
     def get_testbed_name(self):
 
