@@ -32,6 +32,47 @@ It only works on GNU/Linux systems with KVM.
 
 * Python >= 2.7 (not tested with previous versions)
 * libvirt with its python binding >= 0.9.12 (not tested with previous versions)
+* PyYAML >= 3.10 (not tested with previous versions)
+
+Installation
+------------
+
+### on Debian/Ubuntu
+
+First, install all packages dependancies:
+
+```sh
+sudo apt-get install python-libvirt python-yaml qemu-utils kvm
+```
+
+Then load the kernel module for hardware virtualization instruction set support:
+
+* for Intel CPU:
+
+```sh
+sudo modprobe kvm-intel
+```
+
+* for AMD CPU:
+
+```sh
+sudo modprobe kvm-amd
+```
+
+Become a member of `libvirtd` system group:
+
+```sh
+sudo adduser $USER libvirtd
+```
+
+Git clone this repository,
+
+Then export environment variable `$PYTHONPATH` with ClouBed `lib/` directory in
+order to let Python find `cloubed` module.
+
+#### on CentOS/Fedora
+
+Soon.
 
 Disclaimer
 ----------
