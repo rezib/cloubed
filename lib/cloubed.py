@@ -158,7 +158,11 @@ class Cloubed():
             if domain.get_name() == name:
                 return domain
 
-        return None
+        # domain not found
+        raise CloubedException("domain {domain} not found in YAML file " \
+                               "{file_name}" \
+                                   .format(domain=name,
+                                           file_name=self._conf.get_file_path()))
 
     def get_templates_dict(self):
 
