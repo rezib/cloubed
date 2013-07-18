@@ -17,6 +17,7 @@ try:
     print("booting vm {vm}".format(vm=VM))
     cloubed.boot_vm(VM)
 
-except cloubed.CloubedException as e:
-    print e
-
+except cloubed.CloubedException as cdb_error:
+    print(cdb_error)
+except KeyboardInterrupt:
+    print("install script stopped.")
