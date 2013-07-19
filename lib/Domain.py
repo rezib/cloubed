@@ -96,7 +96,10 @@ class Domain:
 
     def __del__(self):
 
-        Domain._domains.remove(self) 
+        try:
+            Domain._domains.remove(self)
+        except ValueError:
+            pass
 
     def __eq__(self, other): # needed for __del__
 
