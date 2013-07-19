@@ -55,6 +55,11 @@ class StorageVolume:
 
         return self._name == other.get_name()
 
+    def __repr__(self):
+
+        return "{name} [{size}GB]".format(name=self._name,
+                                          size=self._size)
+
     @classmethod
     def get_storage_volumes_list(cls):
 
