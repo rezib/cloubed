@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import cloubed
+from cloubed import cloubed
 
 VM = "vmtest"
 
