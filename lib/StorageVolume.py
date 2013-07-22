@@ -26,6 +26,7 @@ import os
 from xml.dom.minidom import Document
 
 from StoragePool import StoragePool # used in __init__
+from CloubedException import CloubedException
 
 class StorageVolume:
 
@@ -82,7 +83,12 @@ class StorageVolume:
             if storage_volume.get_name() == storage_volume_name:
                 return storage_volume
 
-        return None
+        # none
+        raise CloubedException("storage volume {storage_volume_name} " \
+                               "not found in the list of defined storage " \
+                               "volume ({list_storage_volumes})" \
+                                   .format(storage_volume_name = storage_volume_name,
+                                           list_storage_volumes = cls._storage_volumes))
 
     def toxml(self):
 
