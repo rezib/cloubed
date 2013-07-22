@@ -37,19 +37,7 @@ from DomainEvent import DomainEvent
 from EventManager import EventManager
 from Configuration import Configuration
 from HTTPServer import HTTPServer
-
-class CloubedException(Exception):
-
-    """ Base class for exceptions in Cloubed """
-
-    def __init__(self, msg):
-
-        super(CloubedException, self).__init__(msg)
-        self.msg = msg
-
-    def __str__(self):
-
-        return "{msg}".format(msg=self.msg)
+from CloubedException import CloubedException
 
 class Singleton(type):
 
