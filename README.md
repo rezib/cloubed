@@ -65,10 +65,12 @@ Become a member of `libvirtd` system group:
 sudo adduser $USER libvirtd
 ```
 
-Git clone this repository,
+Download and extract a copy of this repository and finally install ClouBed
+Python package:
 
-Then export environment variable `$PYTHONPATH` with ClouBed `lib/` directory in
-order to let Python find `cloubed` module.
+```sh
+sudo python setup.py install
+```
 
 #### on CentOS/Fedora
 
