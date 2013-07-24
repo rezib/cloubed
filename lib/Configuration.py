@@ -410,8 +410,11 @@ class ConfigurationDomain:
             Configuration
         """
 
-        return { disk['device']: disk['storage_volume'] \
-                                     for disk in self._disks }
+        disks_dict = {}
+        for disk in self._disks:
+            disks_dict[disk['device']] = disk['storage_volume']
+
+        return disks_dict
 
     def get_templates_list(self):
 
