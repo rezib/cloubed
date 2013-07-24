@@ -69,10 +69,10 @@ class Domain:
         netifs_list = domain_conf.get_netifs_list()
         # ex: [ 'admin', 'backbone' ]
         for network_name in netifs_list:
-            self._netifs.append(DomainNetif(gen_mac("{:s}-{:s}" \
-                                                        .format(self._name,
-                                                                network_name)),
-                                            network_name))
+            mac = gen_mac("{domain_name:s}-{network_name:s}" \
+                              .format(domain_name=self._name,
+                                      network_name=network_name))
+            self._netifs.append(DomainNetif(mac, network_name))
 
         self._disks = []
         disks_dict = domain_conf.get_disks_dict()
