@@ -10,11 +10,11 @@ storagevolumes:
 networks:
     - name: centos-net
       nat: true
-      ip_host: 10.5.0.1
+      ip_host: 10.6.0.1
       netmask: 255.255.255.0
       dhcp:
-        start: 10.5.0.100
-        end: 10.5.0.110
+        start: 10.6.0.100
+        end: 10.6.0.110
       pxe:
         tftp_dir: http
         boot_file: centos.ipxe
@@ -30,7 +30,7 @@ domains:
             storage_volume: centos-vol-server
       templates:
           vars:
-              ip_vm: 10.5.0.10
+              ip_vm: 10.6.0.10
           files:
               - name: kickstart
                 input: templates/centos.ks
