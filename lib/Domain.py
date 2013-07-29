@@ -499,5 +499,8 @@ class Domain:
         if self._graphics:
             element_graphics = self._doc.createElement("graphics")
             element_graphics.setAttribute("type", self._graphics)
+            # if spice is used, enable port auto-allocation
+            if self._graphics == "spice":
+                element_graphics.setAttribute("autoport", "yes")
             element_devices.appendChild(element_graphics)
 
