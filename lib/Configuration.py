@@ -376,8 +376,12 @@ class ConfigurationDomain:
         self._graphics = domain_item['graphics']
         self._netifs = domain_item['netifs']
         self._disks = domain_item['disks']
-        self._template_files = domain_item['templates']['files'] 
-        self._template_vars = domain_item['templates']['vars']
+        if domain_item.has_key('templates'):
+            self._template_files = domain_item['templates']['files']
+            self._template_vars = domain_item['templates']['vars']
+        else:
+            self._template_files = {}
+            self._template_vars = {}
 
     def get_name(self):
 
