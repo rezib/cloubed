@@ -133,8 +133,12 @@ class Network:
                     network = self._conn.networkLookupByName(network_name)
                     logging.info("destroying network " + network_name)
                     network.destroy()
-
-        self._virtobj = self._conn.networkCreateXML(self.toxml())
+            self._virtobj = self._conn.networkCreateXML(self.toxml())
+        else:
+            if self._name in self._conn.listNetworks():
+                self._virtobj = self._conn.networkLookupByName(self._name)
+            else:
+                self._virtobj = self._conn.networkCreateXML(self.toxml())
 
     def __init_xml(self):
 
