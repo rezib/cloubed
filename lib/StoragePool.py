@@ -133,9 +133,12 @@ class StoragePool:
                 storage_pool = self._conn.storagePoolLookupByName(sp_name)
                 logging.info("destroying storage pool " + sp_name)
                 storage_pool.destroy()
-
-        # create the storage pool
-        self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
+            self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
+        else:
+            if self._name in self._conn.listStoragePools():
+                self._virtobj = self._conn.storagePoolLookupByName(self._name)
+            else:
+                self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
 
     def __init_xml(self):
 
