@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
 from cloubed import cloubed
+import logging
 
 VM = "vmtest"
+
+logging.basicConfig(format='%(levelname)-7s: %(message)s',
+                            level=logging.DEBUG)
 
 try:
     print("generating template file")
