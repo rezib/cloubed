@@ -15,7 +15,8 @@ try:
     print("booting vm {vm}".format(vm=VM))
     cloubed.boot_vm(domain_name = VM,
                     bootdev = "network",
-                    overwrite_storage_volume = True)
+                    overwrite_disks = True,
+                    recreate_networks = True )
     print("waiting event shutdown on vm {vm}".format(vm=VM))
     cloubed.wait_event(VM, "STOPPED", "SHUTDOWN")
     print("booting vm {vm}".format(vm=VM))
