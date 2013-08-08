@@ -24,6 +24,7 @@
 import yaml
 import logging
 import os
+from CloubedException import CloubedException
 
 class Configuration:
 
@@ -32,7 +33,13 @@ class Configuration:
     def __init__(self, conf_file):
 
         self._file_path = conf_file
-        yaml_file = open(self._file_path)
+
+        try:
+            yaml_file = open(self._file_path)
+        except IOError:
+            raise CloubedException("Not able to open file {file_path}" \
+                                      .format(file_path = self._file_path))
+
         self._yaml = yaml.load(yaml_file)
         yaml_file.close()
 
