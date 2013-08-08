@@ -57,12 +57,6 @@ class Domain:
         self._virtobj = None
         self._name = domain_conf.get_name()
         self._vcpu = domain_conf.get_cpu()
-        self._with_vmx = True # needed for nested KVM
-        self._cpu_vendor = "Intel"      # only for VMX
-        self._cpu_model = "SandyBridge" # only for VMX
-                                        # the list of available models can be
-                                        # retrieved with command:
-                                        # $ kvm -cpu ?
         self._memory = domain_conf.get_memory()
 
         self._netifs = []
@@ -286,9 +280,9 @@ class Domain:
         #   <name>test-libvirt</name>
         #   <memory unit='GiB'>2</memory>
         #   <vcpu>2</vcpu>
-        #   <cpu match='exact'>
-        #     <model>SandyBridge</model>
-        #     <feature policy='require' name='vmx'/>
+        #   <cpu mode='host-model'>
+        #     <model fallback='allow'/>
+        #     <feature policy='optional' name='vmx'/>
         #   </cpu>
         #   <os>
         #     <type>hvm</type>
@@ -348,30 +342,15 @@ class Domain:
         element_vcpu.appendChild(node_vcpu)
         element_domain.appendChild(element_vcpu)
 
-        if self._with_vmx:
+        # cpu
+        element_cpu = self._doc.createElement("cpu")
+        element_cpu.setAttribute("mode", "host-model")
+        element_domain.appendChild(element_cpu)
 
-            # cpu
-            element_cpu = self._doc.createElement("cpu")
-            element_cpu.setAttribute("match", "exact")
-            element_domain.appendChild(element_cpu)
-
-            # cpu/model
-            element_model = self._doc.createElement("model")
-            node_model = self._doc.createTextNode(self._cpu_model)
-            element_model.appendChild(node_model)
-            element_cpu.appendChild(element_model)
-
-            # cpu/vendor
-            element_vendor = self._doc.createElement("vendor")
-            node_vendor = self._doc.createTextNode(self._cpu_vendor)
-            element_vendor.appendChild(node_vendor)
-            element_cpu.appendChild(element_vendor)
-
-            # cpu/feature
-            element_feature = self._doc.createElement("feature")
-            element_feature.setAttribute("policy", "require")
-            element_feature.setAttribute("name", "vmx")
-            element_cpu.appendChild(element_feature)
+        # cpu/model
+        element_model = self._doc.createElement("model")
+        element_model.setAttribute("fallback", "allow")
+        element_cpu.appendChild(element_model)
 
         # os
         element_os = self._doc.createElement("os")
