@@ -297,7 +297,6 @@ class Domain:
         #   <on_crash>restart</on_crash>
         #   <on_lockfailure>poweroff</on_lockfailure>
         #   <devices>
-        #     <emulator>/usr/bin/kvm</emulator>
         #     <disk type='file' device='disk'>
         #       <source file='/absolute/path' />
         #       <target dev='sda' bus='virtio' />
@@ -408,12 +407,6 @@ class Domain:
         # devices
         element_devices = self._doc.createElement("devices")
         element_domain.appendChild(element_devices)
-
-        # devices/emulator
-        element_emulator = self._doc.createElement("emulator")
-        node_emulator = self._doc.createTextNode("/usr/bin/kvm")
-        element_emulator.appendChild(node_emulator)
-        element_devices.appendChild(element_emulator)
 
         # hard disk
 
