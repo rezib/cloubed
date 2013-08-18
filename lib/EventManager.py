@@ -41,7 +41,9 @@ class EventManager:
         self._thread.start()
 
         self._conn = libvirt.openReadOnly('qemu:///system')
-        self._conn.domainEventRegister(EventManager.manage_event, None)
+        self._conn.domainEventRegisterAny(None, \
+                                          libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE, \
+                                          EventManager.manage_event, None)
         self._conn.setKeepAlive(5, 3)
 
         logging.debug("initialized event manager")
