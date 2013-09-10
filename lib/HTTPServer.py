@@ -37,6 +37,14 @@ class HTTPServer():
         self._httpd = None
         self._thread = None
 
+    def launched(self):
+
+        """
+           Returns True if the HTTPServer is already launched
+        """
+
+        return self._thread is not None
+
     def launch(self):
 
         """

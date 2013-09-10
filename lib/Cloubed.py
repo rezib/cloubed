@@ -161,7 +161,8 @@ class Cloubed():
         """ server_http: """
 
         if self._http_server is not None:
-            self._http_server.launch()
+            if not self._http_server.launched():
+                self._http_server.launch()
 
     def gen_file(self, domain_name, template_name):
 
