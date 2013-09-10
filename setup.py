@@ -28,6 +28,7 @@ setup(name='Cloubed',
       author_email='remi@rezib.org',
       package_dir = {'cloubed': 'lib'},
       packages=['cloubed'],
+      scripts=['scripts/cloubed'],
       requires=['libvirt', 'yaml'],
       license="LGPLv3",
       platforms=['GNU/Linux']
