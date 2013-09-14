@@ -24,7 +24,7 @@
 import yaml
 import logging
 import os
-from CloubedException import CloubedException
+from CloubedException import CloubedConfigurationException
 
 class Configuration:
 
@@ -37,16 +37,18 @@ class Configuration:
         try:
             yaml_file = open(self._file_path)
         except IOError:
-            raise CloubedException("Not able to open file {file_path}" \
-                                      .format(file_path = self._file_path))
+            raise CloubedConfigurationException(
+                      "Not able to open file {file_path}" \
+                          .format(file_path = self._file_path))
 
         try:
             self._yaml = yaml.load(yaml_file)
         except yaml.YAMLError as err:
-            raise CloubedException("Error while loading {file_path} file (may" \
-                                   " not be valid YAML content): {error}" \
-                                       .format(file_path=self._file_path,
-                                               error=err))
+            raise CloubedConfigurationException(
+                      "Error while loading {file_path} file (may" \
+                      " not be valid YAML content): {error}" \
+                          .format(file_path=self._file_path,
+                                  error=err))
         yaml_file.close()
 
         self._storage_pools_list = []

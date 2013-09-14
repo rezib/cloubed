@@ -41,3 +41,11 @@ class CloubedArgumentException(CloubedException):
     def __init__(self, msg):
 
         super(CloubedArgumentException, self).__init__(msg)
+
+class CloubedConfigurationException(CloubedException):
+
+    """ Class for Configuration exceptions in Cloubed """
+
+    def __init__(self, msg):
+
+        super(CloubedConfigurationException, self).__init__(msg)
