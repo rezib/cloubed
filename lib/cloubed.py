@@ -26,6 +26,10 @@ import logging
 
 from Cloubed import Cloubed
 
+# It is not actually used in this module but it has to be exported in
+# cloubed external API
+from CloubedException import CloubedException
+
 def gen_file(domain_name, template_name):
 
     """ gen_file: """
