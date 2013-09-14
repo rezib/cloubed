@@ -19,7 +19,7 @@
 # License along with Cloubed.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-""" CloubedException class of Cloubed"""
+""" Exceptions classes of Cloubed"""
 
 class CloubedException(Exception):
 
@@ -34,3 +34,10 @@ class CloubedException(Exception):
 
         return "{msg}".format(msg=self.msg)
 
+class CloubedArgumentException(CloubedException):
+
+    """ Class for CLI arguments exceptions in Cloubed """
+
+    def __init__(self, msg):
+
+        super(CloubedArgumentException, self).__init__(msg)
