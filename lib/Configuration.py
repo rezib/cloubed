@@ -56,10 +56,11 @@ class Configuration:
                       "File {file_path} is not a valid YAML file for Cloubed" \
                           .format(file_path=self._file_path))
 
-        if not self._yaml.has_key("storagepools"):
-            raise CloubedConfigurationException(
-                      "File {file_path} does not contain storagepools" \
-                          .format(file_path=self._file_path))
+
+        self._check_main_keys(["storagepools",
+                               "storagevolumes",
+                               "networks",
+                               "domains"])
 
         self._storage_pools_list = []
         for storage_pool_item in self._yaml['storagepools']:
@@ -80,6 +81,17 @@ class Configuration:
         for domain_item in self._yaml['domains']:
             self._domains_list \
                 .append(ConfigurationDomain(domain_item))
+
+    def _check_main_keys(self, keys_list):
+
+        """ checks YAML dict contains all keys in keys_list """
+
+        for key in keys_list:
+            if not self._yaml.has_key(key):
+                raise CloubedConfigurationException(
+                          "File {file_path} does not contain {key}" \
+                              .format(file_path=self._file_path,
+                                      key=key))
 
     def get_file_path(self):
 
