@@ -51,6 +51,11 @@ class Configuration:
                                   error=err))
         yaml_file.close()
 
+        if type(self._yaml) is not dict:
+            raise CloubedConfigurationException(
+                      "File {file_path} is not a valid YAML file for Cloubed" \
+                          .format(file_path=self._file_path))
+
         self._storage_pools_list = []
         for storage_pool_item in self._yaml['storagepools']:
             self._storage_pools_list \
