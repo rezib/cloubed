@@ -1,12 +1,12 @@
-ClouBed
+Cloubed
 =======
 
-ClouBed is a python library that intends to help you create and manage *virtual
-testbeds*. ClouBed basically stands for « CLOUd testBED ».
+Cloubed is both a utility and a python library that intends to help you create
+and manage *virtual testbeds*. Cloubed basically stands for « CLOUd testBED ».
 
-The big picture is: programmable Vagrant on multiple KVM.
+The big picture is: programmable Vagrant on KVM.
 
-ClouBed embraces all the power of libvirt for managing the whole infrastructure
+Cloubed embraces all the power of libvirt for managing the whole infrastructure
 of your virtual testbed (storage pools, disks, networks, events) through a
 simple YAML file to describe your distributed setup.
 
@@ -16,7 +16,7 @@ of the KVM virtual machines in your testbed.
 Licence
 -------
 
-ClouBed is distributed under the terms of the GNU Lesser General Public License
+Cloubed is distributed under the terms of the GNU Lesser General Public License
 version 3.
 
 Documentation
@@ -65,7 +65,7 @@ Become a member of `libvirtd` system group:
 sudo adduser $USER libvirtd
 ```
 
-Download and extract a copy of this repository and finally install ClouBed
+Download and extract a copy of this repository and finally install Cloubed
 Python package:
 
 ```sh
@@ -81,12 +81,12 @@ repositories:
 sudo yum install libvirt libvirt-python qemu-kvm
 ```
 
-Then, install PyYAML library from EPEL repository. Please refer to the [official
-EPEL documentation](http://fedoraproject.org/wiki/EPEL) for instructions to add
-EPEL repository on your system:
+Then, install PyYAML and argparse libraries from EPEL repository. Please refer to
+the [official EPEL documentation](http://fedoraproject.org/wiki/EPEL) for
+instructions to add EPEL repository on your system:
 
 ```sh
-sudo yum install python-yaml # from EPEL
+sudo yum install python-yaml python-argparse # from EPEL
 ```
 
 Then configure libvirt to disable authentication. Please note that this is just
@@ -117,7 +117,7 @@ Then start the libvirt daemon:
 sudo service libvirtd start
 ```
 
-Download and extract a copy of this repository and finally install ClouBed
+Download and extract a copy of this repository and finally install Cloubed
 Python package:
 
 ```sh
