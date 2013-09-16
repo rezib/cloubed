@@ -124,6 +124,25 @@ Python package:
 sudo python setup.py install
 ```
 
+Troubleshooting
+---------------
+
++ **dnsmasq: permission denied**
+
+If you encounter the following error message when running Cloubed:
+
+```
+internal error Child process (/usr/sbin/dnsmasq
+--conf-file=/var/lib/libvirt/dnsmasq/net.conf) unexpected exit status 3:
+dnsmasq: TFTP directory /path/to/tftp/dir inaccessible: Permission denied
+```
+
+It actually means that `dnsmasq` daemon automatically launched by Libvirt for
+TFTP and DHCP services is not able to access the `pxe>tftp_dir` specified in
+your YAML file. The `dnsmasq` daemon is generally executed with UID `nobody`.
+Try to `chmod` your directory (and recursively all its parents) so this process
+can access your files.
+
 Disclaimer
 ----------
 
