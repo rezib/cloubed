@@ -23,6 +23,7 @@
 
 import libvirt
 import logging
+import atexit
 
 from Cloubed import Cloubed
 
@@ -51,3 +52,9 @@ def wait_event(domain_name, event_type, event_detail):
     cloubed = Cloubed()
     cloubed.wait_event(domain_name, event_type, event_detail)
 
+def clean_exit():
+
+    cloubed = Cloubed()
+    cloubed.clean_exit()
+
+atexit.register(clean_exit)

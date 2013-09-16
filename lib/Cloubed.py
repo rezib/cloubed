@@ -212,3 +212,10 @@ class Cloubed():
                                            event_detail=event_detail.upper()))
         domain = self.get_domain_by_name(domain_name)
         domain.wait_for_event(domain_event)
+
+    def clean_exit(self):
+
+        logging.debug("clean exit")
+        if self._http_server.launched():
+            self._http_server.terminate()
+        self._event_manager.terminate()

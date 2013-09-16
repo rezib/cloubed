@@ -35,7 +35,9 @@ class EventManager:
 
         libvirt.virEventRegisterDefaultImpl()
 
-        self._thread = threading.Thread(target=EventManager.run_event_loop,
+        self._stop = threading.Event()
+
+        self._thread = threading.Thread(target=self.run_event_loop,
                                         name="libvirtEventLoop")
         self._thread.setDaemon(True)
         self._thread.start()
@@ -48,12 +50,16 @@ class EventManager:
 
         logging.debug("initialized event manager")
 
-    @staticmethod
-    def run_event_loop():
+    def terminate(self):
+
+        logging.debug("terminating event manager thread")
+        self._stop.set()
+
+    def run_event_loop(self):
 
         """ run_event_loop: Starts libvirt event loop """
 
-        while True:
+        while not self._stop.is_set():
             libvirt.virEventRunDefaultImpl()
 
     @staticmethod

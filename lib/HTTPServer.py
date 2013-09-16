@@ -24,6 +24,7 @@
 import SimpleHTTPServer
 import SocketServer
 import threading
+import logging
 
 class HTTPServer():
 
@@ -56,6 +57,14 @@ class HTTPServer():
         self._thread.setDaemon(True)
         self._thread.start()
 
+    def terminate(self):
+
+        """
+            shutdown the http server in thread
+        """
+        logging.debug("shutting down http server")
+        self._httpd.shutdown()
+
     def threaded_server(self):
 
         """
@@ -65,4 +74,3 @@ class HTTPServer():
         self._httpd = SocketServer.TCPServer((self._address, self._port),
                                              self._handler)
         self._httpd.serve_forever()
-
