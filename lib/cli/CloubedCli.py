@@ -140,7 +140,7 @@ def main():
             logging.basicConfig(format='%(levelname)-7s: %(message)s',
                                 level=logging.DEBUG)
 
-        parser.check_args_coherency()
+        parser.check_coherency()
 
         try:
             cloubed = Cloubed()
@@ -170,7 +170,7 @@ def main():
              disks_to_overwrite = check_disks(cloubed, args)
              networks_to_recreate = check_networks(cloubed, args)
              waited_event = check_event(cloubed, args)
-             bootdev = check_bootdev(args)
+             bootdev = parser.check_bootdev()
 
              logging.debug(u"Action boot on {domain}" \
                                .format(domain=domain_name))
