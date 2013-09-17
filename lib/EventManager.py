@@ -75,5 +75,10 @@ class EventManager:
                                   event_type=event.get_type(),
                                   event_detail=event.get_detail()))
         domain = Domain.get_by_name(dom.name())
-        domain.notify_event(event)
+        # test if notified event comes from a domain in current testbed
+        if domain is None:
+            logging.debug("event received for domain {domain} but not found" \
+                          "in testbed".format(testbed=dom.name()))
+        else:
+            domain.notify_event(event)
 
