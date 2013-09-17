@@ -199,11 +199,12 @@ class Cloubed():
             logging.error("libvirt error: {error}".format(error=err))
             raise CloubedException(err)
 
-        self.serve_http()
-
-    def wait_event(self, domain_name, event_type, event_detail):
+    def wait_event(self, domain_name, event_type, event_detail, enable_http = True):
 
         """ wait_event: """
+
+        if enable_http:
+            self.serve_http()
 
         domain_event = DomainEvent("{event_type}" \
                                    .format(event_type=event_type.upper()),
