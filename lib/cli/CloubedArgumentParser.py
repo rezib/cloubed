@@ -81,11 +81,6 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                             choices=['hd', 'network', 'cdrom'],
                             help="Boot device with boot action")
 
-        parser_boot_grp.add_argument("--wait-event",
-                            dest="waited_event",
-                            nargs=1,
-                            help="Wait for an event before returning with boot action",)
-
         parser_boot_grp.add_argument("--overwrite-disks",
                             dest='overwrite_disks',
                             nargs='+',
@@ -139,10 +134,6 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 raise CloubedArgumentException(
                           error_str.format(attribute="--bootdev",
                                            action=action))
-            if self._args.waited_event:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--wait-event",
-                                           action=action))
             if self._args.overwrite_disks:
                 raise CloubedArgumentException(
                           error_str.format(attribute="--overwrite-disks",
@@ -164,10 +155,6 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 raise CloubedArgumentException(
                           error_str.format(attribute="--bootdev",
                                            action=action))
-            if self._args.waited_event:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--wait-event",
-                                          action=action))
             if self._args.overwrite_disks:
                 raise CloubedArgumentException(
                           error_str.format(attribute="--overwrite-disks",

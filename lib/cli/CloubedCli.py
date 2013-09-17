@@ -111,18 +111,18 @@ def check_networks(cloubed, args):
 
 def check_event(cloubed, args):
 
-    if args.waited_event:
+    if args.event:
 
-        waited_event_str = args.waited_event[0]
+        waited_event_str = args.event[0]
         waited_event = waited_event_str.split(':')
         if len(waited_event) is not 2:
-            raise CloubedArgumentException(u"Badly formated --wait-event" \
+            raise CloubedArgumentException(u"Badly formated --event" \
                       " parameter, should respect format" \
                       " <event_type>:<event_detail>")
         return waited_event
     else:
 
-        logging.debug(u"--wait-event parameter not specified")
+        logging.debug(u"--event parameter not specified")
         return None
 
 def main():
@@ -169,7 +169,6 @@ def main():
              domain_name = args.domain[0]
              disks_to_overwrite = check_disks(cloubed, args)
              networks_to_recreate = check_networks(cloubed, args)
-             waited_event = check_event(cloubed, args)
              bootdev = parser.check_bootdev()
 
              logging.debug(u"Action boot on {domain}" \
@@ -179,23 +178,20 @@ def main():
                              disks_to_overwrite,
                              networks_to_recreate)
 
-             if waited_event is not None:
-                 event_type = waited_event[0]
-                 event_detail = waited_event[1]
-                 cloubed.wait_event(domain_name, event_type, event_detail)
-
         elif action_name == u"wait":
 
-             domain = args.actions[1]
-             event_type = args.actions[2]
-             event_detail = args.actions[3]
+             domain_name = args.domain[0]
+             waited_event = check_event(cloubed, args)
+             event_type = waited_event[0]
+             event_detail = waited_event[1]
 
              logging.debug(u"Action wait on {domain} with " \
-                               "{event_type}/{event_detail}" \
-                               .format(domain=domain,
-                                       event_type=event_type,
-                                       event_detail=event_detail))
-             cloubed.wait_event(domain, event_type, event_detail)
+                            "{event_type}/{event_detail}" \
+                            .format(domain=domain_name,
+                                    event_type=event_type,
+                                    event_detail=event_detail))
+
+             cloubed.wait_event(domain_name, event_type, event_detail)
 
         else:
             raise CloubedArgumentException(
