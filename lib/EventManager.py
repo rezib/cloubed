@@ -59,7 +59,11 @@ class EventManager:
 
         """ run_event_loop: Starts libvirt event loop """
 
-        while not self._stop.is_set():
+        # In race conditions on python interpreter exit, libvirt sometimes
+        # becomes None. So loop conditioner tests if it is still defined in
+        # order to avoid awful errors.
+        while not self._stop.is_set() and \
+              libvirt is not None:
             libvirt.virEventRunDefaultImpl()
 
     @staticmethod
