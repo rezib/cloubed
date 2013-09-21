@@ -335,7 +335,7 @@ class Domain:
         
         # memory
         element_memory = self._doc.createElement("memory")
-        element_memory.setAttribute("unit", "GiB")
+        element_memory.setAttribute("unit", "MiB")
         node_memory = self._doc.createTextNode(str(self._memory))
         element_memory.appendChild(node_memory)
         element_domain.appendChild(element_memory)

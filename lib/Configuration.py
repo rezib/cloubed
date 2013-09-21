@@ -24,6 +24,7 @@
 import yaml
 import logging
 import os
+import re
 from CloubedException import CloubedConfigurationException
 
 class Configuration:
@@ -409,7 +410,9 @@ class ConfigurationDomain:
 
         self._name = domain_item['name']
         self._cpu = int(domain_item['cpu'])
-        self._memory = int(domain_item['memory'])
+
+        self.__parse_memory(domain_item['memory'])
+
         self._graphics = domain_item['graphics']
         self._netifs = domain_item['netifs']
         self._disks = domain_item['disks']
@@ -419,6 +422,38 @@ class ConfigurationDomain:
         else:
             self._template_files = {}
             self._template_vars = {}
+
+    def __parse_memory(self, memory):
+
+        multiplier = 1024 # default unit in YAML is GiB
+                          # but Cloubed internally stores memory size in MiB
+        memory_qty = -1
+        if type(memory) is int:
+            qty = memory
+        else: # type(memory) is str
+
+            pattern = re.compile(u"(\d+)\s*(\w*)")
+            match = pattern.match(memory)
+
+            if match is None:
+                raise CloubedConfigurationException(
+                          "Memory size '{memory}' is not valid, please see " \
+                          "documentation.".format(memory=memory))
+
+            qty = int(match.group(1))
+            unit = match.group(2)
+
+            if unit in ["M", "MB", "MiB"]:
+                multiplier = 1
+            elif unit in ["G", "GB", "GiB"]:
+                multiplier = 1024
+            else:
+                raise CloubedConfigurationException("Unknown unit for memory" \
+                          " '{memory}' of domain {domain}" \
+                              .format(memory=memory,
+                                      domain=self._name))
+
+        self._memory = multiplier * qty
 
     def get_name(self):
 
