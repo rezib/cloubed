@@ -166,13 +166,13 @@ class Cloubed():
 
     def gen_file(self, domain_name, template_name):
 
-         """ gen_file: """
+        """ gen_file: """
 
-         templates_dict = self.get_templates_dict()
+        templates_dict = self.get_templates_dict()
 
-         domain = self.get_domain_by_name(domain_name)
-         domain_template = domain.get_template_by_name(template_name)
-         domain_template.render(templates_dict)
+        domain = self.get_domain_by_name(domain_name)
+        domain_template = domain.get_template_by_name(template_name)
+        domain_template.render(templates_dict)
 
     def boot_vm(self, domain_name, bootdev = "hd", overwrite_disks = [], recreate_networks = []):
 
