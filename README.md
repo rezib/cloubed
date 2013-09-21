@@ -45,6 +45,13 @@ First, install all packages dependencies:
 sudo apt-get install python-libvirt python-yaml qemu-utils kvm
 ```
 
+Optionally, if you want to use [Spice](http://spice-space.org/) to access your
+domains, you should install the following packages as well:
+
+```sh
+sudo apt-get install libspice-server1 # enable spice server in qemu
+```
+
 Then load the kernel module for hardware virtualization instruction set support:
 
 * for Intel CPU:
