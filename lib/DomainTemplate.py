@@ -22,6 +22,7 @@
 """ DomainTemplate class of Cloubed """
 
 from string import Template
+from CloubedException import CloubedException
 
 class ExtTemplate(Template):
 
@@ -57,6 +58,12 @@ class DomainTemplate():
 
         template_str = ExtTemplate(open(self._source_file, 'r').read()) \
                            .safe_substitute(template_dict)
-        output_file = open(self._output_file, 'w')
-        output_file.write(template_str)
-        output_file.close()
+        try:
+            output_file = open(self._output_file, 'w')
+            output_file.write(template_str)
+            output_file.close()
+        except IOError, err:
+            raise CloubedException(
+                      "error while writing to template file {filename}: {err}" \
+                          .format(filename = self._output_file,
+                                  err = err))
