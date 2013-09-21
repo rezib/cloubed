@@ -28,6 +28,7 @@ import libvirt
 import hashlib
 from xml.dom.minidom import Document
 
+from CloubedException import CloubedException
 from DomainTemplate import DomainTemplate
 from DomainSnapshot import DomainSnapshot
 from DomainNetif import DomainNetif
@@ -140,7 +141,11 @@ class Domain:
             if template.get_name() == template_name:
                 return template
 
-        return None
+        # template not found therefore raise exception
+        raise CloubedException(
+                  "template {template} not defined for domain {domain}" \
+                      .format(template = template_name,
+                              domain = self._name))
 
     def toxml(self):
 
