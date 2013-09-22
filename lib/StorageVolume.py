@@ -41,6 +41,15 @@ class StorageVolume:
         self._storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
         self._virtobj = None
         self._name = storage_volume_conf.get_name()
+        use_namespace = True # should better be a conf parameter in the future
+        if use_namespace:    # logic should moved be in an abstract parent class
+            self._libvirt_name = \
+                "{user}:{testbed}:{name}" \
+                    .format(user = os.getlogin(),
+                            testbed = storage_volume_conf.get_testbed(),
+                            name = self._name)
+        else:
+            self._libvirt_name = self._name
         self._size = storage_volume_conf.get_size()
         self._imgtype = storage_volume_conf.get_format()
 
@@ -104,7 +113,7 @@ class StorageVolume:
             getfilename: Returns the file name of the StorageVolume
         """
 
-        return self._name + "." + self._imgtype
+        return self._libvirt_name + "." + self._imgtype
 
     def getpath(self):
 

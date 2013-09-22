@@ -65,21 +65,25 @@ class Configuration:
 
         self._storage_pools_list = []
         for storage_pool_item in self._yaml['storagepools']:
+            storage_pool_item['testbed'] = self._yaml['testbed']
             self._storage_pools_list \
                 .append(ConfigurationStoragePool(storage_pool_item))
 
         self._storage_volumes_list = []
         for storage_volume_item in self._yaml['storagevolumes']:
+            storage_volume_item['testbed'] = self._yaml['testbed']
             self._storage_volumes_list \
                 .append(ConfigurationStorageVolume(storage_volume_item))
 
         self._networks_list = []
         for network_item in self._yaml['networks']:
+            network_item['testbed'] = self._yaml['testbed']
             self._networks_list \
                 .append(ConfigurationNetwork(network_item))
 
         self._domains_list = []
         for domain_item in self._yaml['domains']:
+            domain_item['testbed'] = self._yaml['testbed']
             self._domains_list \
                 .append(ConfigurationDomain(domain_item))
 
@@ -154,7 +158,7 @@ class ConfigurationStoragePool:
     def __init__(self, storage_pool_item):
 
         self._name = storage_pool_item['name']
-
+        self._testbed = storage_pool_item['testbed']
         self._path = storage_pool_item['path']
 
         if self._path[0] != '/': # relative path
@@ -165,6 +169,12 @@ class ConfigurationStoragePool:
         """ Returns the name of the Storage Pool """
 
         return self._name
+
+    def get_testbed(self):
+
+        """ Returns the name of the testbed """
+
+        return self._testbed
 
     def get_path(self):
 
@@ -188,6 +198,7 @@ class ConfigurationStorageVolume:
     def __init__(self, storage_volume_item):
 
         self._name = storage_volume_item['name']
+        self._testbed = storage_volume_item['testbed']
         self._format = storage_volume_item['format']
         self._size = storage_volume_item['size']
         self._storage_pool = storage_volume_item['storagepool']
@@ -197,6 +208,12 @@ class ConfigurationStorageVolume:
         """ Returns the name of the Storage Volume in Configuration """
 
         return self._name
+
+    def get_testbed(self):
+
+        """ Returns the name of the testbed """
+
+        return self._testbed
 
     def get_format(self):
 
@@ -239,6 +256,7 @@ class ConfigurationNetwork:
     def __init__(self, network_item):
 
         self._name = network_item['name']
+        self._testbed = network_item['testbed']
 
         # nat
         self._nat = False
@@ -327,6 +345,12 @@ class ConfigurationNetwork:
 
         return self._name
 
+    def get_testbed(self):
+
+        """ Returns the name of the testbed """
+
+        return self._testbed
+
     def get_nat(self):
 
         """ Returns the nat parameter in Network Configuration """
@@ -409,6 +433,7 @@ class ConfigurationDomain:
     def __init__(self, domain_item):
 
         self._name = domain_item['name']
+        self._testbed = domain_item['testbed']
         self._cpu = int(domain_item['cpu'])
 
         self.__parse_memory(domain_item['memory'])
@@ -460,6 +485,12 @@ class ConfigurationDomain:
         """ Returns the name of the Domain in its Configuration """
 
         return self._name
+
+    def get_testbed(self):
+
+        """ Returns the name of the testbed """
+
+        return self._testbed
 
     def get_cpu(self):
 

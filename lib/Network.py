@@ -21,6 +21,7 @@
 
 """ Network class of Cloubed """
 
+import os
 import logging
 from xml.dom.minidom import Document
 
@@ -36,6 +37,15 @@ class Network:
         self._virtobj = None
 
         self._name = network_conf.get_name()
+        use_namespace = True # should better be a conf parameter in the future
+        if use_namespace:    # logic should moved be in an abstract parent class
+            self._libvirt_name = \
+                "{user}:{testbed}:{name}" \
+                    .format(user = os.getlogin(),
+                            testbed = network_conf.get_testbed(),
+                            name = self._name)
+        else:
+            self._libvirt_name = self._name
 
         self._with_nat = network_conf.get_nat()
 
@@ -112,6 +122,12 @@ class Network:
 
         return self._name
 
+    def get_libvirt_name(self):
+
+        """ Returns the name of the Network in libvirt """
+
+        return self._libvirt_name
+
     def created(self):
 
         """ created: Returns True if Network is created in libvirt """
@@ -124,19 +140,19 @@ class Network:
 
         if overwrite:
             for network_name in self._conn.listDefinedNetworks():
-                if network_name == self._name:
+                if network_name == self._libvirt_name:
                     network = self._conn.networkLookupByName(network_name)
                     logging.info("undefining network " + network_name)
                     network.undefine()
             for network_name in self._conn.listNetworks():
-                if network_name == self._name:
+                if network_name == self._libvirt_name:
                     network = self._conn.networkLookupByName(network_name)
                     logging.info("destroying network " + network_name)
                     network.destroy()
             self._virtobj = self._conn.networkCreateXML(self.toxml())
         else:
-            if self._name in self._conn.listNetworks():
-                self._virtobj = self._conn.networkLookupByName(self._name)
+            if self._libvirt_name in self._conn.listNetworks():
+                self._virtobj = self._conn.networkLookupByName(self._libvirt_name)
             else:
                 self._virtobj = self._conn.networkCreateXML(self.toxml())
 
@@ -191,7 +207,7 @@ class Network:
 
         # name element
         element_name = self._doc.createElement("name")
-        node_name = self._doc.createTextNode(self._name)
+        node_name = self._doc.createTextNode(self._libvirt_name)
         element_name.appendChild(node_name)
         element_network.appendChild(element_name)
         

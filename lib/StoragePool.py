@@ -22,6 +22,7 @@
 """ StoragePool class of Cloubed """
 
 import logging
+import os
 from xml.dom.minidom import Document
 
 class StoragePool:
@@ -36,6 +37,15 @@ class StoragePool:
         self._virtobj = None
 
         self._name = storage_pool_conf.get_name()
+        use_namespace = True # should better be a conf parameter in the future
+        if use_namespace:    # logic should moved be in an abstract parent class
+            self._libvirt_name = \
+                "{user}:{testbed}:{name}" \
+                    .format(user = os.getlogin(),
+                            testbed = storage_pool_conf.get_testbed(),
+                            name = self._name)
+        else:
+            self._libvirt_name = self._name
         self._path = storage_pool_conf.get_path()
 
         StoragePool._storage_pools.append(self)
@@ -106,6 +116,12 @@ class StoragePool:
 
         return self._name
 
+    def get_libvirt_name(self):
+
+        """
+            Returns the name of the StoragePool in libvirt
+        """
+
     def created(self):
 
         """
@@ -135,8 +151,8 @@ class StoragePool:
                 storage_pool.destroy()
             self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
         else:
-            if self._name in self._conn.listStoragePools():
-                self._virtobj = self._conn.storagePoolLookupByName(self._name)
+            if self._libvirt_name in self._conn.listStoragePools():
+                self._virtobj = self._conn.storagePoolLookupByName(self._libvirt_name)
             else:
                 self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
 
@@ -163,7 +179,7 @@ class StoragePool:
 
         # name node
         element_name = self._doc.createElement("name")
-        node_name = self._doc.createTextNode(self._name)
+        node_name = self._doc.createTextNode(self._libvirt_name)
         element_name.appendChild(node_name)
         element_pool.appendChild(element_name)
 

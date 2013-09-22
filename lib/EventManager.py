@@ -78,7 +78,7 @@ class EventManager:
                                   domain_id=dom.ID(),
                                   event_type=event.get_type(),
                                   event_detail=event.get_detail()))
-        domain = Domain.get_by_name(dom.name())
+        domain = Domain.get_by_libvirt_name(dom.name())
         # test if notified event comes from a domain in current testbed
         if domain is None:
             logging.debug("event received for domain {domain} but not found " \

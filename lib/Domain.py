@@ -26,6 +26,7 @@ import time
 import threading
 import libvirt
 import hashlib
+import os
 from xml.dom.minidom import Document
 
 from CloubedException import CloubedException
@@ -57,6 +58,17 @@ class Domain:
         self._conn = conn
         self._virtobj = None
         self._name = domain_conf.get_name()
+
+        use_namespace = True # should better be a conf parameter in the future
+        if use_namespace:    # logic should moved be in an abstract parent class
+            self._libvirt_name = \
+                "{user}:{testbed}:{name}" \
+                    .format(user = os.getlogin(),
+                            testbed = domain_conf.get_testbed(),
+                            name = self._name)
+        else:
+            self._libvirt_name = self._name
+
         self._vcpu = domain_conf.get_cpu()
         self._memory = domain_conf.get_memory()
 
@@ -110,6 +122,12 @@ class Domain:
 
         return self._name
 
+    def get_libvirt_name(self):
+
+        """ Returns name of Domain in libvirt """
+
+        return self._libvirt_name
+
     def get_disks(self):
 
         """ get_disks: Returns the list of disks of the Domain """
@@ -132,6 +150,18 @@ class Domain:
                 return domain
 
         return None
+
+    @classmethod
+    def get_by_libvirt_name(cls, name):
+
+        """ Returns the Domain with this name """
+
+        for domain in cls._domains:
+            if domain.get_libvirt_name() == name:
+                return domain
+
+        return None
+
 
     def get_template_by_name(self, template_name):
 
@@ -194,13 +224,13 @@ class Domain:
         if overwrite:
             # delete all existing domain
             for domain_name in self._conn.listDefinedDomains():
-                if domain_name == self._name:
+                if domain_name == self._libvirt_name:
                     domain = self._conn.lookupByName(domain_name)
                     logging.info("undefining domain " + domain_name)
                     domain.undefine()
             for domain_id in self._conn.listDomainsID():
                 domain_name = self._conn.lookupByID(domain_id).name()
-                if domain_name == self._name:
+                if domain_name == self._libvirt_name:
                     domain = self._conn.lookupByName(domain_name)
                     logging.info("destroying domain " + domain_name)
                     domain.destroy()
@@ -329,7 +359,7 @@ class Domain:
 
         # name 
         element_name = self._doc.createElement("name")
-        node_name = self._doc.createTextNode(self._name)
+        node_name = self._doc.createTextNode(self._libvirt_name)
         element_name.appendChild(node_name)
         element_domain.appendChild(element_name)
         
@@ -477,7 +507,7 @@ class Domain:
             # devices/interface/source
             element_source = self._doc.createElement("source")
             element_source.setAttribute("network",
-                                        netif.get_network().get_name())
+                                        netif.get_network().get_libvirt_name())
             element_interface.appendChild(element_source)
 
             # devices/interface/target
