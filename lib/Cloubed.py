@@ -109,14 +109,11 @@ class Cloubed():
         # initialize networks
         #
         self._networks = []
-        self._ip_host = None # ip address the http server will serve
         for network_conf in self._conf.get_networks_list():
             logging.info("initializing network {name}" \
                              .format(name=network_conf.get_name()))
             self._networks.append(Network(self._conn,
                                           network_conf))
-            if not self._ip_host and network_conf.has_local_settings():
-                self._ip_host = network_conf.get_ip_host()
 
         #
         # initialize domain and templates
@@ -132,9 +129,7 @@ class Cloubed():
         # initialize http server, arbitrary select first host ip
         # found in cloubed yaml file
         #
-        self._http_server = None
-        if self._ip_host is not None:
-            self._http_server = HTTPServer(self._ip_host)
+        self._http_server = HTTPServer()
 
     def get_domain_by_name(self, name):
 
@@ -156,13 +151,15 @@ class Cloubed():
 
         return self._conf.get_templates_dict()
 
-    def serve_http(self):
+    def serve_http(self, address):
         
         """ server_http: """
 
         if self._http_server is not None:
             if not self._http_server.launched():
-                self._http_server.launch()
+                logging.debug("launching HTTP server on address {address}" \
+                                  .format(address=address))
+                self._http_server.launch(address)
 
     def gen_file(self, domain_name, template_name):
 
@@ -203,15 +200,28 @@ class Cloubed():
 
         """ wait_event: """
 
+        # search the domain
+        domain = self.get_domain_by_name(domain_name)
+
         if enable_http:
-            self.serve_http()
+            # build the list of host ip addresses on all networks connected to
+            # the domain
+            list_ip_hosts = [ dom_netif.get_network().get_ip_host() \
+                              for dom_netif in domain.get_netifs() ]
+            if len(list_ip_hosts) > 0:
+                # arbitrary take the first ip address
+                address = list_ip_hosts[0]
+                self.serve_http(address)
+            else:
+                logging.debug("HTTP server not launched because no host IP " \
+                              "address on networks connected to domain " \
+                              "{domain}".format(domain=domain_name))
 
         domain_event = DomainEvent("{event_type}" \
                                    .format(event_type=event_type.upper()),
                                    "{event_type}_{event_detail}" \
                                    .format(event_type=event_type.upper(),
                                            event_detail=event_detail.upper()))
-        domain = self.get_domain_by_name(domain_name)
         domain.wait_for_event(domain_event)
 
     def clean_exit(self):

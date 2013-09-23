@@ -128,6 +128,12 @@ class Network:
 
         return self._libvirt_name
 
+    def get_ip_host(self):
+
+        """ Return the IP address of the host in the Network """
+
+        return self._ip_host
+
     def created(self):
 
         """ created: Returns True if Network is created in libvirt """

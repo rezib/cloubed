@@ -30,11 +30,11 @@ class HTTPServer():
 
     """ HTTPServer class """
 
-    def __init__(self, address):
+    def __init__(self):
 
         self._port = 5432
         self._handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-        self._address = address
+        self._address = None
         self._httpd = None
         self._thread = None
 
@@ -46,12 +46,13 @@ class HTTPServer():
 
         return self._thread is not None
 
-    def launch(self):
+    def launch(self, address):
 
         """
             launch: Creates the daemon thread that will start the HTTP server
         """
 
+        self._address = address
         self._thread = threading.Thread(target=self.threaded_server,
                                         name="ClouBedHTTPServer")
         self._thread.setDaemon(True)
