@@ -207,7 +207,9 @@ class Cloubed():
             # build the list of host ip addresses on all networks connected to
             # the domain
             list_ip_hosts = [ dom_netif.get_network().get_ip_host() \
-                              for dom_netif in domain.get_netifs() ]
+                              for dom_netif in domain.get_netifs() \
+                              if dom_netif.get_network().get_ip_host() \
+                                 is not None ]
             if len(list_ip_hosts) > 0:
                 # arbitrary take the first ip address
                 address = list_ip_hosts[0]
