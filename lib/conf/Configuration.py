@@ -25,7 +25,7 @@ import yaml
 import logging
 import os
 import re
-from CloubedException import CloubedConfigurationException
+from ..CloubedException import CloubedConfigurationException
 
 class Configuration:
 

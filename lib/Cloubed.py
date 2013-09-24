@@ -32,7 +32,7 @@ from StorageVolume import StorageVolume
 from Domain import Domain
 from Network import Network
 from EventManager import EventManager
-from Configuration import Configuration
+from conf.Configuration import Configuration
 from HTTPServer import HTTPServer
 from DomainEvent import DomainEvent
 from CloubedException import CloubedException
