@@ -29,7 +29,7 @@ from Cloubed import Cloubed
 
 # It is not actually used in this module but it has to be exported in
 # cloubed external API
-from CloubedException import CloubedException
+from CloubedException import *
 
 def gen_file(domain_name, template_name):
 

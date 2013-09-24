@@ -21,6 +21,10 @@
 
 """ Exceptions classes of Cloubed"""
 
+__all__ = [ "CloubedException",
+            "CloubedArgumentException",
+            "CloubedConfigurationException" ]
+
 class CloubedException(Exception):
 
     """ Base class for exceptions in Cloubed """
