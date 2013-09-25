@@ -155,7 +155,8 @@ class StorageVolume:
         """
 
         if not self._storage_pool.created():
-            self._storage_pool.create(True) # overwrite
+            self._storage_pool.create(False) # Do not overwrite since there is
+                                             # no good reason to do so.
 
         self.__init_xml()
 
