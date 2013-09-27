@@ -21,9 +21,9 @@
 
 """ Configuration class """
 
-import yaml
 import logging
 from ..CloubedException import CloubedConfigurationException
+from ConfigurationLoader import ConfigurationLoader
 from ConfigurationStoragePool import ConfigurationStoragePool
 from ConfigurationStorageVolume import ConfigurationStorageVolume
 from ConfigurationNetwork import ConfigurationNetwork
@@ -36,29 +36,8 @@ class Configuration:
     def __init__(self, conf_file):
 
         self._file_path = conf_file
-
-        try:
-            yaml_file = open(self._file_path)
-        except IOError:
-            raise CloubedConfigurationException(
-                      "Not able to open file {file_path}" \
-                          .format(file_path = self._file_path))
-
-        try:
-            self._yaml = yaml.load(yaml_file)
-        except yaml.YAMLError as err:
-            raise CloubedConfigurationException(
-                      "Error while loading {file_path} file (may" \
-                      " not be valid YAML content): {error}" \
-                          .format(file_path=self._file_path,
-                                  error=err))
-        yaml_file.close()
-
-        if type(self._yaml) is not dict:
-            raise CloubedConfigurationException(
-                      "File {file_path} is not a valid YAML file for Cloubed" \
-                          .format(file_path=self._file_path))
-
+        self._loader = ConfigurationLoader(conf_file)
+        self._conf = self._loader.get_content()
 
         self._check_main_keys(["storagepools",
                                "storagevolumes",
@@ -66,35 +45,35 @@ class Configuration:
                                "domains"])
 
         self._storage_pools_list = []
-        for storage_pool_item in self._yaml['storagepools']:
-            storage_pool_item['testbed'] = self._yaml['testbed']
+        for storage_pool_item in self._conf['storagepools']:
+            storage_pool_item['testbed'] = self._conf['testbed']
             self._storage_pools_list \
                 .append(ConfigurationStoragePool(storage_pool_item))
 
         self._storage_volumes_list = []
-        for storage_volume_item in self._yaml['storagevolumes']:
-            storage_volume_item['testbed'] = self._yaml['testbed']
+        for storage_volume_item in self._conf['storagevolumes']:
+            storage_volume_item['testbed'] = self._conf['testbed']
             self._storage_volumes_list \
                 .append(ConfigurationStorageVolume(storage_volume_item))
 
         self._networks_list = []
-        for network_item in self._yaml['networks']:
-            network_item['testbed'] = self._yaml['testbed']
+        for network_item in self._conf['networks']:
+            network_item['testbed'] = self._conf['testbed']
             self._networks_list \
                 .append(ConfigurationNetwork(network_item))
 
         self._domains_list = []
-        for domain_item in self._yaml['domains']:
-            domain_item['testbed'] = self._yaml['testbed']
+        for domain_item in self._conf['domains']:
+            domain_item['testbed'] = self._conf['testbed']
             self._domains_list \
                 .append(ConfigurationDomain(domain_item))
 
     def _check_main_keys(self, keys_list):
 
-        """ checks YAML dict contains all keys in keys_list """
+        """ checks conf dict contains all keys in keys_list """
 
         for key in keys_list:
-            if not self._yaml.has_key(key):
+            if not self._conf.has_key(key):
                 raise CloubedConfigurationException(
                           "File {file_path} does not contain {key}" \
                               .format(file_path=self._file_path,
@@ -110,7 +89,7 @@ class Configuration:
 
         """ Returns the name of the testbed """
 
-        return self._yaml['testbed']
+        return self._conf['testbed']
 
     def get_storage_pools_list(self):
 
