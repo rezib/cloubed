@@ -67,8 +67,10 @@ class ConfigurationDomain:
 
             if match is None:
                 raise CloubedConfigurationException(
-                          "Memory size '{memory}' is not valid, please see " \
-                          "documentation.".format(memory=memory))
+                          "Memory size '{memory}' of domain {domain} is not " \
+                          "valid, please see documentation." \
+                              .format(memory=memory,
+                                      domain=self._name))
 
             qty = int(match.group(1))
             unit = match.group(2)
@@ -84,8 +86,10 @@ class ConfigurationDomain:
                                       domain=self._name))
         else: # invalid type
             raise CloubedConfigurationException(
-                       "Memory size '{memory}' is not valid, please see " \
-                       "documentation.".format(memory=memory))
+                       "Memory size '{memory}' of domain {domain} is not " \
+                       "valid, please see documentation." \
+                           .format(memory=memory,
+                                   domain=self._name))
 
         self._memory = multiplier * qty
 
