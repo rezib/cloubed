@@ -23,7 +23,6 @@
 
 import logging
 from ..CloubedException import CloubedConfigurationException
-from ConfigurationLoader import ConfigurationLoader
 from ConfigurationStoragePool import ConfigurationStoragePool
 from ConfigurationStorageVolume import ConfigurationStorageVolume
 from ConfigurationNetwork import ConfigurationNetwork
@@ -33,10 +32,9 @@ class Configuration:
 
     """ Main Configuration class """
 
-    def __init__(self, conf_file):
+    def __init__(self, loader):
 
-        self._file_path = conf_file
-        self._loader = ConfigurationLoader(conf_file)
+        self._loader = loader
         self._conf = self._loader.get_content()
 
         self._check_main_keys(["storagepools",
@@ -75,15 +73,8 @@ class Configuration:
         for key in keys_list:
             if not self._conf.has_key(key):
                 raise CloubedConfigurationException(
-                          "File {file_path} does not contain {key}" \
-                              .format(file_path=self._file_path,
-                                      key=key))
-
-    def get_file_path(self):
-
-        """ get_file_path: Returns the absolute path of the configuration file """
-
-        return self._file_path
+                          "Configuration file does not contain {key}" \
+                              .format(key=key))
 
     def get_testbed_name(self):
 

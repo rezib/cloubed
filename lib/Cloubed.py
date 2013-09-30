@@ -33,6 +33,7 @@ from Domain import Domain
 from Network import Network
 from EventManager import EventManager
 from conf.Configuration import Configuration
+from conf.ConfigurationLoader import ConfigurationLoader
 from HTTPServer import HTTPServer
 from DomainEvent import DomainEvent
 from CloubedException import CloubedException
@@ -82,7 +83,8 @@ class Cloubed():
         # parse configuration file
         #
         configuration_filename = os.path.join(os.getcwd(), "cloubed.yaml")
-        self._conf = Configuration(configuration_filename)
+        self._conf_loader = ConfigurationLoader(configuration_filename)
+        self._conf = Configuration(self._conf_loader)
         self._name = self._conf.get_testbed_name()
     
         #

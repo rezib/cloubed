@@ -55,6 +55,12 @@ class ConfigurationLoader:
                       "File {file_path} is not a valid YAML file for Cloubed" \
                           .format(file_path=self._file_path))
 
+    def get_file_path(self):
+
+        """ Returns the absolute path of the configuration file """
+
+        return self._file_path
+
     def get_content(self):
 
         """ Returns the dict with the content loaded from configuration file """
