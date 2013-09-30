@@ -53,7 +53,7 @@ class ConfigurationDomain:
         memory_qty = -1
         if type(memory) is int:
             qty = memory
-        else: # type(memory) is str
+        elif type(memory) is str:
 
             pattern = re.compile(u"(\d+)\s*(\w*)")
             match = pattern.match(memory)
@@ -75,6 +75,10 @@ class ConfigurationDomain:
                           " '{memory}' of domain {domain}" \
                               .format(memory=memory,
                                       domain=self._name))
+        else: # invalid type
+            raise CloubedConfigurationException(
+                       "Memory size '{memory}' is not valid, please see " \
+                       "documentation.".format(memory=memory))
 
         self._memory = multiplier * qty
 
