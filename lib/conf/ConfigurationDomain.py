@@ -32,8 +32,7 @@ class ConfigurationDomain:
 
         self._name = domain_item['name']
         self._testbed = domain_item['testbed']
-        self._cpu = int(domain_item['cpu'])
-
+        self.__parse_cpu(domain_item['cpu'])
         self.__parse_memory(domain_item['memory'])
 
         self._graphics = domain_item['graphics']
@@ -45,6 +44,14 @@ class ConfigurationDomain:
         else:
             self._template_files = {}
             self._template_vars = {}
+
+    def __parse_cpu(self, cpu):
+
+        if type(cpu) is not int:
+            raise CloubedConfigurationException(
+                       "CPU '{cpu}' of domain {domain} is not valid, please " \
+                       "see documentation.".format(cpu=cpu, domain=self._name))
+        self._cpu = int(cpu)
 
     def __parse_memory(self, memory):
 
