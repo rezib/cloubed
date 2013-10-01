@@ -36,7 +36,9 @@ class ConfigurationDomain:
         self.__parse_memory(domain_item['memory'])
         self.__parse_graphics(domain_item['graphics'])
 
-        self._netifs = domain_item['netifs']
+        self._netifs = []
+        self.__parse_netifs(domain_item['netifs'])
+
         self._disks = domain_item['disks']
         if domain_item.has_key('templates'):
             self._template_files = domain_item['templates']['files']
@@ -114,6 +116,45 @@ class ConfigurationDomain:
                       "Graphics of domain {domain} has not a valid format." \
                           .format(domain=self._name))
 
+    def __parse_netifs(self, netifs):
+
+        if type(netifs) is list:
+
+            netif_id = 0
+
+            for netif in netifs:
+
+                if type(netif) is not dict:
+                    raise CloubedConfigurationException(
+                              "Netif {netif_id} of domain {domain} has not a " \
+                              "valid format." \
+                                  .format(netif_id=netif_id,
+                                          domain=self._name))
+
+
+                if not netif.has_key("network"):
+                    raise CloubedConfigurationException(
+                              "Netif {netif_id} of domain {domain} shoud have " \
+                              "a network name." \
+                                  .format(netif_id=netif_id,
+                                          domain=self._name))
+
+                if type(netif["network"]) is not str:
+                    raise CloubedConfigurationException(
+                              "Network name of netif {netif_id} of domain "\
+                              "{domain} has not a valid format." \
+                                  .format(netif_id=netif_id,
+                                          domain=self._name))
+
+                self._netifs.append(netif['network'])
+
+                netif_id += 1
+
+        else: # invalid type
+            raise CloubedConfigurationException(
+                      "Netifs of domain {domain} has not a valid format." \
+                          .format(domain=self._name))
+
     def get_name(self):
 
         """ Returns the name of the Domain in its Configuration """
@@ -170,7 +211,7 @@ class ConfigurationDomain:
             Configuration
         """
 
-        return [ netif['network'] for netif in self._netifs ]
+        return self._netifs
 
     def get_templates_dict(self):
 
