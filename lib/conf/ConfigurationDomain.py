@@ -34,8 +34,8 @@ class ConfigurationDomain:
         self._testbed = domain_item['testbed']
         self.__parse_cpu(domain_item['cpu'])
         self.__parse_memory(domain_item['memory'])
+        self.__parse_graphics(domain_item['graphics'])
 
-        self._graphics = domain_item['graphics']
         self._netifs = domain_item['netifs']
         self._disks = domain_item['disks']
         if domain_item.has_key('templates'):
@@ -92,6 +92,27 @@ class ConfigurationDomain:
                                    domain=self._name))
 
         self._memory = multiplier * qty
+
+    def __parse_graphics(self, graphics):
+
+        if type(graphics) is str:
+
+            valid_graphics = ["sdl", "vnc", "rdp", "spice"]
+
+            if graphics in valid_graphics:
+                self._graphics = graphics
+
+            else: # invalid choice
+                raise CloubedConfigurationException(
+                          "Graphics '{graphics}' of domain {domain} is not " \
+                          "valid." \
+                              .format(graphics=graphics,
+                                      domain=self._name))
+
+        else: # invalid type
+            raise CloubedConfigurationException(
+                      "Graphics of domain {domain} has not a valid format." \
+                          .format(domain=self._name))
 
     def get_name(self):
 
