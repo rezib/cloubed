@@ -46,7 +46,6 @@ class CloubedArgumentParser(argparse.ArgumentParser):
     def add_args(self):
 
         self.add_argument("actions",
-                            metavar="ACTION",
                             nargs=1,
                             choices=['gen', 'boot', 'wait'],
                             help="name of the action to perform")
