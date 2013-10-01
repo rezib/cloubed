@@ -129,7 +129,7 @@ def main():
 
     """ run_cloubed: function launched by main() """
 
-    parser = CloubedArgumentParser(u"Perform action over your virtual testbed")
+    parser = CloubedArgumentParser(u"cloubed")
     parser.add_args()
 
     try:
