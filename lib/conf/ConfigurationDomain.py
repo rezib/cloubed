@@ -39,7 +39,9 @@ class ConfigurationDomain:
         self._netifs = []
         self.__parse_netifs(domain_item['netifs'])
 
-        self._disks = domain_item['disks']
+        self._disks = {}
+        self.__parse_disks(domain_item['disks'])
+
         if domain_item.has_key('templates'):
             self._template_files = domain_item['templates']['files']
             self._template_vars = domain_item['templates']['vars']
@@ -155,6 +157,61 @@ class ConfigurationDomain:
                       "Netifs of domain {domain} has not a valid format." \
                           .format(domain=self._name))
 
+    def __parse_disks(self, disks):
+
+        if type(disks) is list:
+
+            disk_id = 0
+
+            for disk in disks:
+
+                if type(disk) is not dict:
+                    raise CloubedConfigurationException(
+                              "disk {disk_id} of domain {domain} has not a " \
+                              "valid format" \
+                                  .format(disk_id=disk_id,
+                                          domain=self._name))
+
+
+                if not disk.has_key("device"):
+                    raise CloubedConfigurationException(
+                              "device is missing for disk {disk_id} of " \
+                              "domain {domain}" \
+                                  .format(disk_id=disk_id,
+                                          domain=self._name))
+
+                if not disk.has_key("storage_volume"):
+                    raise CloubedConfigurationException(
+                              "storage volume is missing for disk {disk_id} " \
+                              "of domain {domain}" \
+                                  .format(disk_id=disk_id,
+                                          domain=self._name))
+
+
+                if type(disk["device"]) is not str:
+                    raise CloubedConfigurationException(
+                              "device of disk {disk_id} of domain {domain} " \
+                              "has not a valid format" \
+                                  .format(disk_id=disk_id,
+                                          domain=self._name))
+
+                if type(disk["storage_volume"]) is not str:
+                    raise CloubedConfigurationException(
+                              "storage volume of disk {disk_id} of domain " \
+                              "{domain} has not a valid format" \
+                                  .format(disk_id=disk_id,
+                                          domain=self._name))
+
+                self._disks[disk["device"]] = disk["storage_volume"]
+
+                disk_id += 1
+
+        else: # invalid type
+            raise CloubedConfigurationException(
+                      "disks of domain {domain} has not a valid format" \
+                          .format(domain=self._name))
+
+
     def get_name(self):
 
         """ Returns the name of the Domain in its Configuration """
@@ -192,11 +249,8 @@ class ConfigurationDomain:
             Configuration
         """
 
-        disks_dict = {}
-        for disk in self._disks:
-            disks_dict[disk['device']] = disk['storage_volume']
 
-        return disks_dict
+        return self._disks
 
     def get_templates_list(self):
 
