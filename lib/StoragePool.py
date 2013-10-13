@@ -23,7 +23,7 @@
 
 import logging
 import os
-from xml.dom.minidom import Document
+from xml.dom.minidom import Document, parseString
 
 class StoragePool:
 
@@ -116,6 +116,30 @@ class StoragePool:
 
         return self._name
 
+    def find_storage_pool(self):
+
+        """
+            Search for any storage pool with the same path among all defined
+            and active storage pools in Libvirt. If one matches, returns it.
+            Returns None if not found.
+        """
+
+        all_pools = self._conn.listStoragePools() + self._conn.listDefinedStoragePools()
+        for storage_pool_name in all_pools:
+
+            storage_pool = self._conn.storagePoolLookupByName(storage_pool_name)
+
+            xml = storage_pool.XMLDesc(0)
+            path = StoragePool.extract_path(xml)
+
+            if path == self._path:
+
+                logging.info("found storage pool {name} with the same path" \
+                                 .format(name=storage_pool_name))
+                return storage_pool
+
+        return None
+
     def get_status(self):
 
         """
@@ -139,15 +163,17 @@ class StoragePool:
                    "degraded",
                    "inaccessible" ]
 
-        if self._libvirt_name in self._conn.listStoragePools() or \
-           self._libvirt_name in self._conn.listDefinedStoragePools():
+        storage_pool = self.find_storage_pool()
 
-            self._virtobj = \
-                self._conn.storagePoolLookupByName(self._libvirt_name)
+        if storage_pool is not None:
+
+            self._virtobj = storage_pool
+            self._libvirt_name = storage_pool.name() # override libvirt name
+
             state_code = self._virtobj.info()[0]
             status = states[state_code]
 
-        else:
+        else: # not found, it means not defined
 
             status = "undefined"
 
@@ -162,11 +188,24 @@ class StoragePool:
     def create(self):
 
         """
-            create: Creates the StoragePool in libvirt
+            Creates the StoragePool in libvirt. If it already exists, simply
+            link to it.
         """
 
-        if self._libvirt_name in self._conn.listStoragePools():
-            self._virtobj = self._conn.storagePoolLookupByName(self._libvirt_name)
+        storage_pool = self.find_storage_pool()
+
+        if storage_pool is not None:
+            logging.info("found storage pool {name} with the same path" \
+                             .format(name=storage_pool.name()))
+            self._virtobj = storage_pool
+            self._libvirt_name = storage_pool.name() # override libvirt name
+
+            # if not active in libvirt (defined but not started), activate it
+            if not self._virtobj.isActive():
+                logging.info("storage pool {name} is not active, activating it..." \
+                                 .format(name=self._libvirt_name))
+                self._virtobj.create(0)
+
         else:
             self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
 
@@ -206,3 +245,9 @@ class StoragePool:
         node_path = self._doc.createTextNode(self._path)
         element_path.appendChild(node_path)
         element_target.appendChild(element_path)
+
+    @staticmethod
+    def extract_path(xml_str):
+
+        xml = parseString(xml_str)
+        return xml.getElementsByTagName(u'path')[0].firstChild.data
