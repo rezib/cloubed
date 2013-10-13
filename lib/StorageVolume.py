@@ -154,9 +154,8 @@ class StorageVolume:
             create: Creates the StorageVolume in libvirt
         """
 
-        if not self._storage_pool.created():
-            self._storage_pool.create(False) # Do not overwrite since there is
-                                             # no good reason to do so.
+        self._storage_pool.create(False) # Do not overwrite since there is
+                                         # no good reason to do so.
 
         self.__init_xml()
 

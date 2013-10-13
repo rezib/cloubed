@@ -122,14 +122,6 @@ class StoragePool:
             Returns the name of the StoragePool in libvirt
         """
 
-    def created(self):
-
-        """
-            created: Returns True if the StoragePool is created in libvirt
-        """
-
-        return self._virtobj is not None
-
     def create(self, overwrite = False):
 
         """
