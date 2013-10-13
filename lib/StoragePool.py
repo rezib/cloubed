@@ -116,6 +116,43 @@ class StoragePool:
 
         return self._name
 
+    def get_status(self):
+
+        """
+            Returns status name from libvirt standpoint
+        """
+
+        # Extracted from libvirt API documentation:
+        # enum virStoragePoolState {
+        #   VIR_STORAGE_POOL_INACTIVE     = 0 Not running
+        #   VIR_STORAGE_POOL_BUILDING     = 1 Initializing pool, not available
+        #   VIR_STORAGE_POOL_RUNNING      = 2 Running normally
+        #   VIR_STORAGE_POOL_DEGRADED     = 3 Running degraded
+        #   VIR_STORAGE_POOL_INACCESSIBLE = 4 Running, but not accessible
+        #   VIR_STORAGE_POOL_STATE_LAST   = 5
+        # }
+
+        states = [ "inactive",
+                   "initializing",
+                   "active", # voluntarily not 'running' to stay compliant with
+                             # 'virsh pool-list' output
+                   "degraded",
+                   "inaccessible" ]
+
+        if self._libvirt_name in self._conn.listStoragePools() or \
+           self._libvirt_name in self._conn.listDefinedStoragePools():
+
+            self._virtobj = \
+                self._conn.storagePoolLookupByName(self._libvirt_name)
+            state_code = self._virtobj.info()[0]
+            status = states[state_code]
+
+        else:
+
+            status = "undefined"
+
+        return status
+
     def get_libvirt_name(self):
 
         """
