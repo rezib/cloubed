@@ -159,31 +159,16 @@ class StoragePool:
             Returns the name of the StoragePool in libvirt
         """
 
-    def create(self, overwrite = False):
+    def create(self):
 
         """
             create: Creates the StoragePool in libvirt
         """
 
-        if overwrite:
-            # Delete all existing storage pools.
-            # BUG: Does not do anything more clever since not found in libvirt
-            # how to get path of an existing or defined storage pool and check
-            # for potential conflict.
-            for sp_name in self._conn.listDefinedStoragePools():
-                storage_pool = self._conn.storagePoolLookupByName(sp_name)
-                logging.info("undefining storage pool " + sp_name)
-                storage_pool.undefine()
-            for sp_name in self._conn.listStoragePools():
-                storage_pool = self._conn.storagePoolLookupByName(sp_name)
-                logging.info("destroying storage pool " + sp_name)
-                storage_pool.destroy()
-            self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
+        if self._libvirt_name in self._conn.listStoragePools():
+            self._virtobj = self._conn.storagePoolLookupByName(self._libvirt_name)
         else:
-            if self._libvirt_name in self._conn.listStoragePools():
-                self._virtobj = self._conn.storagePoolLookupByName(self._libvirt_name)
-            else:
-                self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
+            self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
 
     def __init_xml(self):
 
