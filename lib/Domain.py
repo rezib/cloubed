@@ -140,6 +140,75 @@ class Domain:
 
         return self._netifs
 
+    def find_domain(self):
+
+        """
+            Search for any domain with the same name among all defined and
+            active domains in Libvirt. If one matches, returns it. Else returns
+            None.
+        """
+
+        # Workaround since no way to directly get list of names of all actives
+        # domains in Libvirt API
+        active_domains = [ self._conn.lookupByID(domain_id).name() \
+                               for domain_id in self._conn.listDomainsID() ]
+
+        domains = active_domains + self._conn.listDefinedDomains()
+        for domain_name in domains:
+
+            if domain_name == self._libvirt_name:
+
+                return self._conn.lookupByName(domain_name)
+
+        return None
+
+    def get_status(self):
+
+        """
+            Returns status name of the Domain from Libvirt standpoint
+        """
+
+        # Extracted from libvirt API documentation:
+        # enum virDomainState {
+        #   VIR_DOMAIN_NOSTATE     = 0 no state
+        #   VIR_DOMAIN_RUNNING     = 1 the domain is running
+        #   VIR_DOMAIN_BLOCKED     = 2 the domain is blocked on resource
+        #   VIR_DOMAIN_PAUSED      = 3 the domain is paused by user
+        #   VIR_DOMAIN_SHUTDOWN    = 4 the domain is being shut down
+        #   VIR_DOMAIN_SHUTOFF     = 5 the domain is shut off
+        #   VIR_DOMAIN_CRASHED     = 6 the domain is crashed
+        #   VIR_DOMAIN_PMSUSPENDED = 7 the domain is suspended by guest power
+        #                              management
+        #   VIR_DOMAIN_LAST        = 8 NB: this enum value will increase over
+        #                              time as new events are added to the
+        #                              libvirt API. It reflects the last state
+        #                              supported by this version of the libvirt
+        #                              API.
+        # }
+
+
+        states = [ "unknown",
+                   "running",
+                   "blocked",
+                   "paused",
+                   "shutdown",
+                   "shutoff",
+                   "crashed",
+                   "suspended" ]
+
+        domain = self.find_domain()
+        if domain is not None:
+
+            self._virtobj = domain
+            state_code = self._virtobj.info()[0]
+            status = states[state_code]
+
+        else:
+
+            status = "undefined"
+
+        return status
+
     @classmethod
     def get_by_name(cls, name):
 
