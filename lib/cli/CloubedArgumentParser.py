@@ -104,95 +104,71 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                             nargs=1,
                             help="Event to wait")
 
-    def check_coherency(self):
+    def check_required(self):
 
         action = self._args.actions[0]
 
-        logging.debug(u"check for incoherent parameters in action {action}" \
+        logging.debug(u"check for required parameters with {action} action" \
                           .format(action=action))
+
+        required_args = {
+                "boot": {
+                    "domain": "--domain"
+                },
+                "gen" : {
+                    "domain": "--domain"
+                },
+                "wait": {
+                    "domain": "--domain"
+                },
+                "status": {}
+            }
+
+        error_str = u"{attribute} is required for {action} action"
+
+        for attr, arg in required_args[action].iteritems():
+            if not hasattr(self._args, attr) or \
+               getattr(self._args, attr) is None:
+                raise CloubedArgumentException(
+                          error_str.format(attribute=arg,
+                                           action=action))
+
+    def check_optionals(self):
+
+        action = self._args.actions[0]
+
+        logging.debug(u"check for incoherent parameters with {action} action" \
+                          .format(action=action))
+
+        optional_args = {
+                "boot": {
+                    "bootdev": "--bootdev",
+                    "overwrite_disks": "--overwrite-disks",
+                    "recreate_networks": "--recreate-networks"
+                },
+                "gen" : {
+                    "filename": "--filename",
+                },
+                "wait": {
+                     "event": "--event"
+                },
+                "status": {}
+            }
 
         error_str = u"{attribute} has no sense with {action} action"
 
-        if action == "boot":
+        for action_name, compatible_args in optional_args.iteritems():
 
-            # for gen
-            if self._args.filename:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--filename",
-                                           action=action))
-            # for wait
-            if self._args.event:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--event",
-                                           action=action))
+            if action_name == action:
+                continue # go to next item in optional_args
 
-        elif action == "gen":
+            for attr, arg in compatible_args.iteritems():
+                if hasattr(self._args, attr) and \
+                   getattr(self._args, attr) is not None:
+                    raise CloubedArgumentException(
+                              error_str.format(attribute=arg,
+                                               action=action))
 
-            # for boot
-            if self._args.bootdev:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--bootdev",
-                                           action=action))
-            if self._args.overwrite_disks:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--overwrite-disks",
-                                           action=action))
-            if self._args.recreate_networks:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--recreate-networks",
-                                           action=action))
-            # for wait
-            if self._args.event:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--event",
-                                           action=action))
-
-        elif action == "wait":
-
-            # for boot
-            if self._args.bootdev:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--bootdev",
-                                           action=action))
-            if self._args.overwrite_disks:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--overwrite-disks",
-                                           action=action))
-            if self._args.recreate_networks:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--recreate-networks",
-                                           action=action))
-            # for gen
-            if self._args.filename:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--filename",
-                                           action=action))
-
-        elif action == "status":
-
-            # for boot
-            if self._args.bootdev:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--bootdev",
-                                           action=action))
-            if self._args.overwrite_disks:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--overwrite-disks",
-                                           action=action))
-            if self._args.recreate_networks:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--recreate-networks",
-                                           action=action))
-            # for gen
-            if self._args.filename:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--filename",
-                                           action=action))
-            # for wait
-            if self._args.event:
-                raise CloubedArgumentException(
-                          error_str.format(attribute="--event",
-                                           action=action))
     def check_bootdev(self):
 
         if self._args.bootdev:

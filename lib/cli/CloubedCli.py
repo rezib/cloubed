@@ -140,7 +140,8 @@ def main():
             logging.basicConfig(format='%(levelname)-7s: %(message)s',
                                 level=logging.DEBUG)
 
-        parser.check_coherency()
+        parser.check_required()
+        parser.check_optionals()
 
         try:
             cloubed = Cloubed()
