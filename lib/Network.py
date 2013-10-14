@@ -116,6 +116,38 @@ class Network:
 
         return self._virtobj
 
+    def find_network(self):
+
+        networks = self._conn.listNetworks() + self._conn.listDefinedNetworks()
+        for network_name in networks:
+
+            if network_name == self._libvirt_name:
+
+                return self._conn.networkLookupByName(network_name)
+
+        return None
+
+    def get_status(self):
+
+        """
+            Returns status name of the Network from Libvirt standpoint
+        """
+
+        network = self.find_network()
+        if network is not None:
+
+            self._virtobj = network
+            if self._virtobj.isActive():
+                status = "active"
+            else:
+                status = "inactive"
+
+        else:
+
+            status = "undefined"
+
+        return status
+
     def get_name(self):
 
         """ get_name: Returns the name of the network """
