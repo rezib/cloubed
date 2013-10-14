@@ -47,7 +47,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         self.add_argument("actions",
                             nargs=1,
-                            choices=['gen', 'boot', 'wait'],
+                            choices=['gen', 'boot', 'wait', 'status'],
                             help="name of the action to perform")
 
         # TODO: actually still to be implemented
@@ -65,7 +65,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                             dest="domain",
                             nargs=1,
                             help="The domain on which the action will be performed",
-                            required=True )
+                            required=False )
 
         # We create argparse groups of arguments in order to classify parameters by
         # actions in the output of --help. See documentation of argparse module for
@@ -168,6 +168,31 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                           error_str.format(attribute="--filename",
                                            action=action))
 
+        elif action == "status":
+
+            # for boot
+            if self._args.bootdev:
+                raise CloubedArgumentException(
+                          error_str.format(attribute="--bootdev",
+                                           action=action))
+            if self._args.overwrite_disks:
+                raise CloubedArgumentException(
+                          error_str.format(attribute="--overwrite-disks",
+                                           action=action))
+            if self._args.recreate_networks:
+                raise CloubedArgumentException(
+                          error_str.format(attribute="--recreate-networks",
+                                           action=action))
+            # for gen
+            if self._args.filename:
+                raise CloubedArgumentException(
+                          error_str.format(attribute="--filename",
+                                           action=action))
+            # for wait
+            if self._args.event:
+                raise CloubedArgumentException(
+                          error_str.format(attribute="--event",
+                                           action=action))
     def check_bootdev(self):
 
         if self._args.bootdev:

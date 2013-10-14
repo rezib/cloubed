@@ -193,6 +193,21 @@ def main():
 
              cloubed.wait_event(domain_name, event_type, event_detail)
 
+        elif action_name == u"status":
+
+             print "storage pools:"
+             for name, status in cloubed.get_storagepools_statuses().iteritems():
+                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
+             print "storage volumes:"
+             for name, status in cloubed.get_storagevolumes_statuses().iteritems():
+                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
+             print "networks:"
+             for name, status in cloubed.get_networks_statuses().iteritems():
+                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
+             print "domains:"
+             for name, status in cloubed.get_domains_statuses().iteritems():
+                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
+
         else:
             raise CloubedArgumentException(
                       u"Unknown action '{action}'".format(action=action_name))
