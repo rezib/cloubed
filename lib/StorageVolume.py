@@ -131,6 +131,47 @@ class StorageVolume:
 
         return self._name
 
+    def find_storage_volume(self):
+
+        """
+            Search for any storage volue with the same name among all storage
+            volumes in Libvirt. If one matches, returns it. Else returns None.
+        """
+
+        for storage_volume_name in self._storage_pool \
+                                            .getvirtobj().listVolumes():
+            if storage_volume_name == self.getfilename():
+                return self._storage_pool \
+                               .getvirtobj() \
+                                   .storageVolLookupByName(storage_volume_name)
+
+        return None
+
+    def get_status(self):
+
+        """
+            Returns the status name of the StorageVolume from libvirt standpoint
+        """
+
+        if self._storage_pool.get_status() == "undefined":
+
+            status = "-"
+
+        else:
+
+            storage_volume = self.find_storage_volume()
+
+            if storage_volume is not None:
+
+                self._virtobj = storage_volume
+                status = "active"
+
+            else: # not found, it means not defined
+
+                status = "undefined"
+
+        return status
+
     def getvirtobj(self):
 
         """
