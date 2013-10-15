@@ -209,6 +209,11 @@ def main():
              for name, status in cloubed.get_domains_statuses().iteritems():
                  print "  - {name:30s} {status:10s}".format(name=name, status=status)
 
+        elif action_name == u"cleanup":
+
+             logging.debug(u"Action cleanup")
+             cloubed.cleanup()
+
         else:
             raise CloubedArgumentException(
                       u"Unknown action '{action}'".format(action=action_name))

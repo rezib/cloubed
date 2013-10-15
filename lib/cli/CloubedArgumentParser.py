@@ -47,7 +47,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         self.add_argument("actions",
                             nargs=1,
-                            choices=['gen', 'boot', 'wait', 'status'],
+                            choices=['gen', 'boot', 'wait', 'status', 'cleanup'],
                             help="name of the action to perform")
 
         # TODO: actually still to be implemented
@@ -121,7 +121,8 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 "wait": {
                     "domain": "--domain"
                 },
-                "status": {}
+                "status": {},
+                "cleanup": {}
             }
 
         error_str = u"{attribute} is required for {action} action"
@@ -152,7 +153,8 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 "wait": {
                      "event": "--event"
                 },
-                "status": {}
+                "status": {},
+                "cleanup": {}
             }
 
         error_str = u"{attribute} has no sense with {action} action"
