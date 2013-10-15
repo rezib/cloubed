@@ -138,12 +138,14 @@ class StorageVolume:
             volumes in Libvirt. If one matches, returns it. Else returns None.
         """
 
-        for storage_volume_name in self._storage_pool \
-                                            .getvirtobj().listVolumes():
-            if storage_volume_name == self.getfilename():
-                return self._storage_pool \
-                               .getvirtobj() \
-                                   .storageVolLookupByName(storage_volume_name)
+        storage_pool = self._storage_pool.find_storage_pool()
+
+        if storage_pool is not None:
+
+            for storage_volume_name in storage_pool.listVolumes():
+                if storage_volume_name == self.getfilename():
+                    return storage_pool \
+                        .storageVolLookupByName(storage_volume_name)
 
         return None
 
