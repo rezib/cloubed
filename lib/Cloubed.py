@@ -256,6 +256,17 @@ class Cloubed():
             statuses[domain.get_name()] = domain.get_status()
         return statuses
 
+    def cleanup(self):
+
+        for domain in self._domains:
+            domain.destroy()
+        for network in self._networks:
+            network.destroy()
+        for storage_volume in self._storage_volumes:
+            storage_volume.destroy()
+        for storage_pool in self._storage_pools:
+            storage_pool.destroy()
+
     def clean_exit(self):
 
         logging.debug("clean exit")

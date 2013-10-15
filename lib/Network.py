@@ -172,6 +172,24 @@ class Network:
 
         return self._virtobj is not None
 
+    def destroy(self):
+
+        """
+            Destroys the Network in libvirt
+        """
+
+        network = self.find_network()
+        if network is None:
+            logging.debug("unable to destroy network {name} since not found " \
+                          "in libvirt".format(name=self._name))
+            return # do nothing and leave
+        if network.isActive():
+            logging.warn("destroying network {name}".format(name=self._name))
+            network.destroy()
+        else:
+            logging.warn("undefining network {name}".format(name=self._name))
+            network.undefine()
+
     def create(self, overwrite = False):
 
         """ create: Creates the Network in libvirt """

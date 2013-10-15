@@ -264,6 +264,24 @@ class Domain:
 
         return self._virtobj is not None
 
+    def destroy(self):
+
+        """
+            Destroys the Domain in libvirt
+        """
+
+        domain = self.find_domain()
+        if domain is None:
+            logging.debug("unable to destroy domain {name} since not found " \
+                          "in libvirt".format(name=self._name))
+            return # do nothing and leave
+        if domain.isActive():
+            logging.warn("destroying domain {name}".format(name=self._name))
+            domain.destroy()
+        else:
+            logging.warn("undefining domain {name}".format(name=self._name))
+            domain.undefine()
+
     def create(self,
                bootdev='hd',
                overwrite_disks = [],

@@ -191,6 +191,22 @@ class StorageVolume:
 
         return self._virtobj is not None
 
+    def destroy(self):
+
+        """
+            Destroys the StorageVolume in libvirt
+        """
+
+        storage_volume = self.find_storage_volume()
+
+        if storage_volume is None:
+            logging.debug("unable to destroy storage volume {name} since not " \
+                          "found in libvirt".format(name=self._name))
+            return # do nothing and leave
+
+        logging.warn("destroying storage volume {name}".format(name=self._name))
+        storage_volume.delete(0)
+
     def create(self, overwrite = True):
 
         """

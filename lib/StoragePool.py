@@ -185,6 +185,32 @@ class StoragePool:
             Returns the name of the StoragePool in libvirt
         """
 
+    def destroy(self):
+
+        """
+            Destroys the StoragePool in libvirt.
+        """
+
+        storage_pool = self.find_storage_pool()
+        if storage_pool is None:
+            logging.debug("unable to destroy storage pool {name} since not " \
+                          "found in libvirt".format(name=self._name))
+            return # do nothing and leave
+
+        if storage_pool.isActive():
+            # The storage pool can only by destroyed if it has not any volume,
+            # including volume of other testbeds
+            nb_vols = storage_pool.numOfVolumes()
+            if nb_vols == 0:
+                logging.warn("destroying storage pool {name}".format(name=self._name))
+                storage_pool.destroy()
+            else:
+                logging.warn("unable storage pool {name} because it still has " \
+                             "{nb} volumes".format(name=self._name, nb=nb_vols))
+        else:
+            logging.warn("undefining storage pool {name}".format(name=self._name))
+            storage_pool.undefine()
+
     def create(self):
 
         """
