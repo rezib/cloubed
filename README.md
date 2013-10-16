@@ -153,11 +153,9 @@ can access your files.
 Disclaimer
 ----------
 
-Please note that this software is far from being reliable and well suited for
-many users and developers. As of now, it should probably only fit to the needs
-of its main author (which is already cool from his standpoint). One last thing
-to keep mind: the API will change in future releases, there is just no chance
-for the opposite.
+Cloubed is not ready for production use since its user base is still very small.
+But please open [a new issue](https://github.com/rezib/cloubed/issues/new) if you
+encounter any problem or if you think a great feature is missing
 
-If you are still here after reading this, I guess you are masochist. But that
-is cool, I love receiving pull requests from masochists!
+Please note that both the API and YAML file format are likely to change in future
+releases of Cloubed.
