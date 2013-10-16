@@ -21,9 +21,9 @@
 
 """ All functions for cloubed CLI script"""
 
-from cloubed.Cloubed import Cloubed
-from cloubed.CloubedException import CloubedException, CloubedArgumentException
-from cloubed.cli.CloubedArgumentParser import CloubedArgumentParser
+from ..Cloubed import Cloubed
+from ..CloubedException import CloubedException, CloubedArgumentException
+from ..cli.CloubedArgumentParser import CloubedArgumentParser
 import sys
 import logging
 

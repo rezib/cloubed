@@ -21,7 +21,7 @@
 
 """ Cloubed script arguments parser """
 
-from cloubed.CloubedException import CloubedArgumentException
+from ..CloubedException import CloubedArgumentException
 import argparse
 import logging
 
