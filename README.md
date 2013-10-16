@@ -19,11 +19,53 @@ Licence
 Cloubed is distributed under the terms of the GNU Lesser General Public License
 version 3.
 
-Documentation
--------------
+Usage
+-----
 
-There is not yet documentation at this time. It is advised to have a look at the
-available examples as a starting point in the meantime.
+### Utility
+
+Here are somes examples of the usage of `cloubed` command.
+
+* Show the current status of all resources declared in YAML file:
+
+```sh
+cloubed status
+```
+
+* Generate the file named `pxe` of domain `test` in YAML file using its template:
+
+```sh
+cloubed gen --domain=test --filename=pxe
+```
+
+* Boot the domain `test` with different optional parameters:
+
+```
+cloubed boot --domain=test
+cloubed boot --domain=test --overwrite-disks=debian-vol
+cloubed boot --domain=test --overwrite-disks=yes --recreate-networks=yes
+cloubed boot --domain=test --bootdev=network
+```
+
+* Wait for the domain `test` to be stopped:
+
+```sh
+cloubed wait --domain=test --event=shutdown:stopped
+```
+
+* Destroy all resources:
+
+```sh
+cloubed cleanup
+```
+
+Try `cloubed --help` for more information about the usage of this command.
+
+### Library
+
+There is no real documentation yet on how-to use Cloubed library at this time. It
+is planned to publish one soon though. In the meantime, it is advised to have a
+look at the available examples in `examples/*` directories as a starting point.
 
 Requirements
 ------------
