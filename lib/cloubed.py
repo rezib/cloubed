@@ -52,6 +52,13 @@ def create_network(network_name, recreate):
     cloubed = Cloubed()
     cloubed.create_network(network_name, recreate)
 
+def cleanup():
+
+    """ Destroys all resources in libvirt """
+
+    cloubed = Cloubed()
+    cloubed.cleanup()
+
 def wait_event(domain_name, event_type, event_detail):
 
     """ wait_event: """
