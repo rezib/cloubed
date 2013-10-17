@@ -25,6 +25,7 @@ import SimpleHTTPServer
 import SocketServer
 import threading
 import logging
+import socket
 
 class HTTPServer():
 
@@ -72,6 +73,9 @@ class HTTPServer():
             threaded_server: Thread routine that actually starts the HTTP server
         """
 
-        self._httpd = SocketServer.TCPServer((self._address, self._port),
-                                             self._handler)
-        self._httpd.serve_forever()
+        try:
+            self._httpd = SocketServer.TCPServer((self._address, self._port),
+                                                 self._handler)
+            self._httpd.serve_forever()
+        except socket.error, e:
+            logging.warn("error while launching TCP Server: {err}".format(err=e))
