@@ -147,6 +147,24 @@ class Cloubed():
                                    .format(domain=name,
                                            file_name=self._conf.get_file_path()))
 
+    def get_network_by_name(self, name):
+
+        """
+            Returns the Network object whose name is given in parameter. Raises
+            exception if not found.
+        """
+
+        for network in self._networks:
+            if network.get_name() == name:
+                return network
+
+        # domain not found
+        raise CloubedException("network {network} not found in YAML file " \
+                               "{file_name}" \
+                                   .format(network=name,
+                                           file_name=self._conf.get_file_path()))
+
+
     def get_templates_dict(self):
 
         """ get_templates_dict: """
@@ -196,6 +214,15 @@ class Cloubed():
 
         except libvirt.libvirtError as err:
             logging.error("libvirt error: {error}".format(error=err))
+            raise CloubedException(err)
+
+    def create_network(self, network_name, recreate):
+
+        """ Create network in Cloubed """
+        network = self.get_network_by_name(network_name)
+        try:
+            network.create(recreate)
+        except libvirt.libvirtError as err:
             raise CloubedException(err)
 
     def wait_event(self, domain_name, event_type, event_detail, enable_http = True):

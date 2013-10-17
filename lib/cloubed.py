@@ -45,6 +45,13 @@ def boot_vm(domain_name, bootdev = "hd", overwrite_disks = [], recreate_networks
     cloubed = Cloubed()
     cloubed.boot_vm(domain_name, bootdev, overwrite_disks, recreate_networks)
 
+def create_network(network_name, recreate):
+
+    """ Creates network in libvirt """
+
+    cloubed = Cloubed()
+    cloubed.create_network(network_name, recreate)
+
 def wait_event(domain_name, event_type, event_detail):
 
     """ wait_event: """
