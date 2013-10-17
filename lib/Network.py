@@ -73,10 +73,12 @@ class Network:
             self._tftproot = network_conf.get_pxe_tftp_dir()
             self._bootfile = network_conf.get_pxe_boot_file()
 
+        # list of statically declared hosts in the network
+        self._hosts = []
+
         Network._networks.append(self)
 
         self._doc = None
-        self.__init_xml()
 
     def __del__(self):
 
@@ -108,6 +110,7 @@ class Network:
 
         """ toxml: Returns the libvirt XML representation of the Network """
 
+        self.__init_xml()
         return self._doc.toxml()
 
     def getvirtobj(self):
@@ -165,6 +168,15 @@ class Network:
         """ Return the IP address of the host in the Network """
 
         return self._ip_host
+
+    def register_host(self, hostname, mac, ip):
+
+        """ Register a host with a static IP address in DHCP """
+
+        logging.debug("registering host {hostname} in network {network}" \
+                          .format(hostname=hostname,
+                                  network=self._name))
+        self._hosts.append({"hostname": hostname, "mac": mac, "ip": ip})
 
     def created(self):
 
@@ -307,3 +319,11 @@ class Network:
                 element_bootp = self._doc.createElement("bootp")
                 element_bootp.setAttribute("file", self._bootfile)
                 element_dhcp.appendChild(element_bootp)
+
+            # ip/dhcp/host
+            for host in self._hosts:
+                element_host = self._doc.createElement("host")
+                element_host.setAttribute("mac", host["mac"])
+                element_host.setAttribute("name", host["hostname"])
+                element_host.setAttribute("ip", host["ip"])
+                element_dhcp.appendChild(element_host)

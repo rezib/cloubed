@@ -28,10 +28,14 @@ class DomainNetif:
 
     """ DomainNetif class """
 
-    def __init__(self, mac, network):
+    def __init__(self, hostname, mac, ip, network):
 
+        self._hostname = hostname
         self._mac = mac
+        self._ip = ip
         self._network = Network.get_by_name(network)
+        if self._ip is not None:
+            self._network.register_host(hostname, mac, ip)
 
     def get_mac(self):
 

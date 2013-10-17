@@ -75,11 +75,17 @@ class Domain:
         self._netifs = []
         netifs_list = domain_conf.get_netifs_list()
         # ex: [ 'admin', 'backbone' ]
-        for network_name in netifs_list:
+        for netif in netifs_list:
+            network_name = netif["network"]
             mac = gen_mac("{domain_name:s}-{network_name:s}" \
                               .format(domain_name=self._name,
                                       network_name=network_name))
-            self._netifs.append(DomainNetif(mac, network_name))
+            if netif.has_key("ip"):
+                ip = netif["ip"]
+            else:
+                ip = None
+            netif = DomainNetif(self._name, mac, ip, network_name)
+            self._netifs.append(netif)
 
         self._disks = []
         disks_dict = domain_conf.get_disks_dict()

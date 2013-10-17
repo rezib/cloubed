@@ -148,7 +148,15 @@ class ConfigurationDomain:
                                   .format(netif_id=netif_id,
                                           domain=self._name))
 
-                self._netifs.append(netif['network'])
+                if netif.has_key("ip") and \
+                   type(netif["ip"]) is not str:
+                    raise CloubedConfigurationException(
+                              "Network IP of netif {netif_id} of domain "\
+                              "{domain} has not a valid format." \
+                                  .format(netif_id=netif_id,
+                                          domain=self._name))
+
+                self._netifs.append(netif)
 
                 netif_id += 1
 
@@ -282,6 +290,15 @@ class ConfigurationDomain:
                         "domain.{name}.graphics" \
                             .format(name=clean_name) : self._graphics,
                       }
+
+        # add netifs
+        for netif in self._netifs:
+            if netif.has_key("ip"):
+                key = "domain.{name}.{network}.ip" \
+                          .format(name=clean_name,
+                                  network=netif["network"])
+                domain_dict[key] = netif["ip"]
+
         tpl_vars_dict = {}
 
         for var_key, var_value in self._template_vars.items():
