@@ -112,6 +112,13 @@ class Configuration:
 
         result_dict = { 'testbed': self.get_testbed_name() }
 
+        # add global template variables
+        if self._conf.has_key("templates"):
+            if type(self._conf["templates"]) is dict:
+                for var, value in self._conf["templates"].iteritems():
+                    key = "testbed.{var}".format(var=var)
+                    result_dict[key] = value
+
         for storage_pool in self.get_storage_pools_list():
             result_dict.update(storage_pool.get_templates_dict())
         for storage_volume in self.get_storage_volumes_list():
