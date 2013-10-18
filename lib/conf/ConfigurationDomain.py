@@ -43,8 +43,14 @@ class ConfigurationDomain:
         self.__parse_disks(domain_item['disks'])
 
         if domain_item.has_key('templates'):
-            self._template_files = domain_item['templates']['files']
-            self._template_vars = domain_item['templates']['vars']
+            if domain_item['templates'].has_key('files'):
+                self._template_files = domain_item['templates']['files']
+            else:
+                self._template_files = {}
+            if domain_item['templates'].has_key('vars'):
+                self._template_vars = domain_item['templates']['vars']
+            else:
+                self._template_vars = {}
         else:
             self._template_files = {}
             self._template_vars = {}
