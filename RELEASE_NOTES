@@ -1,0 +1,29 @@
+cloubed 0.2
+-----------
+
+  * New cloubed utility script
+  * Support of python 2.6
+  * Automatic namespace in libvirt to avoid conflicts between testbeds
+  * Added cleanup() function in library to destroy every resources
+  * Added create_network() function in library to create networks only
+  * Support of static-IP addresses assignment in DHCP
+  * Support of global template variables in YAML
+  * Support of domain contextual template variables in YAML
+  * Allow memory specification in MB in YAML for domains
+  * Enable spice listening port auto-allocation
+  * Enable automatic host-model CPU allocation
+  * Added some documentation in README file
+  * Added examples of testbed with debian and centos
+  * Many code refactoring and cleanup
+  * Many bug fixes, esp. issues:
+    - #1: Cloubed hangs with error `/usr/bin/kvm: No such file or directory`
+    - #2: Not compatible with some models of CPU on the host
+    - #3: Stuck in wait_event() with no event received
+    - #4: Error not correctly managed on missing cloubed.yaml file
+    - #7: Error message Address already in use
+    - #8: Exception in threads when python script exits
+
+cloubed 0.1
+-----------
+
+  * Initial release
