@@ -232,6 +232,12 @@ class ConfigurationDomain:
 
         return self._name
 
+    def get_clean_name(self):
+
+        """ Returns the name of the Domain cleaned for templates """
+
+        return self._name.replace('-','')
+
     def get_testbed(self):
 
         """ Returns the name of the testbed """
@@ -281,35 +287,53 @@ class ConfigurationDomain:
 
         return self._netifs
 
-    def get_templates_dict(self):
+    def get_contextual_templates_dict(self):
+
+        """
+            Returns a dictionary with all parameters of the Domain Configuration
+            with contextual prefix
+        """
+
+        return self.get_templates_dict(prefix="self")
+
+    def get_absolute_templates_dict(self):
+
+        """
+            Returns a dictionary with all parameters of the Domain Configuration
+            with absolute prefix
+        """
+
+        return self.get_templates_dict(prefix="domain.{name}".format(name=self.get_clean_name()))
+
+    def get_templates_dict(self, prefix):
 
         """
             Returns a dictionary with all parameters of the Domain Configuration
         """
 
-        clean_name = self._name.replace('-','')
-
-        domain_dict = { "domain.{name}.cpu" \
-                            .format(name=clean_name) : self._cpu,
-                        "domain.{name}.memory" \
-                            .format(name=clean_name) : self._memory,
-                        "domain.{name}.graphics" \
-                            .format(name=clean_name) : self._graphics,
+        domain_dict = { "{prefix}.name" \
+                            .format(prefix=prefix) : self.get_clean_name(),
+                        "{prefix}.cpu" \
+                            .format(prefix=prefix) : self._cpu,
+                        "{prefix}.memory" \
+                            .format(prefix=prefix) : self._memory,
+                        "{prefix}.graphics" \
+                            .format(prefix=prefix) : self._graphics,
                       }
 
         # add netifs
         for netif in self._netifs:
             if netif.has_key("ip"):
-                key = "domain.{name}.{network}.ip" \
-                          .format(name=clean_name,
+                key = "{prefix}.{network}.ip" \
+                          .format(prefix=prefix,
                                   network=netif["network"])
                 domain_dict[key] = netif["ip"]
 
         tpl_vars_dict = {}
 
         for var_key, var_value in self._template_vars.items():
-            full_key = "domain.{name}.tpl.{var_name}" \
-                           .format(name=clean_name, var_name=var_key)
+            full_key = "{prefix}.tpl.{var_name}" \
+                           .format(prefix=prefix, var_name=var_key)
             tpl_vars_dict[full_key] = var_value
 
         domain_dict.update(tpl_vars_dict)

@@ -165,11 +165,12 @@ class Cloubed():
                                            file_name=self._conf.get_file_path()))
 
 
-    def get_templates_dict(self):
+    def get_templates_dict(self, domain_name):
 
         """ get_templates_dict: """
 
-        return self._conf.get_templates_dict()
+        templates_dict = self._conf.get_templates_dict(domain_name)
+        return templates_dict
 
     def serve_http(self, address):
         
@@ -185,7 +186,7 @@ class Cloubed():
 
         """ gen_file: """
 
-        templates_dict = self.get_templates_dict()
+        templates_dict = self.get_templates_dict(domain_name)
 
         domain = self.get_domain_by_name(domain_name)
         domain_template = domain.get_template_by_name(template_name)

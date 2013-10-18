@@ -106,7 +106,7 @@ class Configuration:
 
         return self._domains_list
 
-    def get_templates_dict(self):
+    def get_templates_dict(self, domain_name):
 
         """ Returns a dictionary with all parameters in configuration file """
 
@@ -126,6 +126,8 @@ class Configuration:
         for network in self.get_networks_list():
             result_dict.update(network.get_templates_dict())
         for domain in self.get_domains_list():
-            result_dict.update(domain.get_templates_dict())
+            result_dict.update(domain.get_absolute_templates_dict())
+            if domain.get_name() == domain_name:
+                result_dict.update(domain.get_contextual_templates_dict())
 
         return result_dict
