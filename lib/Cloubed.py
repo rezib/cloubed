@@ -57,6 +57,10 @@ class Singleton(type):
 
         return mcs.__instances[mcs]
 
+    def initialized(mcs):
+
+         return mcs in mcs.__instances
+
 class Cloubed():
 
     """ Cloubed main class """

@@ -68,7 +68,9 @@ def wait_event(domain_name, event_type, event_detail):
 
 def _clean_exit():
 
-    cloubed = Cloubed()
-    cloubed.clean_exit()
+    if Cloubed.initialized():
+        # get the singleton instance
+        cloubed = Cloubed()
+        cloubed.clean_exit()
 
 atexit.register(_clean_exit)
