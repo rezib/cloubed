@@ -66,9 +66,9 @@ def wait_event(domain_name, event_type, event_detail):
     cloubed = Cloubed()
     cloubed.wait_event(domain_name, event_type, event_detail)
 
-def clean_exit():
+def _clean_exit():
 
     cloubed = Cloubed()
     cloubed.clean_exit()
 
-atexit.register(clean_exit)
+atexit.register(_clean_exit)
