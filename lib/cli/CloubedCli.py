@@ -214,6 +214,13 @@ def main():
              logging.debug(u"Action cleanup")
              cloubed.cleanup()
 
+        elif action_name == u"xml":
+
+             logging.debug(u"Action xml")
+             resource_type, resource_name = parser.parse_resource()
+             xml = cloubed.xml(resource_type, resource_name)
+             print xml.toprettyxml(indent="  ")
+
         else:
             raise CloubedArgumentException(
                       u"Unknown action '{action}'".format(action=action_name))

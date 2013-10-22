@@ -47,7 +47,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         self.add_argument("actions",
                             nargs=1,
-                            choices=['gen', 'boot', 'wait', 'status', 'cleanup'],
+                            choices=['gen', 'boot', 'wait', 'status', 'cleanup', 'xml'],
                             help="name of the action to perform")
 
         # TODO: actually still to be implemented
@@ -73,6 +73,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
         parser_boot_grp = self.add_argument_group('Arguments for boot action')
         parser_gen_grp = self.add_argument_group('Arguments for gen action')
         parser_wait_grp = self.add_argument_group('Arguments for wait action')
+        parser_xml_grp = self.add_argument_group('Arguments for xml action')
 
         parser_boot_grp.add_argument("--bootdev",
                             dest='bootdev',
@@ -104,6 +105,12 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                             nargs=1,
                             help="Event to wait")
 
+        parser_xml_grp.add_argument("--resource",
+                            dest='resource',
+                            nargs=1,
+                            help="Print XML description of this resource")
+
+
     def check_required(self):
 
         action = self._args.actions[0]
@@ -122,7 +129,10 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                     "domain": "--domain"
                 },
                 "status": {},
-                "cleanup": {}
+                "cleanup": {},
+                "xml": {
+                    "resource": "--resource"
+                }
             }
 
         error_str = u"{attribute} is required for {action} action"
@@ -154,7 +164,8 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                      "event": "--event"
                 },
                 "status": {},
-                "cleanup": {}
+                "cleanup": {},
+                "xml": {}
             }
 
         error_str = u"{attribute} has no sense with {action} action"
@@ -181,3 +192,13 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             # because in this case args.bootdev is therefore defined all the
             # times and it raises errors in check_args_coherency() for
             # action != boot
+
+    def parse_resource(self):
+
+        resource_str = self._args.resource[0]
+        resource = resource_str.split(':')
+        if len(resource) is not 2:
+            raise CloubedArgumentException(u"Badly formated --resource" \
+                      " parameter, should respect format" \
+                      " <resource_type>:<resource_name>")
+        return resource

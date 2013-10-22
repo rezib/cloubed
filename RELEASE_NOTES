@@ -1,3 +1,8 @@
+cloubed 0.3
+-----------
+
+  * New xml action on script to print XML generated for libvirt
+
 cloubed 0.2
 -----------
 
