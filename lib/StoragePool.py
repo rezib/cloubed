@@ -51,7 +51,6 @@ class StoragePool:
         StoragePool._storage_pools.append(self)
 
         self._doc = None
-        self.__init_xml()
 
     def __del__(self):
 
@@ -84,13 +83,22 @@ class StoragePool:
 
         return None
 
+    def xml(self):
+
+        """
+            Returns the libvirt XML representation of the StoragePool
+        """
+
+        self.__init_xml()
+        return self._doc
+
     def toxml(self):
 
         """
-            toxml: Returns the libvirt XML representation of the StoragePool
+            Returns the libvirt XML representation of the StoragePool as string
         """
 
-        return self._doc.toxml()
+        return self.xml().toxml()
 
     def getvirtobj(self):
 

@@ -164,6 +164,36 @@ class Cloubed():
         raise CloubedException("network {network} not found in configuration"
                                    .format(network=name))
 
+    def get_storage_volume_by_name(self, name):
+
+        """
+            Returns the StorageVolume object whose name is given in parameter.
+            Raises exception if not found.
+        """
+
+        for storage_volume in self._storage_volumes:
+            if storage_volume.get_name() == name:
+                return storage_volume
+
+        # storage volume not found
+        raise CloubedException("storage volume {storage_volume} not found in " \
+                               "configuration".format(storage_volume=name))
+
+    def get_storage_pool_by_name(self, name):
+
+        """
+            Returns the StoragePool object whose name is given in parameter.
+            Raises exception if not found.
+        """
+
+        for storage_pool in self._storage_pools:
+            if storage_pool.get_name() == name:
+                return storage_pool
+
+        # storage pool not found
+        raise CloubedException("storage pool {storage_pool} not found in " \
+                               "configuration".format(storage_pool=name))
+
     def get_templates_dict(self, domain_name):
 
         """ get_templates_dict: """
@@ -293,6 +323,24 @@ class Cloubed():
             storage_volume.destroy()
         for storage_pool in self._storage_pools:
             storage_pool.destroy()
+
+    def xml(self, resource_type, resource_name):
+
+        if resource_type == "domain":
+            domain = self.get_domain_by_name(resource_name)
+            return domain.xml()
+        elif resource_type == "network":
+            network = self.get_network_by_name(resource_name)
+            return network.xml()
+        elif resource_type == "storagevolume":
+            storage_volume = self.get_storage_volume_by_name(resource_name)
+            return storage_volume.xml()
+        elif resource_type == "storagepool":
+            network = self.get_storage_pool_by_name(resource_name)
+            return network.xml()
+        else:
+            raise CloubedException("cannot dump XML of invalid resource type " \
+                                   "{type}".format(type=resource_type))
 
     def clean_exit(self):
 

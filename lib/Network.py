@@ -106,12 +106,18 @@ class Network:
 
         return None
 
-    def toxml(self):
+    def xml(self):
 
-        """ toxml: Returns the libvirt XML representation of the Network """
+        """ Returns the libvirt XML representation of the Network """
 
         self.__init_xml()
-        return self._doc.toxml()
+        return self._doc
+
+    def toxml(self):
+
+        """ Returns the libvirt XML representation of the Network as string """
+
+        return self.xml().toxml()
 
     def getvirtobj(self):
 

@@ -252,11 +252,18 @@ class Domain:
                       .format(template = template_name,
                               domain = self._name))
 
-    def toxml(self):
+    def xml(self):
 
         """ Returns the libvirt XML representation of the Domain """
 
-        return self._doc.toxml()
+        self.__init_xml()
+        return self._doc
+
+    def toxml(self):
+
+        """ Returns the libvirt XML representation of the Domain as string """
+
+        return self.xml().toxml()
 
     def getvirtobj(self):
 
@@ -329,7 +336,6 @@ class Domain:
                     domain.destroy()
 
         self._bootdev = bootdev
-        self.__init_xml()
 
         # create the domain
         self._virtobj = self._conn.createXML(self.toxml(), 0)

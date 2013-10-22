@@ -99,13 +99,22 @@ class StorageVolume:
                                    .format(storage_volume_name = storage_volume_name,
                                            list_storage_volumes = cls._storage_volumes))
 
+    def xml(self):
+
+        """
+            Returns the libvirt XML representation of the StorageVolume
+        """
+
+        self.__init_xml()
+        return self._doc
+
     def toxml(self):
 
         """
-            toxml: Returns the libvirt XML representation of the StorageVolume
+            Returns the libvirt XML representation of the StorageVolume as string
         """
 
-        return self._doc.toxml()
+        return self.xml().toxml()
 
     def getfilename(self):
 
@@ -214,8 +223,6 @@ class StorageVolume:
         """
 
         self._storage_pool.create()
-
-        self.__init_xml()
 
         found = False
         sv_name = None
