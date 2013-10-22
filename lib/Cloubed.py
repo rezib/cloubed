@@ -146,10 +146,8 @@ class Cloubed():
                 return domain
 
         # domain not found
-        raise CloubedException("domain {domain} not found in YAML file " \
-                               "{file_name}" \
-                                   .format(domain=name,
-                                           file_name=self._conf.get_file_path()))
+        raise CloubedException("domain {domain} not found in configuration"
+                                   .format(domain=name))
 
     def get_network_by_name(self, name):
 
@@ -162,12 +160,9 @@ class Cloubed():
             if network.get_name() == name:
                 return network
 
-        # domain not found
-        raise CloubedException("network {network} not found in YAML file " \
-                               "{file_name}" \
-                                   .format(network=name,
-                                           file_name=self._conf.get_file_path()))
-
+        # network not found
+        raise CloubedException("network {network} not found in configuration"
+                                   .format(network=name))
 
     def get_templates_dict(self, domain_name):
 
