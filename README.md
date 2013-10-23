@@ -108,10 +108,10 @@ sudo modprobe kvm-intel
 sudo modprobe kvm-amd
 ```
 
-Become a member of `libvirtd` system group:
+Become a member of `libvirt` system group:
 
 ```sh
-sudo adduser $USER libvirtd
+sudo adduser $USER libvirt
 ```
 
 Download and extract a copy of this repository and finally install Cloubed
