@@ -241,7 +241,7 @@ class StoragePool:
                 self._virtobj.create(0)
 
         else:
-            self._virtobj = self._conn.storagePoolCreateXML(self._doc.toxml(), 0)
+            self._virtobj = self._conn.storagePoolCreateXML(self.toxml(), 0)
 
     def __init_xml(self):
 
