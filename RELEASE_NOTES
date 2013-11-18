@@ -2,6 +2,7 @@ cloubed 0.3
 -----------
 
   * New xml action on script to print XML generated for libvirt
+  * Support usage of already existing bridges on the node as network
 
 cloubed 0.2
 -----------

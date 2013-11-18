@@ -34,11 +34,14 @@ class ConfigurationNetwork:
         self._name = network_item['name']
         self._testbed = network_item['testbed']
 
-        # nat
-        self._nat = False
-        if network_item.has_key('nat'):
-            self._nat = network_item['nat']
-       
+        # forward
+        self._forward_mode = None
+        self.__parse_forward_mode(network_item)
+
+        # bridge name
+        self._bridge_name = None
+        self.__parse_bridge_name(network_item)
+
         # local settings
         self._ip_host = None
         self._netmask = None
@@ -46,9 +49,6 @@ class ConfigurationNetwork:
         if network_item.has_key('ip_host') and network_item.has_key('netmask'):
             self._ip_host = network_item['ip_host']
             self._netmask = network_item['netmask']
-        else:
-            logging.warning("no local settings defined for network {:s}" \
-                                .format(self._name))
 
         # dhcp parameters
         self._dhcp_start = None
@@ -77,13 +77,77 @@ class ConfigurationNetwork:
 
                 self._pxe_boot_file = network_item['pxe']['boot_file']
 
+    def __parse_forward_mode(self, conf):
+        """
+            Parses the forward parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+
+        if conf.has_key('forward'):
+
+            forward = conf['forward']
+
+            if type(forward) is str:
+
+                valid_forwards = ["bridge", "nat", "none"]
+
+                if forward in valid_forwards:
+                    if forward == "none":
+                        self._forward_mode = None
+                    else:
+                        self._forward_mode = forward
+                else:
+                    raise CloubedConfigurationException(
+                        "Forward parameter of network {network} is not valid" \
+                            .format(network=self._name))
+
             else:
-                logging.warning("no pxe settings defined for network {:s}" \
-                                    .format(self._name))
+                raise CloubedConfigurationException(
+                    "Forward parameter format of network {network} is not " \
+                    "valid".format(network=self._name))
 
         else:
-            logging.warning("no dhcp parameters defined for network {:s}" \
-                                .format(self._name))
+
+            self._forward_mode = None # default value if not defined
+
+    def __parse_bridge_name(self, conf):
+        """
+            Parses the bridge parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+            This method must be called *after* __parse_forward_mode() since
+            it relies on attributes set by this method.
+        """
+
+        # forward is not bridge -> bridge parameter has no sense
+        if self._forward_mode is not 'bridge' and conf.has_key('bridge'):
+             raise CloubedConfigurationException(
+                 "Bridge parameter has no sense on network {network} with " \
+                 "forward mode {forward}" \
+                     .format(network = self._name,
+                             forward = self._forward_mode))
+
+        # forward is bridge -> bridge parameter is mandatory
+        elif self._forward_mode is 'bridge':
+
+            if conf.has_key('bridge'):
+
+                bridge = conf['bridge']
+                if type(bridge) is str:
+                    self._bridge_name = bridge
+                else:
+                    raise CloubedConfigurationException(
+                        "Bridge parameter format of network {network} is not " \
+                        "valid".format(network = self._name))
+
+            else:
+                raise CloubedConfigurationException(
+                    "Bridge parameter is missing on network {network} with " \
+                    "bridge forward mode" \
+                        .format(network = self._name))
+
+        else:
+            # not bridge forward mode and bridge parameter not defined
+            self._bridge_name = None
 
     def has_local_settings(self):
 
@@ -127,11 +191,17 @@ class ConfigurationNetwork:
 
         return self._testbed
 
-    def get_nat(self):
+    def get_forward_mode(self):
 
-        """ Returns the nat parameter in Network Configuration """
+        """ Returns the forward mode parameter in Network Configuration """
 
-        return self._nat
+        return self._forward_mode
+
+    def get_bridge_name(self):
+
+        """ Returns the bridge name parameter in Network Configuration """
+
+        return self._bridge_name
 
     def get_ip_host(self):
 
@@ -187,8 +257,10 @@ class ConfigurationNetwork:
 
         clean_name = self._name.replace('-','')
 
-        return { "network.{name}.nat" \
-                     .format(name=clean_name) : self._nat,
+        return { "network.{name}.forward_mode" \
+                     .format(name=clean_name) : self._forward_mode,
+                 "network.{name}.bridge_name" \
+                     .format(name=clean_name) : self._bridge_name,
                  "network.{name}.ip_host" \
                      .format(name=clean_name) : self._ip_host,
                  "network.{name}.netmask" \

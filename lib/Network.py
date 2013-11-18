@@ -47,7 +47,8 @@ class Network:
         else:
             self._libvirt_name = self._name
 
-        self._with_nat = network_conf.get_nat()
+        self._forward_mode = network_conf.get_forward_mode()
+        self._bridge_name = network_conf.get_bridge_name()
 
         self._with_local_settings = False
         self._ip_host = None
@@ -275,6 +276,14 @@ class Network:
         #   </ip>
         # </network>
 
+        # Pre-existing bridge, with libvirt >= 0.9.4
+
+        # <network>
+        #   <name>host-bridge</name>
+        #   <forward mode="bridge"/>
+        #   <bridge name="br0"/>
+        # </network>
+
         # root element: network
         element_network = self._doc.createElement("network")
         self._doc.appendChild(element_network)
@@ -284,52 +293,57 @@ class Network:
         node_name = self._doc.createTextNode(self._libvirt_name)
         element_name.appendChild(node_name)
         element_network.appendChild(element_name)
-        
+
         # bridge element
         element_bridge = self._doc.createElement("bridge")
-        #element_bridge.setAttribute("name","virbr2")
+        if self._bridge_name is not None:
+            element_bridge.setAttribute("name", self._bridge_name)
         element_network.appendChild(element_bridge)
 
         # forward element
-        if self._with_nat:
+        if self._forward_mode is not None:
             element_forward = self._doc.createElement("forward")
-            element_forward.setAttribute("mode", "nat")
+            element_forward.setAttribute("mode", self._forward_mode)
             element_network.appendChild(element_forward)
-        
-        # ip element
-        if self._with_local_settings:
-            element_ip = self._doc.createElement("ip")
-            element_ip.setAttribute("address", self._ip_host)
-            element_ip.setAttribute("netmask", self._netmask)
-            element_network.appendChild(element_ip)
 
-        # ip/tftp element
-        if self._with_pxe:
-            element_tftp = self._doc.createElement("tftp")
-            element_tftp.setAttribute("root", self._tftproot)
-            element_ip.appendChild(element_tftp)
+        # To avoid unwanted behaviour and conflicts on external LAN, DHCP and
+        # PXE cannot be enable on bridge forwording networks
+        if self._forward_mode is not 'bridge':
 
-        if self._with_dhcp:
-            # ip/dhcp element
-            element_dhcp = self._doc.createElement("dhcp")
-            element_ip.appendChild(element_dhcp)
-    
-            # ip/dhcp/range element
-            element_range = self._doc.createElement("range")
-            element_range.setAttribute("start", self._dhcp_range_start)
-            element_range.setAttribute("end", self._dhcp_range_end)
-            element_dhcp.appendChild(element_range)
-    
-            # ip/dhcp/bootp
+            # ip element
+            if self._with_local_settings:
+                element_ip = self._doc.createElement("ip")
+                element_ip.setAttribute("address", self._ip_host)
+                element_ip.setAttribute("netmask", self._netmask)
+                element_network.appendChild(element_ip)
+
+            # ip/tftp element
             if self._with_pxe:
-                element_bootp = self._doc.createElement("bootp")
-                element_bootp.setAttribute("file", self._bootfile)
-                element_dhcp.appendChild(element_bootp)
+                element_tftp = self._doc.createElement("tftp")
+                element_tftp.setAttribute("root", self._tftproot)
+                element_ip.appendChild(element_tftp)
 
-            # ip/dhcp/host
-            for host in self._hosts:
-                element_host = self._doc.createElement("host")
-                element_host.setAttribute("mac", host["mac"])
-                element_host.setAttribute("name", host["hostname"])
-                element_host.setAttribute("ip", host["ip"])
-                element_dhcp.appendChild(element_host)
+            if self._with_dhcp:
+                # ip/dhcp element
+                element_dhcp = self._doc.createElement("dhcp")
+                element_ip.appendChild(element_dhcp)
+
+                # ip/dhcp/range element
+                element_range = self._doc.createElement("range")
+                element_range.setAttribute("start", self._dhcp_range_start)
+                element_range.setAttribute("end", self._dhcp_range_end)
+                element_dhcp.appendChild(element_range)
+
+                # ip/dhcp/bootp
+                if self._with_pxe:
+                    element_bootp = self._doc.createElement("bootp")
+                    element_bootp.setAttribute("file", self._bootfile)
+                    element_dhcp.appendChild(element_bootp)
+
+                # ip/dhcp/host
+                for host in self._hosts:
+                    element_host = self._doc.createElement("host")
+                    element_host.setAttribute("mac", host["mac"])
+                    element_host.setAttribute("name", host["hostname"])
+                    element_host.setAttribute("ip", host["ip"])
+                    element_dhcp.appendChild(element_host)
