@@ -441,10 +441,10 @@ class Domain:
         #       <target dev='hdc' bus='ide' tray='open' />
         #       <readonly />
         #     </disk>
-        #     <interface type='user'>
-        #       <source network='network-name' />
-        #       <target dev='eth0'/>
-        #       <mac address='24:42:53:21:52:45' />
+        #     <interface type="network">
+        #       <source network="network-name"/>
+        #       <mac address="00:16:3e:75:40:d5"/>
+        #       <model type="virtio"/>
         #     </interface>
         #     <graphics type='sdl'/>
         #     <graphics type='spice' />
