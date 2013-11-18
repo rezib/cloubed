@@ -83,7 +83,10 @@ class Network:
 
     def __del__(self):
 
-        Network._networks.remove(self)
+        try:
+            Network._networks.remove(self)
+        except ValueError:
+            pass
 
     def __eq__(self, other): # needed for __del__
 

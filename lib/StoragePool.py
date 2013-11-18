@@ -54,7 +54,10 @@ class StoragePool:
 
     def __del__(self):
 
-        StoragePool._storage_pools.remove(self)
+        try:
+            StoragePool._storage_pools.remove(self)
+        except ValueError:
+            pass
 
     def __eq__(self, other): # needed for __del__
 

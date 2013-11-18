@@ -59,7 +59,10 @@ class StorageVolume:
 
     def __del__(self):
 
-        StorageVolume._storage_volumes.remove(self)
+        try:
+            StorageVolume._storage_volumes.remove(self)
+        except ValueError:
+            pass
 
     def __eq__(self, other): # needed for __del__
 
