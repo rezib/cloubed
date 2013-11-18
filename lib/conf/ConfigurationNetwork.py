@@ -23,16 +23,16 @@
 
 import logging
 import os
+from ConfigurationItem import ConfigurationItem
 from ..CloubedException import CloubedConfigurationException
 
-class ConfigurationNetwork:
+class ConfigurationNetwork(ConfigurationItem):
 
     """ Network Configuration class """
 
     def __init__(self, network_item):
 
-        self._name = network_item['name']
-        self._testbed = network_item['testbed']
+        super(ConfigurationNetwork, self).__init__(network_item)
 
         # forward
         self._forward_mode = None
@@ -179,18 +179,6 @@ class ConfigurationNetwork:
         return (self._pxe_tftp_dir is not None
                 and self._pxe_boot_file is not None)
 
-    def get_name(self):
-
-        """ Returns the name of the Network in the Configuration """
-
-        return self._name
-
-    def get_testbed(self):
-
-        """ Returns the name of the testbed """
-
-        return self._testbed
-
     def get_forward_mode(self):
 
         """ Returns the forward mode parameter in Network Configuration """
@@ -255,7 +243,7 @@ class ConfigurationNetwork:
             Configuration
         """
 
-        clean_name = self._name.replace('-','')
+        clean_name = ConfigurationItem.clean_string_for_template(self._name)
 
         return { "network.{name}.forward_mode" \
                      .format(name=clean_name) : self._forward_mode,

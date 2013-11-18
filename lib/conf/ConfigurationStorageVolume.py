@@ -21,31 +21,20 @@
 
 """ ConfigurationStorageVolume class """
 
+from ConfigurationItem import ConfigurationItem
 from ..CloubedException import CloubedConfigurationException
 
-class ConfigurationStorageVolume:
+class ConfigurationStorageVolume(ConfigurationItem):
 
     """ Storage Volume Configuration class """
 
     def __init__(self, storage_volume_item):
 
-        self._name = storage_volume_item['name']
-        self._testbed = storage_volume_item['testbed']
+        super(ConfigurationStorageVolume, self).__init__(storage_volume_item)
+
         self._format = storage_volume_item['format']
         self._size = storage_volume_item['size']
         self._storage_pool = storage_volume_item['storagepool']
-
-    def get_name(self):
-
-        """ Returns the name of the Storage Volume in Configuration """
-
-        return self._name
-
-    def get_testbed(self):
-
-        """ Returns the name of the testbed """
-
-        return self._testbed
 
     def get_format(self):
 
@@ -72,7 +61,7 @@ class ConfigurationStorageVolume:
             Configuration
         """
 
-        clean_name = self._name.replace('-','')
+        clean_name = ConfigurationItem.clean_string_for_template(self._name)
 
         return { "storagevolume.{name}.format"      \
                      .format(name=clean_name) : self._format,

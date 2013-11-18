@@ -22,16 +22,17 @@
 """ ConfigurationDomain class """
 
 import re
+from ConfigurationItem import ConfigurationItem
 from ..CloubedException import CloubedConfigurationException
 
-class ConfigurationDomain:
+class ConfigurationDomain(ConfigurationItem):
 
     """ Domain Configuration class """
 
     def __init__(self, domain_item):
 
-        self._name = domain_item['name']
-        self._testbed = domain_item['testbed']
+        super(ConfigurationDomain, self).__init__(domain_item)
+
         self.__parse_cpu(domain_item['cpu'])
         self.__parse_memory(domain_item['memory'])
         self.__parse_graphics(domain_item['graphics'])
@@ -226,24 +227,6 @@ class ConfigurationDomain:
                           .format(domain=self._name))
 
 
-    def get_name(self):
-
-        """ Returns the name of the Domain in its Configuration """
-
-        return self._name
-
-    def get_clean_name(self):
-
-        """ Returns the name of the Domain cleaned for templates """
-
-        return self._name.replace('-','')
-
-    def get_testbed(self):
-
-        """ Returns the name of the testbed """
-
-        return self._testbed
-
     def get_cpu(self):
 
         """ Returns the number of CPU of the Domain Configuration """
@@ -303,7 +286,9 @@ class ConfigurationDomain:
             with absolute prefix
         """
 
-        return self.get_templates_dict(prefix="domain.{name}".format(name=self.get_clean_name()))
+        clean_name = ConfigurationItem.clean_string_for_template(self._name)
+        return self.get_templates_dict(prefix = \
+                                       "domain.{name}".format(name=clean_name))
 
     def get_templates_dict(self, prefix):
 
@@ -311,8 +296,9 @@ class ConfigurationDomain:
             Returns a dictionary with all parameters of the Domain Configuration
         """
 
+        clean_name = ConfigurationItem.clean_string_for_template(self._name)
         domain_dict = { "{prefix}.name" \
-                            .format(prefix=prefix) : self.get_clean_name(),
+                            .format(prefix=prefix) : clean_name,
                         "{prefix}.cpu" \
                             .format(prefix=prefix) : self._cpu,
                         "{prefix}.memory" \
@@ -324,9 +310,11 @@ class ConfigurationDomain:
         # add netifs
         for netif in self._netifs:
             if netif.has_key("ip"):
+                network_clean_name = \
+                    ConfigurationItem.clean_string_for_template(netif['network'])
                 key = "{prefix}.{network}.ip" \
                           .format(prefix=prefix,
-                                  network=netif["network"])
+                                  network=network_clean_name)
                 domain_dict[key] = netif["ip"]
 
         tpl_vars_dict = {}

@@ -22,32 +22,21 @@
 """ ConfigurationStoragePool class """
 
 import os
+from ConfigurationItem import ConfigurationItem
 from ..CloubedException import CloubedConfigurationException
 
-class ConfigurationStoragePool:
+class ConfigurationStoragePool(ConfigurationItem):
 
     """ Configuration of Storage Pool class """
 
     def __init__(self, storage_pool_item):
 
-        self._name = storage_pool_item['name']
-        self._testbed = storage_pool_item['testbed']
+        super(ConfigurationStoragePool, self).__init__(storage_pool_item)
+
         self._path = storage_pool_item['path']
 
         if self._path[0] != '/': # relative path
             self._path = os.path.join(os.getcwd(), self._path)
-
-    def get_name(self):
-
-        """ Returns the name of the Storage Pool """
-
-        return self._name
-
-    def get_testbed(self):
-
-        """ Returns the name of the testbed """
-
-        return self._testbed
 
     def get_path(self):
 
@@ -59,7 +48,7 @@ class ConfigurationStoragePool:
 
         """ Returns a dictionary with all parameters for the Storage Pool """
 
-        clean_name = self._name.replace('-','')
+        clean_name = ConfigurationItem.clean_string_for_template(self._name)
 
         return { "storagepool.{name}.path" \
                      .format(name=clean_name) : self._path }
