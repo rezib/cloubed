@@ -51,16 +51,13 @@ class ConfigurationNetwork(ConfigurationItem):
         # dhcp parameters
         self._dhcp_start = None
         self._dhcp_end = None
+        self.__parse_dhcp(network_item)
 
         # pxe parameters
         self._pxe_tftp_dir = None
         self._pxe_boot_file = None
 
-        if network_item.has_key('dhcp') and \
-           network_item['dhcp'].has_key('start') and \
-           network_item['dhcp'].has_key('end'):
-            self._dhcp_start = network_item['dhcp']['start']
-            self._dhcp_end = network_item['dhcp']['end']
+        if self._dhcp_start is not None:
 
             # pxe depends on dhcp
             if network_item.has_key('pxe') and \
@@ -120,7 +117,7 @@ class ConfigurationNetwork(ConfigurationItem):
         if self._forward_mode is not 'bridge' and conf.has_key('bridge'):
              raise CloubedConfigurationException(
                  "Bridge parameter has no sense on network {network} with " \
-                 "forward mode {forward}" \
+                 "forwarding mode {forward}" \
                      .format(network = self._name,
                              forward = self._forward_mode))
 
@@ -140,7 +137,7 @@ class ConfigurationNetwork(ConfigurationItem):
             else:
                 raise CloubedConfigurationException(
                     "Bridge parameter is missing on network {network} with " \
-                    "bridge forward mode" \
+                    "bridge forwarding mode" \
                         .format(network = self._name))
 
         else:
@@ -162,7 +159,7 @@ class ConfigurationNetwork(ConfigurationItem):
            ( conf.has_key('ip_host') or conf.has_key('netmask') ):
              raise CloubedConfigurationException(
                  "ip_host and netmask parameters have no sense on network " \
-                 "{network} with bridge forward mode" \
+                 "{network} with bridge forwarding mode" \
                      .format(network = self._name))
 
         # ip_host needs netmask
@@ -213,6 +210,65 @@ class ConfigurationNetwork(ConfigurationItem):
             # attributes default to None
             self._ip_host = None
             self._netmask = None
+
+    def __parse_dhcp(self, conf):
+        """
+            Parses the dhcp parameters over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+            This method must be called *after* __parse_ip_host_netmask() since
+            it relies on the attributes set by this method.
+        """
+
+        # dhcp cannot be set-up on networks in bridge forwarding mode but it is
+        # useless to test it here since it is actually a recursive dependency
+        # with the ip_host
+
+        # dhcp cannot be set-up without ip_host/netmask
+        if self._ip_host is None and conf.has_key('dhcp'):
+             raise CloubedConfigurationException(
+                 "dhcp service cannot be set-up on network {network} without " \
+                 "ip_host and netmask".format(network = self._name))
+
+        if conf.has_key('dhcp'):
+
+            dhcp_conf = conf['dhcp']
+
+            dhcp_parameters = ['start', 'end']
+
+            # check parameters against this regexp
+            ip_address_regexp = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
+
+            for parameter in dhcp_parameters:
+
+                if not dhcp_conf.has_key(parameter):
+                    raise CloubedConfigurationException(
+                        "{parameter} parameter must be defined in dhcp " \
+                        "section of network {network}" \
+                            .format(parameter = parameter,
+                                    network = self._name))
+
+                if type(dhcp_conf[parameter]) is not str:
+                    raise CloubedConfigurationException(
+                        "{parameter} parameter format in dhcp section of " \
+                        "network {network} is not valid" \
+                            .format(parameter = parameter,
+                                    network = self._name))
+
+                if re.match(ip_address_regexp, dhcp_conf[parameter]) is None:
+                    raise CloubedConfigurationException(
+                        "{parameter} parameter in dhcp section of network " \
+                        "{network} is not a valid IPv4 address" \
+                            .format(parameter = parameter,
+                                    network = self._name))
+
+            # everything is clear at this point
+            self._dhcp_start = dhcp_conf['start']
+            self._dhcp_end = dhcp_conf['end']
+
+        else:
+            # default to None if not defined
+            self._dhcp_start = None
+            self._dhcp_end = None
 
     def has_local_settings(self):
 
