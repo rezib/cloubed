@@ -23,6 +23,7 @@
 
 import logging
 import os
+import re
 from ConfigurationItem import ConfigurationItem
 from ..CloubedException import CloubedConfigurationException
 
@@ -45,10 +46,7 @@ class ConfigurationNetwork(ConfigurationItem):
         # local settings
         self._ip_host = None
         self._netmask = None
-
-        if network_item.has_key('ip_host') and network_item.has_key('netmask'):
-            self._ip_host = network_item['ip_host']
-            self._netmask = network_item['netmask']
+        self.__parse_ip_host_netmask(network_item)
 
         # dhcp parameters
         self._dhcp_start = None
@@ -115,7 +113,7 @@ class ConfigurationNetwork(ConfigurationItem):
             Parses the bridge parameter over the conf dictionary given in
             parameter and raises appropriate exception if a problem is found.
             This method must be called *after* __parse_forward_mode() since
-            it relies on attributes set by this method.
+            it relies on the attribute set by this method.
         """
 
         # forward is not bridge -> bridge parameter has no sense
@@ -148,6 +146,73 @@ class ConfigurationNetwork(ConfigurationItem):
         else:
             # not bridge forward mode and bridge parameter not defined
             self._bridge_name = None
+
+    def __parse_ip_host_netmask(self, conf):
+        """
+            Parses the ip_host and netmask parameters over the conf dictionary
+            given in parameter and raises appropriate exception if a problem is
+            found. This method must be called *after* __parse_forward_mode()
+            since it relies on the attribute set by this method.
+        """
+
+        # NOTE: maybe use cidr notation here in the future?
+
+        # forward is bridge -> ip_host and netmask have no sense
+        if self._forward_mode is 'bridge' and \
+           ( conf.has_key('ip_host') or conf.has_key('netmask') ):
+             raise CloubedConfigurationException(
+                 "ip_host and netmask parameters have no sense on network " \
+                 "{network} with bridge forward mode" \
+                     .format(network = self._name))
+
+        # ip_host needs netmask
+        if conf.has_key('ip_host') and not conf.has_key('netmask'):
+             raise CloubedConfigurationException(
+                 "ip_host cannot be set without netmask parameter on network " \
+                 "{network}".format(network = self._name))
+
+        # netmask needs ip_host
+        if conf.has_key('netmask') and not conf.has_key('ip_host'):
+             raise CloubedConfigurationException(
+                 "netmask cannot be set without ip_host parameter on network " \
+                 "{network}".format(network = self._name))
+
+        if conf.has_key('ip_host') and conf.has_key('netmask'):
+
+            ip_host = conf['ip_host']
+            netmask = conf['netmask']
+
+            # check type of values
+            if type(ip_host) is not str:
+                raise CloubedConfigurationException(
+                    "ip_host parameter format on network {network} is not " \
+                    "valid".format(network = self._name))
+            if type(netmask) is not str:
+                raise CloubedConfigurationException(
+                    "netmask parameter format on network {network} is not " \
+                    "valid".format(network = self._name))
+
+            # check parameters against this regexp
+            ip_address_regexp = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
+
+            if re.match(ip_address_regexp, ip_host) is None:
+                raise CloubedConfigurationException(
+                    "ip_host parameter on network {network} is not a valid " \
+                    "IPv4 address".format(network = self._name))
+
+            if re.match(ip_address_regexp, netmask) is None:
+                raise CloubedConfigurationException(
+                    "netmask parameter on network {network} is not a valid " \
+                    "IPv4 netmask".format(network = self._name))
+
+            # at this point, everything is clear
+            self._ip_host = ip_host
+            self._netmask = netmask
+
+        else:
+            # attributes default to None
+            self._ip_host = None
+            self._netmask = None
 
     def has_local_settings(self):
 
