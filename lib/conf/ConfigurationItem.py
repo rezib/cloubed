@@ -21,20 +21,52 @@
 
 """ ConfigurationItem class """
 
+from ..CloubedException import CloubedConfigurationException
+
 class ConfigurationItem(object):
 
     """ Abstract ConfigurationItem class """
 
     def __init__(self, conf):
 
-        self._name = conf['name']
+        self._name = None
+        self.__parse_name(conf)
+
+        # There is no real need for a dedicated __parse_testbed() method here
+        # since this item is not a user input. It has been set in the conf
+        # dictionary by the Configuration class which has already checked its
+        # format and value previously.
         self._testbed = conf['testbed']
+
+    def __parse_name(self, conf):
+        """
+            Parses the name parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found
+        """
+
+        if not conf.has_key('name'):
+            raise CloubedConfigurationException(
+                "one {type_name} object does not have a name" \
+                    .format(type_name = self._get_type()))
+
+        if type(conf['name']) is not str:
+            raise CloubedConfigurationException(
+                "the format of one {type_name} object is not valid" \
+                    .format(type_name = self._get_type()))
+
+        self._name = conf['name']
 
     def get_name(self):
 
         """ Returns the name of the item """
 
         return self._name
+
+    def _get_type(self):
+
+        """ Returns the type of the item """
+
+        raise NotImplemented
 
     def get_testbed(self):
 

@@ -36,6 +36,12 @@ class ConfigurationStorageVolume(ConfigurationItem):
         self._size = storage_volume_item['size']
         self._storage_pool = storage_volume_item['storagepool']
 
+    def _get_type(self):
+
+        """ Returns the type of the item """
+
+        return u"storage volume"
+
     def get_format(self):
 
         """ Returns the format of the Storage Volume in Configuration """

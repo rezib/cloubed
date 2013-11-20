@@ -304,6 +304,12 @@ class ConfigurationNetwork(ConfigurationItem):
             self._pxe_tftp_dir = None
             self._pxe_boot_file = None
 
+    def _get_type(self):
+
+        """ Returns the type of the item """
+
+        return u"network"
+
     def has_local_settings(self):
 
         """

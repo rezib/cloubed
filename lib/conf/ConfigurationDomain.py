@@ -226,6 +226,11 @@ class ConfigurationDomain(ConfigurationItem):
                       "disks of domain {domain} has not a valid format" \
                           .format(domain=self._name))
 
+    def _get_type(self):
+
+        """ Returns the type of the item """
+
+        return u"domain"
 
     def get_cpu(self):
 

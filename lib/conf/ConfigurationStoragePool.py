@@ -38,6 +38,12 @@ class ConfigurationStoragePool(ConfigurationItem):
         if self._path[0] != '/': # relative path
             self._path = os.path.join(os.getcwd(), self._path)
 
+    def _get_type(self):
+
+        """ Returns the type of the item """
+
+        return u"storage pool"
+
     def get_path(self):
 
         """ Returns the path of the Storage Pool """
