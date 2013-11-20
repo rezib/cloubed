@@ -37,6 +37,9 @@ class Configuration:
         self._loader = loader
         self._conf = self._loader.get_content()
 
+        self._testbed = None
+        self.__parse_testbed(self._conf)
+
         self._check_main_keys(["storagepools",
                                "storagevolumes",
                                "networks",
@@ -44,25 +47,25 @@ class Configuration:
 
         self._storage_pools_list = []
         for storage_pool_item in self._conf['storagepools']:
-            storage_pool_item['testbed'] = self._conf['testbed']
+            storage_pool_item['testbed'] = self._testbed
             self._storage_pools_list \
                 .append(ConfigurationStoragePool(storage_pool_item))
 
         self._storage_volumes_list = []
         for storage_volume_item in self._conf['storagevolumes']:
-            storage_volume_item['testbed'] = self._conf['testbed']
+            storage_volume_item['testbed'] = self._testbed
             self._storage_volumes_list \
                 .append(ConfigurationStorageVolume(storage_volume_item))
 
         self._networks_list = []
         for network_item in self._conf['networks']:
-            network_item['testbed'] = self._conf['testbed']
+            network_item['testbed'] = self._testbed
             self._networks_list \
                 .append(ConfigurationNetwork(network_item))
 
         self._domains_list = []
         for domain_item in self._conf['domains']:
-            domain_item['testbed'] = self._conf['testbed']
+            domain_item['testbed'] = self._testbed
             self._domains_list \
                 .append(ConfigurationDomain(domain_item))
 
@@ -76,11 +79,27 @@ class Configuration:
                           "Configuration file does not contain {key}" \
                               .format(key=key))
 
+    def __parse_testbed(self, conf):
+        """
+            Parses the testbed parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found
+        """
+
+        if not conf.has_key('testbed'):
+            raise CloubedConfigurationException(
+                      "testbed parameter is missing")
+
+        if type(conf['testbed']) is not str:
+            raise CloubedConfigurationException(
+                      "format of the testbed parameter is not valid")
+
+        self._testbed = conf['testbed']
+
     def get_testbed_name(self):
 
         """ Returns the name of the testbed """
 
-        return self._conf['testbed']
+        return self._testbed
 
     def get_storage_pools_list(self):
 
