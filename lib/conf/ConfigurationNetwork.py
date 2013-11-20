@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -56,21 +56,7 @@ class ConfigurationNetwork(ConfigurationItem):
         # pxe parameters
         self._pxe_tftp_dir = None
         self._pxe_boot_file = None
-
-        if self._dhcp_start is not None:
-
-            # pxe depends on dhcp
-            if network_item.has_key('pxe') and \
-               network_item['pxe'].has_key('tftp_dir') and \
-               network_item['pxe'].has_key('boot_file'):
-
-                self._pxe_tftp_dir = network_item['pxe']['tftp_dir']
-                if self._pxe_tftp_dir[0] != '/': # relative path
-                    self._pxe_tftp_dir = os.path.join(os.getcwd(),
-                                                      self._pxe_tftp_dir)
-                
-
-                self._pxe_boot_file = network_item['pxe']['boot_file']
+        self.__parse_pxe(network_item)
 
     def __parse_forward_mode(self, conf):
         """
@@ -269,6 +255,54 @@ class ConfigurationNetwork(ConfigurationItem):
             # default to None if not defined
             self._dhcp_start = None
             self._dhcp_end = None
+
+    def __parse_pxe(self, conf):
+        """
+            Parses the pxe parameters over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+            This method must be called *after* __parse_dhcp() since
+            it relies on the attributes set by this method.
+        """
+
+        # pxe cannot be set-up without dhcp
+        if self._dhcp_start is None and conf.has_key('pxe'):
+             raise CloubedConfigurationException(
+                 "pxe service cannot be set-up on network {network} without " \
+                 "dhcp".format(network = self._name))
+
+        if conf.has_key('pxe'):
+
+            pxe_conf = conf['pxe']
+            pxe_parameters = ['tftp_dir', 'boot_file']
+
+            # check that all parameters are present and valid strings
+            for parameter in pxe_parameters:
+
+                if not pxe_conf.has_key(parameter):
+                    raise CloubedConfigurationException(
+                        "{parameter} parameter must be defined in pxe " \
+                        "section of network {network}" \
+                            .format(parameter = parameter,
+                                    network = self._name))
+
+                if type(pxe_conf[parameter]) is not str:
+                    raise CloubedConfigurationException(
+                        "{parameter} parameter format in pxe section of " \
+                        "network {network} is not valid" \
+                            .format(parameter = parameter,
+                                    network = self._name))
+
+            # everything is clear at this point
+            self._pxe_tftp_dir = pxe_conf['tftp_dir']
+            if self._pxe_tftp_dir[0] != '/': # relative path
+                self._pxe_tftp_dir = os.path.join(os.getcwd(),
+                                                  self._pxe_tftp_dir)
+            self._pxe_boot_file = pxe_conf['boot_file']
+
+        else:
+            # default to None if not defined
+            self._pxe_tftp_dir = None
+            self._pxe_boot_file = None
 
     def has_local_settings(self):
 
