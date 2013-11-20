@@ -40,44 +40,11 @@ class Configuration:
         self._testbed = None
         self.__parse_testbed(self._conf)
 
-        self._check_main_keys(["storagepools",
-                               "storagevolumes",
-                               "networks",
-                               "domains"])
-
-        self._storage_pools_list = []
-        for storage_pool_item in self._conf['storagepools']:
-            storage_pool_item['testbed'] = self._testbed
-            self._storage_pools_list \
-                .append(ConfigurationStoragePool(storage_pool_item))
-
+        self._storage_pools_list   = []
         self._storage_volumes_list = []
-        for storage_volume_item in self._conf['storagevolumes']:
-            storage_volume_item['testbed'] = self._testbed
-            self._storage_volumes_list \
-                .append(ConfigurationStorageVolume(storage_volume_item))
-
-        self._networks_list = []
-        for network_item in self._conf['networks']:
-            network_item['testbed'] = self._testbed
-            self._networks_list \
-                .append(ConfigurationNetwork(network_item))
-
-        self._domains_list = []
-        for domain_item in self._conf['domains']:
-            domain_item['testbed'] = self._testbed
-            self._domains_list \
-                .append(ConfigurationDomain(domain_item))
-
-    def _check_main_keys(self, keys_list):
-
-        """ checks conf dict contains all keys in keys_list """
-
-        for key in keys_list:
-            if not self._conf.has_key(key):
-                raise CloubedConfigurationException(
-                          "Configuration file does not contain {key}" \
-                              .format(key=key))
+        self._networks_list        = []
+        self._domains_list         = []
+        self.__parse_items(self._conf)
 
     def __parse_testbed(self, conf):
         """
@@ -94,6 +61,57 @@ class Configuration:
                       "format of the testbed parameter is not valid")
 
         self._testbed = conf['testbed']
+
+    def __parse_items(self, conf):
+        """
+            Parses all items (storage pools, storage volumes, networks and
+            domains) over the conf dictionary given in parameter and raises
+            appropriate exception if a problem is found
+        """
+
+        # This dict basically contains all infos to parse items in YAML and
+        # build according data structures. The format of this dict is:
+        # <name of section for the items in YAML> : {
+        #        { 'class': <ConfigurationItem class for these items>,
+        #          'list': <list to append with the Configuration object> }
+
+        items = { 'storagepools':
+                      { 'class': ConfigurationStoragePool,
+                        'list': self._storage_pools_list },
+                  'storagevolumes':
+                      { 'class': ConfigurationStorageVolume,
+                        'list': self._storage_volumes_list },
+                  'networks':
+                      { 'class': ConfigurationNetwork,
+                        'list': self._networks_list },
+                  'domains':
+                      { 'class': ConfigurationDomain,
+                        'list': self._domains_list } }
+
+        # Iterations over the dict. The variables are:
+        #   item_section: the name of the section in YAML
+        #   meta: the dict with 'class' and 'list' for the section
+        #   items: the list of items in the section
+        #   item_class: the ConfigurationItem class for the items
+        #   item_list: the list to append with build ConfigurationItem objects
+
+        for item_section, meta in items.iteritems():
+            if not conf.has_key(item_section):
+                raise CloubedConfigurationException(
+                          "{item_section} parameter is missing" \
+                              .format(item_section=item_section))
+            items = conf[item_section]
+            if type(items) is not list:
+                  raise CloubedConfigurationException(
+                          "format of {item_section} parameter is not valid" \
+                              .format(item_section=item_section))
+
+            item_class = meta['class']
+            item_list = meta['list']
+
+            for item in items:
+                item['testbed'] = self._testbed
+                item_list.append(item_class(item))
 
     def get_testbed_name(self):
 
