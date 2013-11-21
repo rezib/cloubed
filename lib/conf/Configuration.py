@@ -46,6 +46,9 @@ class Configuration:
         self._domains_list         = []
         self.__parse_items(self._conf)
 
+        self._templates = {} # empty dict
+        self.__parse_templates(self._conf)
+
     def __parse_testbed(self, conf):
         """
             Parses the testbed parameter over the conf dictionary given in
@@ -113,6 +116,36 @@ class Configuration:
                 item['testbed'] = self._testbed
                 item_list.append(item_class(item))
 
+    def __parse_templates(self, conf):
+        """
+            Parses the global testbed template variables in the dedicated
+            section of the conf dictionary given in parameter and raises
+            appropriate exception if a problem is found
+        """
+
+        if conf.has_key("templates"):
+
+            templates = conf["templates"]
+
+            if type(templates) is not dict:
+                raise CloubedConfigurationException(
+                    "format of the templates section is not valid")
+
+            if len(templates) == 0:
+                self._templates = {}
+            else:
+                for variable, value in templates.iteritems():
+                    if type(value) is not str:
+                        raise CloubedConfigurationException(
+                            "format of the value of the global template " \
+                            "variable {variable} is not valid" \
+                                .format(variable=variable))
+                    key = "testbed.{variable}".format(variable=variable)
+                    self._templates[key] = value
+        else:
+            # empty dict by default
+            self._templates = {}
+
     def get_testbed_name(self):
 
         """ Returns the name of the testbed """
@@ -149,12 +182,7 @@ class Configuration:
 
         result_dict = { 'testbed': self.get_testbed_name() }
 
-        # add global template variables
-        if self._conf.has_key("templates"):
-            if type(self._conf["templates"]) is dict:
-                for var, value in self._conf["templates"].iteritems():
-                    key = "testbed.{var}".format(var=var)
-                    result_dict[key] = value
+        result_dict.update(self._templates)
 
         for storage_pool in self.get_storage_pools_list():
             result_dict.update(storage_pool.get_templates_dict())
