@@ -35,19 +35,19 @@ class Configuration:
     def __init__(self, loader):
 
         self._loader = loader
-        self._conf = self._loader.get_content()
+        conf = self._loader.get_content()
 
         self._testbed = None
-        self.__parse_testbed(self._conf)
+        self.__parse_testbed(conf)
 
         self._storage_pools_list   = []
         self._storage_volumes_list = []
         self._networks_list        = []
         self._domains_list         = []
-        self.__parse_items(self._conf)
+        self.__parse_items(conf)
 
         self._templates = {} # empty dict
-        self.__parse_templates(self._conf)
+        self.__parse_templates(conf)
 
     def __parse_testbed(self, conf):
         """
