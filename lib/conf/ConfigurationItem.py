@@ -66,7 +66,7 @@ class ConfigurationItem(object):
 
         """ Returns the type of the item """
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def get_testbed(self):
 
