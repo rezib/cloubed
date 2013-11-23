@@ -3,6 +3,7 @@ cloubed 0.3
 
   * New xml action on script to print XML generated for libvirt
   * Support usage of already existing bridges on the node as network
+  * Set spice as the default value for domains graphics
 
 cloubed 0.2
 -----------

@@ -35,7 +35,8 @@ class ConfigurationDomain(ConfigurationItem):
 
         self.__parse_cpu(domain_item['cpu'])
         self.__parse_memory(domain_item['memory'])
-        self.__parse_graphics(domain_item['graphics'])
+        self._graphics = None
+        self.__parse_graphics(domain_item)
 
         self._netifs = []
         self.__parse_netifs(domain_item['netifs'])
@@ -104,26 +105,36 @@ class ConfigurationDomain(ConfigurationItem):
 
         self._memory = multiplier * qty
 
-    def __parse_graphics(self, graphics):
+    def __parse_graphics(self, conf):
+        """
+            Parses the graphics parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
 
-        if type(graphics) is str:
+        if conf.has_key('graphics'):
+
+            graphics = conf['graphics']
+
+            if type(graphics) is not str:
+                raise CloubedConfigurationException(
+                          "format of graphics parameter of domain {domain} " \
+                          "is not valid" \
+                              .format(domain=self._name))
 
             valid_graphics = ["sdl", "vnc", "rdp", "spice"]
 
-            if graphics in valid_graphics:
-                self._graphics = graphics
-
-            else: # invalid choice
+            if graphics not in valid_graphics:
                 raise CloubedConfigurationException(
-                          "Graphics '{graphics}' of domain {domain} is not " \
-                          "valid." \
+                          "value {graphics} of graphics parameter of domain " \
+                          "{domain} is not valid" \
                               .format(graphics=graphics,
                                       domain=self._name))
 
-        else: # invalid type
-            raise CloubedConfigurationException(
-                      "Graphics of domain {domain} has not a valid format." \
-                          .format(domain=self._name))
+            self._graphics = graphics
+
+        else:
+            # default is spice
+            self._graphics = "spice"
 
     def __parse_netifs(self, netifs):
 
