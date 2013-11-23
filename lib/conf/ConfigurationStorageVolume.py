@@ -70,8 +70,8 @@ class ConfigurationStorageVolume(ConfigurationItem):
         clean_name = ConfigurationItem.clean_string_for_template(self._name)
 
         return { "storagevolume.{name}.format"      \
-                     .format(name=clean_name) : self._format,
+                     .format(name=clean_name) : str(self._format),
                  "storagevolume.{name}.size"        \
-                     .format(name=clean_name) : self._size,
+                     .format(name=clean_name) : str(self._size),
                  "storagevolume.{name}.storagepool" \
-                     .format(name=clean_name) : self._storage_pool }
+                     .format(name=clean_name) : str(self._storage_pool) }

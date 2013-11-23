@@ -303,13 +303,13 @@ class ConfigurationDomain(ConfigurationItem):
 
         clean_name = ConfigurationItem.clean_string_for_template(self._name)
         domain_dict = { "{prefix}.name" \
-                            .format(prefix=prefix) : clean_name,
+                            .format(prefix=prefix) : str(clean_name),
                         "{prefix}.cpu" \
-                            .format(prefix=prefix) : self._cpu,
+                            .format(prefix=prefix) : str(self._cpu),
                         "{prefix}.memory" \
-                            .format(prefix=prefix) : self._memory,
+                            .format(prefix=prefix) : str(self._memory),
                         "{prefix}.graphics" \
-                            .format(prefix=prefix) : self._graphics,
+                            .format(prefix=prefix) : str(self._graphics),
                       }
 
         # add netifs
@@ -320,14 +320,14 @@ class ConfigurationDomain(ConfigurationItem):
                 key = "{prefix}.{network}.ip" \
                           .format(prefix=prefix,
                                   network=network_clean_name)
-                domain_dict[key] = netif["ip"]
+                domain_dict[key] = str(netif["ip"])
 
         tpl_vars_dict = {}
 
         for var_key, var_value in self._template_vars.items():
             full_key = "{prefix}.tpl.{var_name}" \
                            .format(prefix=prefix, var_name=var_key)
-            tpl_vars_dict[full_key] = var_value
+            tpl_vars_dict[full_key] = str(var_value)
 
         domain_dict.update(tpl_vars_dict)
 

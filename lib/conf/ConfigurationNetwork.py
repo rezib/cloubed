@@ -407,18 +407,18 @@ class ConfigurationNetwork(ConfigurationItem):
         clean_name = ConfigurationItem.clean_string_for_template(self._name)
 
         return { "network.{name}.forward_mode" \
-                     .format(name=clean_name) : self._forward_mode,
+                     .format(name=clean_name) : str(self._forward_mode),
                  "network.{name}.bridge_name" \
-                     .format(name=clean_name) : self._bridge_name,
+                     .format(name=clean_name) : str(self._bridge_name),
                  "network.{name}.ip_host" \
-                     .format(name=clean_name) : self._ip_host,
+                     .format(name=clean_name) : str(self._ip_host),
                  "network.{name}.netmask" \
-                     .format(name=clean_name) : self._netmask,
+                     .format(name=clean_name) : str(self._netmask),
                  "network.{name}.dhcp_start" \
-                     .format(name=clean_name) : self._dhcp_start,
+                     .format(name=clean_name) : str(self._dhcp_start),
                  "network.{name}.dhcp_end" \
-                     .format(name=clean_name) : self._dhcp_end,
+                     .format(name=clean_name) : str(self._dhcp_end),
                  "network.{name}.pxe_tftp_dir" \
-                     .format(name=clean_name) : self._pxe_tftp_dir,
+                     .format(name=clean_name) : str(self._pxe_tftp_dir),
                  "network.{name}.pxe_boot_file" \
-                     .format(name=clean_name) : self._pxe_boot_file }
+                     .format(name=clean_name) : str(self._pxe_boot_file) }

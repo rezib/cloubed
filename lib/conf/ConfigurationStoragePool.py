@@ -79,4 +79,4 @@ class ConfigurationStoragePool(ConfigurationItem):
         clean_name = ConfigurationItem.clean_string_for_template(self._name)
 
         return { "storagepool.{name}.path" \
-                     .format(name=clean_name) : self._path }
+                     .format(name=clean_name) : str(self._path) }
