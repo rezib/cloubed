@@ -44,18 +44,9 @@ class ConfigurationDomain(ConfigurationItem):
         self._disks = {}
         self.__parse_disks(domain_item['disks'])
 
-        if domain_item.has_key('templates'):
-            if domain_item['templates'].has_key('files'):
-                self._template_files = domain_item['templates']['files']
-            else:
-                self._template_files = {}
-            if domain_item['templates'].has_key('vars'):
-                self._template_vars = domain_item['templates']['vars']
-            else:
-                self._template_vars = {}
-        else:
-            self._template_files = {}
-            self._template_vars = {}
+        self._template_files = []
+        self._template_vars = {}
+        self.__parse_templates(domain_item)
 
     def __parse_cpu(self, cpu):
 
@@ -236,6 +227,84 @@ class ConfigurationDomain(ConfigurationItem):
             raise CloubedConfigurationException(
                       "disks of domain {domain} has not a valid format" \
                           .format(domain=self._name))
+
+    def __parse_templates(self, conf):
+        """
+            Call parsers for both files and variables parameters defined in the
+            dedicated section of the dictionary given in parameter. If the
+            optional section is not defined, set attributes to default empty
+            dict value.
+        """
+
+        if conf.has_key('templates'):
+            self.__parse_templates_files(conf['templates'])
+            self.__parse_templates_vars(conf['templates'])
+        else:
+            self._template_files = []
+            self._template_vars = {}
+
+    def __parse_templates_files(self, conf):
+        """
+            Parses all the template files parameters over the conf dictionary
+            given in parameter and raises appropriate exception if a problem is
+            found.
+        """
+        if conf.has_key('files'):
+            tpl_files = conf['files']
+            # files section must be a list a dict with keys name, input and
+            # output
+            if type(tpl_files) is not list:
+                raise CloubedConfigurationException(
+                    "format of the files sub-section in the templates " \
+                    "section of domain {domain} templates is not valid" \
+                        .format(domain = self._name))
+
+            for tpl_file in tpl_files:
+
+                required_parameters = ['name', 'input', 'output']
+                for parameter in required_parameters:
+                    if not tpl_file.has_key(parameter):
+                        raise CloubedConfigurationException(
+                            "{parameter} parameter of a template file of " \
+                            "domain {domain} is missing" \
+                                .format(parameter = parameter,
+                                        domain = self._name))
+                    if type(tpl_file[parameter]) is not str:
+                        raise CloubedConfigurationException(
+                            "format of {parameter} parameter of a template " \
+                            "file of domain {domain} is not valid" \
+                                .format(parameter = parameter,
+                                        domain = self._name))
+                # everything is clear at this point
+                self._template_files.append(tpl_file)
+        else:
+            self._template_files = []
+
+    def __parse_templates_vars(self, conf):
+        """
+            Parses all the template variables over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+        if conf.has_key('vars'):
+            tpl_vars = conf['vars']
+            # vars section must be a dict of {string,(string/int) pairs
+            if type(tpl_vars) is not dict:
+                raise CloubedConfigurationException(
+                    "format of the vars sub-section in the templates " \
+                    "section of domain {domain} templates is not valid" \
+                        .format(domain = self._name))
+
+            for key, value in tpl_vars.iteritems():
+                if type(value) is not str and type(value) is not int:
+                    raise CloubedConfigurationException(
+                          "format of the value of {key} template variable of " \
+                          "domain {domain} is not valid"
+                                .format(key = key,
+                                        domain = self._name))
+                # everything is clear at this point
+                self._template_vars[key] = str(value)
+        else:
+            self._template_vars = {}
 
     def _get_type(self):
 
