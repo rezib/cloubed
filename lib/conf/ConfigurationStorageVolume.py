@@ -32,9 +32,77 @@ class ConfigurationStorageVolume(ConfigurationItem):
 
         super(ConfigurationStorageVolume, self).__init__(storage_volume_item)
 
-        self._format = storage_volume_item['format']
-        self._size = storage_volume_item['size']
-        self._storage_pool = storage_volume_item['storagepool']
+        self._size = None
+        self.__parse_size(storage_volume_item)
+        self._storage_pool = None
+        self.__parse_storage_pool(storage_volume_item)
+        self._format = None
+        self.__parse_format(storage_volume_item)
+
+    def __parse_size(self, conf):
+        """
+            Parses the size parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+        if not conf.has_key('size'):
+            raise CloubedConfigurationException(
+                      "size parameter of storage volume {name} is missing" \
+                          .format(name=self._name))
+
+        size = conf['size']
+
+        if type(size) is not int:
+            raise CloubedConfigurationException(
+                      "format of size parameter of storage volume {name} is " \
+                      "not valid".format(name=self._name))
+
+        self._size = size
+
+    def __parse_storage_pool(self, conf):
+        """
+            Parses the storage pool parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+        if not conf.has_key('storagepool'):
+            raise CloubedConfigurationException(
+                      "storagepool parameter of storage volume {name} is " \
+                      "missing".format(name=self._name))
+
+        storage_pool = conf['storagepool']
+
+        if type(storage_pool) is not str:
+            raise CloubedConfigurationException(
+                      "format of storagepool parameter of storage volume " \
+                      "{name} is not valid".format(name=self._name))
+
+        self._storage_pool = storage_pool
+
+    def __parse_format(self, conf):
+        """
+            Parses the format parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+        if conf.has_key('format'):
+
+            vol_format = conf['format']
+
+            if type(vol_format) is not str:
+                raise CloubedConfigurationException(
+                          "format of format parameter of storage volume " \
+                          "{name} is not valid".format(name=self._name))
+
+            valid_vol_formats = [ 'qcow2', 'raw' ]
+
+            if vol_format not in valid_vol_formats:
+                raise CloubedConfigurationException(
+                          "value of format parameter of storage volume " \
+                          "{name} is not valid".format(name=self._name))
+
+            self._format = vol_format
+
+        else:
+            # default value to qcow2
+            self._format = 'qcow2'
 
     def _get_type(self):
 
