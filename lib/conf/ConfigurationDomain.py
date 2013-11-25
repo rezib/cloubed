@@ -33,34 +33,60 @@ class ConfigurationDomain(ConfigurationItem):
 
         super(ConfigurationDomain, self).__init__(domain_item)
 
-        self.__parse_cpu(domain_item['cpu'])
-        self.__parse_memory(domain_item['memory'])
+        self._cpu = None
+        self.__parse_cpu(domain_item)
+        self._memory = None
+        self.__parse_memory(domain_item)
         self._graphics = None
         self.__parse_graphics(domain_item)
 
         self._netifs = []
-        self.__parse_netifs(domain_item['netifs'])
+        self.__parse_netifs(domain_item)
 
         self._disks = {}
-        self.__parse_disks(domain_item['disks'])
+        self.__parse_disks(domain_item)
 
         self._template_files = []
         self._template_vars = {}
         self.__parse_templates(domain_item)
 
-    def __parse_cpu(self, cpu):
+    def __parse_cpu(self, conf):
+        """
+            Parses the cpu parameter over the conf dictionary given in parameter
+            and raises appropriate exception if a problem is found.
+        """
+
+        if not conf.has_key('cpu'):
+            raise CloubedConfigurationException(
+                       "cpu parameter of domain {domain} is missing" \
+                           .format(domain=self._name))
+
+        cpu = conf['cpu']
 
         if type(cpu) is not int:
             raise CloubedConfigurationException(
-                       "CPU '{cpu}' of domain {domain} is not valid, please " \
-                       "see documentation.".format(cpu=cpu, domain=self._name))
-        self._cpu = int(cpu)
+                       "format of cpu parameter of domain {domain} is not " \
+                       "valid".format(domain=self._name))
 
-    def __parse_memory(self, memory):
+        self._cpu = cpu
+
+    def __parse_memory(self, conf):
+        """
+            Parses the memory parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+
+        if not conf.has_key('memory'):
+            raise CloubedConfigurationException(
+                       "memory parameter of domain {domain} is missing" \
+                           .format(domain=self._name))
 
         multiplier = 1024 # default unit in YAML is GiB
                           # but Cloubed internally stores memory size in MiB
         memory_qty = -1
+
+        memory = conf['memory']
+
         if type(memory) is int:
             qty = memory
         elif type(memory) is str:
@@ -70,8 +96,8 @@ class ConfigurationDomain(ConfigurationItem):
 
             if match is None:
                 raise CloubedConfigurationException(
-                          "Memory size '{memory}' of domain {domain} is not " \
-                          "valid, please see documentation." \
+                          "memory size '{memory}' of domain {domain} is not " \
+                          "valid" \
                               .format(memory=memory,
                                       domain=self._name))
 
@@ -83,14 +109,14 @@ class ConfigurationDomain(ConfigurationItem):
             elif unit in ["G", "GB", "GiB"]:
                 multiplier = 1024
             else:
-                raise CloubedConfigurationException("Unknown unit for memory" \
+                raise CloubedConfigurationException("unknown unit for memory" \
                           " '{memory}' of domain {domain}" \
                               .format(memory=memory,
                                       domain=self._name))
-        else: # invalid type
+        else:
             raise CloubedConfigurationException(
-                       "Memory size '{memory}' of domain {domain} is not " \
-                       "valid, please see documentation." \
+                       "format of memory parameter of domain {domain} is not " \
+                       "valid" \
                            .format(memory=memory,
                                    domain=self._name))
 
@@ -127,106 +153,126 @@ class ConfigurationDomain(ConfigurationItem):
             # default is spice
             self._graphics = "spice"
 
-    def __parse_netifs(self, netifs):
+    def __parse_netifs(self, conf):
+        """
+            Parses the netifs section of parameters over the conf dictionary
+            given in parameter and raises appropriate exception if a problem is
+            found.
+        """
 
-        if type(netifs) is list:
-
-            netif_id = 0
-
-            for netif in netifs:
-
-                if type(netif) is not dict:
-                    raise CloubedConfigurationException(
-                              "Netif {netif_id} of domain {domain} has not a " \
-                              "valid format." \
-                                  .format(netif_id=netif_id,
-                                          domain=self._name))
-
-
-                if not netif.has_key("network"):
-                    raise CloubedConfigurationException(
-                              "Netif {netif_id} of domain {domain} shoud have " \
-                              "a network name." \
-                                  .format(netif_id=netif_id,
-                                          domain=self._name))
-
-                if type(netif["network"]) is not str:
-                    raise CloubedConfigurationException(
-                              "Network name of netif {netif_id} of domain "\
-                              "{domain} has not a valid format." \
-                                  .format(netif_id=netif_id,
-                                          domain=self._name))
-
-                if netif.has_key("ip") and \
-                   type(netif["ip"]) is not str:
-                    raise CloubedConfigurationException(
-                              "Network IP of netif {netif_id} of domain "\
-                              "{domain} has not a valid format." \
-                                  .format(netif_id=netif_id,
-                                          domain=self._name))
-
-                self._netifs.append(netif)
-
-                netif_id += 1
-
-        else: # invalid type
+        if not conf.has_key('netifs'):
             raise CloubedConfigurationException(
-                      "Netifs of domain {domain} has not a valid format." \
+                      "netifs section of domain {domain} is missing" \
                           .format(domain=self._name))
 
-    def __parse_disks(self, disks):
+        netifs = conf['netifs']
 
-        if type(disks) is list:
-
-            disk_id = 0
-
-            for disk in disks:
-
-                if type(disk) is not dict:
-                    raise CloubedConfigurationException(
-                              "disk {disk_id} of domain {domain} has not a " \
-                              "valid format" \
-                                  .format(disk_id=disk_id,
-                                          domain=self._name))
-
-
-                if not disk.has_key("device"):
-                    raise CloubedConfigurationException(
-                              "device is missing for disk {disk_id} of " \
-                              "domain {domain}" \
-                                  .format(disk_id=disk_id,
-                                          domain=self._name))
-
-                if not disk.has_key("storage_volume"):
-                    raise CloubedConfigurationException(
-                              "storage volume is missing for disk {disk_id} " \
-                              "of domain {domain}" \
-                                  .format(disk_id=disk_id,
-                                          domain=self._name))
-
-
-                if type(disk["device"]) is not str:
-                    raise CloubedConfigurationException(
-                              "device of disk {disk_id} of domain {domain} " \
-                              "has not a valid format" \
-                                  .format(disk_id=disk_id,
-                                          domain=self._name))
-
-                if type(disk["storage_volume"]) is not str:
-                    raise CloubedConfigurationException(
-                              "storage volume of disk {disk_id} of domain " \
-                              "{domain} has not a valid format" \
-                                  .format(disk_id=disk_id,
-                                          domain=self._name))
-
-                self._disks[disk["device"]] = disk["storage_volume"]
-
-                disk_id += 1
-
-        else: # invalid type
+        if type(netifs) is not list:
             raise CloubedConfigurationException(
-                      "disks of domain {domain} has not a valid format" \
+                      "format of netifs section of domain {domain} is not " \
+                      "valid".format(domain=self._name))
+
+        netif_id = 0
+
+        for netif in netifs:
+
+            if type(netif) is not dict:
+                raise CloubedConfigurationException(
+                          "format of netif {netif_id} of domain {domain} is " \
+                          "not valid" \
+                              .format(netif_id=netif_id,
+                                      domain=self._name))
+
+
+            if not netif.has_key("network"):
+                raise CloubedConfigurationException(
+                          "network of netif {netif_id} of domain {domain} is " \
+                          "missing" \
+                              .format(netif_id=netif_id,
+                                      domain=self._name))
+
+            if type(netif["network"]) is not str:
+                raise CloubedConfigurationException(
+                          "format of network of netif {netif_id} of domain "\
+                          "{domain} is not valid" \
+                              .format(netif_id=netif_id,
+                                      domain=self._name))
+
+            if netif.has_key("ip") and \
+               type(netif["ip"]) is not str:
+                raise CloubedConfigurationException(
+                          "format of ip of netif {netif_id} of domain "\
+                          "{domain} is not valid" \
+                              .format(netif_id=netif_id,
+                                      domain=self._name))
+
+            self._netifs.append(netif)
+
+            netif_id += 1
+
+    def __parse_disks(self, conf):
+        """
+            Parses the disks section of parameters over the conf dictionary
+            given in parameter and raises appropriate exception if a problem is
+            found.
+        """
+
+        if not conf.has_key('disks'):
+            raise CloubedConfigurationException(
+                      "disks section of domain {domain} is missing" \
                           .format(domain=self._name))
+
+        disks = conf['disks']
+
+        if type(disks) is not list:
+            raise CloubedConfigurationException(
+                      "format of disks section of domain {domain} is not " \
+                      "valid".format(domain=self._name))
+
+        disk_id = 0
+
+        for disk in disks:
+
+            if type(disk) is not dict:
+                raise CloubedConfigurationException(
+                          "format of disk {disk_id} of domain {domain} is " \
+                          "not valid" \
+                              .format(disk_id=disk_id,
+                                      domain=self._name))
+
+
+            if not disk.has_key("device"):
+                raise CloubedConfigurationException(
+                          "device of disk {disk_id} of domain {domain} " \
+                          "is missing" \
+                              .format(disk_id=disk_id,
+                                      domain=self._name))
+
+            if not disk.has_key("storage_volume"):
+                raise CloubedConfigurationException(
+                          "storage volume of disk {disk_id} of domain " \
+                          "{domain} is missing" \
+                              .format(disk_id=disk_id,
+                                      domain=self._name))
+
+
+            if type(disk["device"]) is not str:
+                raise CloubedConfigurationException(
+                          "format of device of disk {disk_id} of domain " \
+                          "{domain} is not valid" \
+                              .format(disk_id=disk_id,
+                                      domain=self._name))
+
+            if type(disk["storage_volume"]) is not str:
+                raise CloubedConfigurationException(
+                          "format of storage volume of disk {disk_id} of " \
+                          "domain {domain} is not valid" \
+                              .format(disk_id=disk_id,
+                                      domain=self._name))
+
+            self._disks[disk["device"]] = disk["storage_volume"]
+
+            disk_id += 1
 
     def __parse_templates(self, conf):
         """
