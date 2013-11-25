@@ -100,7 +100,7 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # forward is not bridge -> bridge parameter has no sense
-        if self._forward_mode is not 'bridge' and conf.has_key('bridge'):
+        if self._forward_mode != 'bridge' and conf.has_key('bridge'):
              raise CloubedConfigurationException(
                  "Bridge parameter has no sense on network {network} with " \
                  "forwarding mode {forward}" \
@@ -108,7 +108,7 @@ class ConfigurationNetwork(ConfigurationItem):
                              forward = self._forward_mode))
 
         # forward is bridge -> bridge parameter is mandatory
-        elif self._forward_mode is 'bridge':
+        elif self._forward_mode == 'bridge':
 
             if conf.has_key('bridge'):
 
@@ -141,7 +141,7 @@ class ConfigurationNetwork(ConfigurationItem):
         # NOTE: maybe use cidr notation here in the future?
 
         # forward is bridge -> ip_host and netmask have no sense
-        if self._forward_mode is 'bridge' and \
+        if self._forward_mode == 'bridge' and \
            ( conf.has_key('ip_host') or conf.has_key('netmask') ):
              raise CloubedConfigurationException(
                  "ip_host and netmask parameters have no sense on network " \
