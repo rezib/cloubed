@@ -23,7 +23,7 @@
 
 import os
 import logging
-from xml.dom.minidom import Document
+from xml.dom.minidom import Document, parseString
 
 class Network:
 
@@ -140,26 +140,51 @@ class Network:
 
         return None
 
-    def get_status(self):
+    def get_infos(self):
+        """
+            Returns a dict full of key/value string pairs with information about
+            the Network
+        """
 
-        """
-            Returns status name of the Network from Libvirt standpoint
-        """
+        infos = {}
 
         network = self.find_network()
         if network is not None:
 
-            self._virtobj = network
-            if self._virtobj.isActive():
-                status = "active"
+            # status name of the Network from Libvirt standpoint
+            if network.isActive():
+                infos['status'] = 'active'
             else:
-                status = "inactive"
+                infos['status'] = 'inactive'
+
+            # extract infos out of libvirt XML
+            xml = parseString(network.XMLDesc(0))
+
+            # IndexError exception is passed in order to continue silently
+            # if elements are not found in the XML tree
+
+            # bridge name
+            try:
+                element = xml.getElementsByTagName('bridge').pop()
+                bridge = element.getAttribute('name')
+                infos['bridge'] = bridge
+            except IndexError:
+                pass
+
+            # current ip/netmask
+            try:
+                element = xml.getElementsByTagName('ip').pop()
+                ip = element.getAttribute('address')
+                infos['ip'] = ip
+                netmask = element.getAttribute('netmask')
+                infos['netmask'] = netmask
+            except IndexError:
+                pass
 
         else:
+            infos['status'] = 'undefined'
 
-            status = "undefined"
-
-        return status
+        return infos
 
     def get_name(self):
 

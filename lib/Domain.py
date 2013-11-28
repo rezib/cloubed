@@ -27,7 +27,7 @@ import threading
 import libvirt
 import hashlib
 import os
-from xml.dom.minidom import Document
+from xml.dom.minidom import Document, parseString
 
 from CloubedException import CloubedException
 from DomainTemplate import DomainTemplate
@@ -168,10 +168,45 @@ class Domain:
 
         return None
 
-    def get_status(self):
-
+    def get_infos(self):
         """
-            Returns status name of the Domain from Libvirt standpoint
+            Returns a dict full of key/value string pairs with information about
+            the Domain
+        """
+
+        infos = {}
+
+        domain = self.find_domain()
+        if domain is not None:
+
+            # get libvirt status
+            infos['status'] = Domain.__get_status(domain.info()[0])
+
+            # extract infos out of libvirt XML
+            xml = parseString(domain.XMLDesc(0))
+
+            # IndexError exception is passed in order to continue silently
+            # if elements are not found in the XML tree
+
+            # spice port
+            try:
+                element = xml.getElementsByTagName('graphics').pop()
+                port = element.getAttribute('port')
+                infos['spice_port'] = str(port)
+            except IndexError:
+                pass
+
+        else:
+
+            infos['status'] =  Domain.__get_status(-1)
+
+        return infos
+
+    @staticmethod
+    def __get_status(state_code):
+        """
+            Returns the name of the status of the Domain in Libvirt according to
+            its state code
         """
 
         # Extracted from libvirt API documentation:
@@ -192,7 +227,6 @@ class Domain:
         #                              API.
         # }
 
-
         states = [ "unknown",
                    "running",
                    "blocked",
@@ -202,18 +236,11 @@ class Domain:
                    "crashed",
                    "suspended" ]
 
-        domain = self.find_domain()
-        if domain is not None:
-
-            self._virtobj = domain
-            state_code = self._virtobj.info()[0]
-            status = states[state_code]
-
-        else:
-
-            status = "undefined"
-
-        return status
+        if state_code == -1:
+            # special value introduced by get_infos() for own Cloubed use when
+            # domain is not yet defined in Libvirt
+            return 'undefined'
+        return states[state_code]
 
     @classmethod
     def get_by_name(cls, name):

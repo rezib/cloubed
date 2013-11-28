@@ -125,6 +125,73 @@ def check_event(cloubed, args):
         logging.debug(u"--event parameter not specified")
         return None
 
+def print_testbed_infos(testbed):
+     """
+         Prints nicely a dict full of informations about the testbed and its
+         resources, including their status in Libvirt.
+     """
+
+     print "storage pools:"
+     for name, infos in testbed['storagepools'].iteritems():
+         print_storage_pool_infos(name, infos)
+
+     print "storage volumes:"
+     for name, infos in testbed['storagevolumes'].iteritems():
+         print_storage_volume_infos(name, infos)
+
+     print "networks:"
+     for name, infos in testbed['networks'].iteritems():
+         print_network_infos(name, infos)
+     print "domains:"
+     for name, infos in testbed['domains'].iteritems():
+         print_domain_infos(name, infos)
+
+def print_storage_pool_infos(name, infos):
+     """
+         Prints nicely a dict full of informations about a storage pool.
+     """
+
+     print "  - {name}".format(name=name)
+     for key, value in infos.iteritems():
+         print "    - {key:10s}: {value:10s}".format(key=key, value=value)
+
+def print_storage_volume_infos(name, infos):
+     """
+         Prints nicely a dict full of informations about a storage volume.
+     """
+
+     print "  - {name}".format(name=name)
+     print "    - status    : {status}".format(status=infos['status'])
+     if infos.has_key('path'):
+         print "    - path      : {path}".format(path=infos['path'])
+     if infos.has_key('allocation') and infos.has_key('capacity'):
+         print "    - size      : {allocation:.2f}/{capacity:.2f}GB" \
+                   .format(allocation = infos['allocation']/1024,
+                           capacity = infos['capacity']/1024)
+
+def print_network_infos(name, infos):
+     """
+         Prints nicely a dict full of informations about a network.
+     """
+
+     print "  - {name}".format(name=name)
+     print "    - status    : {status}".format(status=infos['status'])
+     if infos.has_key('bridge'):
+         print "    - bridge    : {bridge}".format(bridge=infos['bridge'])
+     if infos.has_key('ip') and infos.has_key('netmask'):
+         print "    - ip        : {ip}/{netmask}" \
+                   .format(ip = infos['ip'],
+                           netmask = infos['netmask'])
+
+def print_domain_infos(name, infos):
+     """
+         Prints nicely a dict full of informations about a domain.
+     """
+
+     print "  - {name}".format(name=name)
+     for key, value in infos.iteritems():
+         print "    - {key:10s}: {value:10s}".format(key=key, value=value)
+
 def main():
 
     """ run_cloubed: function launched by main() """
@@ -196,18 +263,9 @@ def main():
 
         elif action_name == u"status":
 
-             print "storage pools:"
-             for name, status in cloubed.get_storagepools_statuses().iteritems():
-                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
-             print "storage volumes:"
-             for name, status in cloubed.get_storagevolumes_statuses().iteritems():
-                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
-             print "networks:"
-             for name, status in cloubed.get_networks_statuses().iteritems():
-                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
-             print "domains:"
-             for name, status in cloubed.get_domains_statuses().iteritems():
-                 print "  - {name:30s} {status:10s}".format(name=name, status=status)
+             testbed = cloubed.get_infos()
+
+             print_testbed_infos(testbed)
 
         elif action_name == u"cleanup":
 

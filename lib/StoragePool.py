@@ -151,10 +151,53 @@ class StoragePool:
 
         return None
 
-    def get_status(self):
-
+    def get_infos(self):
         """
-            Returns status name from libvirt standpoint
+            Returns a dict full of key/value string pairs with information about
+            the StoragePool
+        """
+
+        infos = {}
+
+        storage_pool = self.find_storage_pool()
+
+        if storage_pool is not None:
+
+            infos['status'] = StoragePool.__get_status(storage_pool.info()[0])
+
+            # extract infos out of libvirt XML
+            xml = parseString(storage_pool.XMLDesc(0))
+
+            # IndexError exception is passed in order to continue silently
+            # if elements are not found in the XML tree
+
+            # path
+            try:
+                element = xml.getElementsByTagName('path').pop()
+                infos['path'] = element.childNodes[0].data
+            except IndexError:
+                pass
+
+        else:
+
+            infos['status'] = StoragePool.__get_status(-1)
+
+        return infos
+
+    def get_status(self):
+        """
+            Returns the status name of the StoragePool from Libvirt standpoint
+            extracted out of the dict returned by get_infos(). This method is
+            called internally by StorageVolume class.
+        """
+
+        return self.get_infos()['status']
+
+    @staticmethod
+    def __get_status(state_code):
+        """
+            Returns the name of the status of the StoragePool in Libvirt
+            according to its state code
         """
 
         # Extracted from libvirt API documentation:
@@ -174,21 +217,12 @@ class StoragePool:
                    "degraded",
                    "inaccessible" ]
 
-        storage_pool = self.find_storage_pool()
+        if state_code == -1:
+            # special value introduced by get_infos() for own Cloubed use when
+            # storage pool is not yet defined in Libvirt
+            return 'undefined'
 
-        if storage_pool is not None:
-
-            self._virtobj = storage_pool
-            self._libvirt_name = storage_pool.name() # override libvirt name
-
-            state_code = self._virtobj.info()[0]
-            status = states[state_code]
-
-        else: # not found, it means not defined
-
-            status = "undefined"
-
-        return status
+        return states[state_code]
 
     def get_libvirt_name(self):
 

@@ -23,7 +23,7 @@
 
 import logging
 import os
-from xml.dom.minidom import Document
+from xml.dom.minidom import Document, parseString
 
 from StoragePool import StoragePool # used in __init__
 from CloubedException import CloubedException
@@ -161,15 +161,17 @@ class StorageVolume:
 
         return None
 
-    def get_status(self):
-
+    def get_infos(self):
         """
-            Returns the status name of the StorageVolume from libvirt standpoint
+            Returns a dict full of key/value string pairs with information about
+            the StorageVolume
         """
 
-        if self._storage_pool.get_status() == "undefined":
+        infos = {}
 
-            status = "-"
+        if self._storage_pool.get_status() == 'undefined':
+
+            infos['status'] = "-"
 
         else:
 
@@ -178,13 +180,37 @@ class StorageVolume:
             if storage_volume is not None:
 
                 self._virtobj = storage_volume
-                status = "active"
+                infos['status'] = 'active'
 
-            else: # not found, it means not defined
+                # extract infos out of libvirt XML
+                xml = parseString(storage_volume.XMLDesc(0))
 
-                status = "undefined"
+                # IndexError exception is passed in order to continue silently
+                # if elements are not found in the XML tree
 
-        return status
+                # path
+                try:
+                    element = xml.getElementsByTagName('path').pop()
+                    infos['path'] = element.childNodes[0].data
+                except IndexError:
+                    pass
+
+                # capacity/allocation
+                try:
+                    element = xml.getElementsByTagName('capacity').pop()
+                    capacity = int(element.childNodes[0].data) / 1024**2
+                    infos['capacity'] = capacity
+                    element = xml.getElementsByTagName('allocation').pop()
+                    allocation = int(element.childNodes[0].data) / 1024**2
+                    infos['allocation'] = allocation
+                except IndexError:
+                    pass
+
+            else:
+
+                infos['status'] = 'undefined'
+
+        return infos
 
     def getvirtobj(self):
 

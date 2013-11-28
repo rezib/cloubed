@@ -285,33 +285,35 @@ class Cloubed():
                                            event_detail=event_detail.upper()))
         domain.wait_for_event(domain_event)
 
-    def get_storagepools_statuses(self):
+    def get_infos(self):
+        """
+            Returns a dict full of information about the testbed and its
+            resources
+        """
 
-        statuses = {}
+        infos = {}
+
+        infos['storagepools'] = {}
         for storage_pool in self._storage_pools:
-            statuses[storage_pool.get_name()] = storage_pool.get_status()
-        return statuses
+            name = storage_pool.get_name()
+            infos['storagepools'][name] = storage_pool.get_infos()
 
-    def get_storagevolumes_statuses(self):
-
-        statuses = {}
+        infos['storagevolumes'] = {}
         for storage_volume in self._storage_volumes:
-            statuses[storage_volume.get_name()] = storage_volume.get_status()
-        return statuses
+            name = storage_volume.get_name()
+            infos['storagevolumes'][name] = storage_volume.get_infos()
 
-    def get_networks_statuses(self):
-
-        statuses = {}
+        infos['networks'] = {}
         for network in self._networks:
-            statuses[network.get_name()] = network.get_status()
-        return statuses
+            name = network.get_name()
+            infos['networks'][name] = network.get_infos()
 
-    def get_domains_statuses(self):
-
-        statuses = {}
+        infos['domains'] = {}
         for domain in self._domains:
-            statuses[domain.get_name()] = domain.get_status()
-        return statuses
+            name = domain.get_name()
+            infos['domains'][name] = domain.get_infos()
+
+        return infos
 
     def cleanup(self):
 
