@@ -25,7 +25,6 @@ import logging
 import time
 import threading
 import libvirt
-import hashlib
 import os
 from xml.dom.minidom import Document, parseString
 
@@ -34,18 +33,7 @@ from DomainTemplate import DomainTemplate
 from DomainSnapshot import DomainSnapshot
 from DomainNetif import DomainNetif
 from DomainDisk import DomainDisk
-
-def gen_mac(salt):
-
-    """
-       Simple utility/function to generate a MAC address with the salt given in
-       parameter
-    """
-
-    salted = hashlib.sha1(salt).hexdigest()[:6]
-    mac = [ "00", "16", "3e" ]
-    mac.extend((salted[:2], salted[2:4], salted[4:6]))
-    return ':'.join(mac)
+from Utils import gen_mac
 
 class Domain:
 
