@@ -27,6 +27,7 @@ from xml.dom.minidom import Document, parseString
 
 from StoragePool import StoragePool # used in __init__
 from CloubedException import CloubedException
+from Utils import getuser
 
 class StorageVolume:
 
@@ -45,7 +46,7 @@ class StorageVolume:
         if use_namespace:    # logic should moved be in an abstract parent class
             self._libvirt_name = \
                 "{user}:{testbed}:{name}" \
-                    .format(user = os.getlogin(),
+                    .format(user = getuser(),
                             testbed = storage_volume_conf.get_testbed(),
                             name = self._name)
         else:

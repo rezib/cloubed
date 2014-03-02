@@ -25,7 +25,6 @@ import logging
 import time
 import threading
 import libvirt
-import os
 from xml.dom.minidom import Document, parseString
 
 from CloubedException import CloubedException
@@ -33,7 +32,7 @@ from DomainTemplate import DomainTemplate
 from DomainSnapshot import DomainSnapshot
 from DomainNetif import DomainNetif
 from DomainDisk import DomainDisk
-from Utils import gen_mac
+from Utils import gen_mac,getuser
 
 class Domain:
 
@@ -51,7 +50,7 @@ class Domain:
         if use_namespace:    # logic should moved be in an abstract parent class
             self._libvirt_name = \
                 "{user}:{testbed}:{name}" \
-                    .format(user = os.getlogin(),
+                    .format(user = getuser(),
                             testbed = domain_conf.get_testbed(),
                             name = self._name)
         else:

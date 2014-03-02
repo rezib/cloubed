@@ -22,8 +22,8 @@
 """ StoragePool class of Cloubed """
 
 import logging
-import os
 from xml.dom.minidom import Document, parseString
+from Utils import getuser
 
 class StoragePool:
 
@@ -41,7 +41,7 @@ class StoragePool:
         if use_namespace:    # logic should moved be in an abstract parent class
             self._libvirt_name = \
                 "{user}:{testbed}:{name}" \
-                    .format(user = os.getlogin(),
+                    .format(user = getuser(),
                             testbed = storage_pool_conf.get_testbed(),
                             name = self._name)
         else:

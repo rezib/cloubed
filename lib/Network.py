@@ -21,9 +21,9 @@
 
 """ Network class of Cloubed """
 
-import os
 import logging
 from xml.dom.minidom import Document, parseString
+from Utils import getuser
 
 class Network:
 
@@ -41,7 +41,7 @@ class Network:
         if use_namespace:    # logic should moved be in an abstract parent class
             self._libvirt_name = \
                 "{user}:{testbed}:{name}" \
-                    .format(user = os.getlogin(),
+                    .format(user = getuser(),
                             testbed = network_conf.get_testbed(),
                             name = self._name)
         else:

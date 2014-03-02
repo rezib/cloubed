@@ -22,6 +22,8 @@
 """ Set of utilities functions for Cloubed """
 
 import hashlib
+import pwd
+import os
 
 def gen_mac(salt):
 
@@ -34,3 +36,12 @@ def gen_mac(salt):
     mac = [ "00", "16", "3e" ]
     mac.extend((salted[:2], salted[2:4], salted[4:6]))
     return ':'.join(mac)
+
+def getuser():
+
+    """
+       Return the username of the current user
+    """
+    # why not os.getlogin()? see details in python issue #584566
+    # http://bugs.python.org/issue584566
+    return pwd.getpwuid(os.geteuid())[0]
