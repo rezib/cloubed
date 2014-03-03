@@ -19,9 +19,9 @@
 # License along with Cloubed.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from distutils.core import setup
+from setuptools import setup
 
-setup(name='Cloubed',
+setup(name='cloubed',
       version='0.2',
       description='Utility and library to easily setup virtual testbeds composed of several KVM virtual machines through libvirt',
       author='Rémi Palancher',
@@ -31,7 +31,9 @@ setup(name='Cloubed',
                   'cloubed.cli',
                   'cloubed.conf' ],
       scripts=['scripts/cloubed'],
-      requires=['libvirt', 'yaml'],
+      install_requires=['pyyaml'],
+      # cloubed also requires python-libvirt but this
+      # library is not published on pypi
       license="LGPLv3",
       platforms=['GNU/Linux']
      )
