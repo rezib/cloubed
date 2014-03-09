@@ -325,6 +325,7 @@ class Domain:
                 else:
                     overwrite_storage_volume = False
                 storage_volume.create(overwrite_storage_volume)
+        # TODO: check if overwrite_disks has disks not in self._disks
 
         for netif in self._netifs:
             network = netif.get_network()
@@ -334,6 +335,7 @@ class Domain:
                 else:
                     recreate_network = False
                 network.create(recreate_network)
+        # TODO: check if recreate_networks has disks not in self._netifs
 
         if overwrite:
             # delete all existing domain

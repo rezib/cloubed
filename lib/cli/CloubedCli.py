@@ -27,104 +27,6 @@ from ..cli.CloubedArgumentParser import CloubedArgumentParser
 import sys
 import logging
 
-def check_disks(cloubed, args):
-
-    if args.overwrite_disks:
-
-        disks = args.overwrite_disks
-
-        if "yes" in disks:
-
-            if len(disks)>1:
-                raise CloubedArgumentException(u"--overwrite-disks parameter" \
-                                  " cannot contain 'yes' among other values")
-            else:
-                return True
-
-        elif "no" in disks:
-
-            if len(disks)>1:
-                raise CloubedArgumentException(u"--overwrite-disks parameter" \
-                                  " cannot contain 'no' among other values")
-            else:
-                return False
-
-        else:
-
-            # check if all disks are declared in YAML file for this domain
-            domain_disks_list = [disk.get_storage_volume().get_name() \
-                                     for disk in domain.get_disks()]
-            for disk in disks:
-                if disk not in domain_disks_list:
-                    raise CloubedArgumentException(u"disk {disk} not found for"\
-                              " domain {domain} in YAML file" \
-                                                    .format(disk=disk,
-                                                            domain=domain_name))
-            return disks
-
-    else:
-
-        logging.debug(u"--overwrite-disks not defined, defaulting to 'no'")
-        return False
-
-def check_networks(cloubed, args):
-
-    if args.recreate_networks:
-
-        networks = args.recreate_networks
-
-        if "yes" in networks:
-
-            if len(networks)>1:
-                raise CloubedArgumentException(u"--recreate-networks" \
-                                  " parameter cannot contain 'yes' among" \
-                                  " other values")
-            else:
-                return True
-
-        elif "no" in networks:
-
-            if len(networks)>1:
-                raise CloubedArgumentException(u"--recreate-networks" \
-                                  " parameter cannot contain 'no' among" \
-                                  " other values")
-            else:
-                return False
-
-        else:
-
-            # check if all networks are declared in YAML file for this domain
-            domain_networks_list = [netif.get_network().get_name() \
-                                     for netif in domain.get_netifs()]
-            for network in networks:
-                if network not in domain_networks_list:
-                    raise CloubedArgumentException(
-                              u"network {network} not found for domain {domain}" \
-                               "in YAML file".format(network=network,
-                                                     domain=domain_name))
-            return networks
-
-    else:
-
-        logging.debug(u"--recreate-networks not defined, defaulting to 'no'")
-        return False
-
-def check_event(cloubed, args):
-
-    if args.event:
-
-        waited_event_str = args.event[0]
-        waited_event = waited_event_str.split(':')
-        if len(waited_event) is not 2:
-            raise CloubedArgumentException(u"Badly formated --event" \
-                      " parameter, should respect format" \
-                      " <event_type>:<event_detail>")
-        return waited_event
-    else:
-
-        logging.debug(u"--event parameter not specified")
-        return None
-
 def print_testbed_infos(testbed):
      """
          Prints nicely a dict full of informations about the testbed and its
@@ -235,9 +137,9 @@ def main():
         elif action_name == u"boot":
 
              domain_name = args.domain[0]
-             disks_to_overwrite = check_disks(cloubed, args)
-             networks_to_recreate = check_networks(cloubed, args)
-             bootdev = parser.check_bootdev()
+             disks_to_overwrite = parser.parse_disks(cloubed)
+             networks_to_recreate = parser.parse_networks(cloubed)
+             bootdev = parser.parse_bootdev()
 
              logging.debug(u"Action boot on {domain}" \
                                .format(domain=domain_name))
@@ -249,7 +151,7 @@ def main():
         elif action_name == u"wait":
 
              domain_name = args.domain[0]
-             waited_event = check_event(cloubed, args)
+             waited_event = parser.parse_event()
              event_type = waited_event[0]
              event_detail = waited_event[1]
 

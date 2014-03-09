@@ -182,7 +182,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                               error_str.format(attribute=arg,
                                                action=action))
 
-    def check_bootdev(self):
+    def parse_bootdev(self):
 
         if self._args.bootdev:
             return self._args.bootdev
@@ -192,6 +192,98 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             # because in this case args.bootdev is therefore defined all the
             # times and it raises errors in check_args_coherency() for
             # action != boot
+
+    def parse_disks(self):
+        """
+           Parses and returns values of --overwrite-disks parameter of boot
+           action or raises exception if problem is found
+        """
+
+        if self._args.overwrite_disks:
+
+            disks = self._args.overwrite_disks
+
+            if "yes" in disks:
+
+                if len(disks)>1:
+                    raise CloubedArgumentException(u"--overwrite-disks parameter" \
+                                      " cannot contain 'yes' among other values")
+                else:
+                    return True
+
+            elif "no" in disks:
+
+                if len(disks)>1:
+                    raise CloubedArgumentException(u"--overwrite-disks parameter" \
+                                      " cannot contain 'no' among other values")
+                else:
+                    return False
+
+            else:
+
+                return disks
+
+        else:
+
+            logging.debug(u"--overwrite-disks not defined, defaulting to 'no'")
+            return False
+
+    def parse_networks(self):
+        """
+           Parses and returns values of --recreate-networks parameter of boot
+           action or raises exception if problem is found
+        """
+
+        if self._args.recreate_networks:
+
+            networks = self._args.recreate_networks
+
+            if "yes" in networks:
+
+                if len(networks)>1:
+                    raise CloubedArgumentException(u"--recreate-networks" \
+                                      " parameter cannot contain 'yes' among" \
+                                      " other values")
+                else:
+                    return True
+
+            elif "no" in networks:
+
+                if len(networks)>1:
+                    raise CloubedArgumentException(u"--recreate-networks" \
+                                      " parameter cannot contain 'no' among" \
+                                      " other values")
+                else:
+                    return False
+
+            else:
+
+                return networks
+
+        else:
+
+            logging.debug(u"--recreate-networks not defined, defaulting to 'no'")
+            return False
+
+    def parse_event(self):
+        """
+           Parses and returns values of --event parameter of wait action or
+           raises exception if problem is found
+        """
+
+        if self._args.event:
+
+            waited_event_str = self._args.event[0]
+            waited_event = waited_event_str.split(':')
+            if len(waited_event) is not 2:
+                raise CloubedArgumentException(u"Badly formated --event" \
+                          " parameter, should respect format" \
+                          " <event_type>:<event_detail>")
+            return waited_event
+        else:
+
+            logging.debug(u"--event parameter not specified")
+            return None
 
     def parse_resource(self):
 
