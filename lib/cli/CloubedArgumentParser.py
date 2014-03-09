@@ -77,7 +77,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         parser_boot_grp.add_argument("--bootdev",
                             dest='bootdev',
-                            nargs='?',
+                            nargs=1,
                             choices=['hd', 'network', 'cdrom'],
                             help="Boot device with boot action")
 
@@ -123,10 +123,12 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                     "domain": "--domain"
                 },
                 "gen" : {
-                    "domain": "--domain"
+                    "domain": "--domain",
+                    "filename": "--filename"
                 },
                 "wait": {
-                    "domain": "--domain"
+                    "domain": "--domain",
+                    "event": "--event"
                 },
                 "status": {},
                 "cleanup": {},
@@ -145,47 +147,64 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                                            action=action))
 
     def check_optionals(self):
+        """
+            Checks if all defined arguments are compatible with the given
+            action
+        """
 
         action = self._args.actions[0]
 
         logging.debug(u"check for incoherent parameters with {action} action" \
                           .format(action=action))
 
-        optional_args = {
-                "boot": {
-                    "bootdev": "--bootdev",
-                    "overwrite_disks": "--overwrite-disks",
-                    "recreate_networks": "--recreate-networks"
-                },
-                "gen" : {
-                    "filename": "--filename",
-                },
-                "wait": {
-                     "event": "--event"
-                },
-                "status": {},
-                "cleanup": {},
-                "xml": {}
-            }
+        # Options that are either systematically defined (ex: with default
+        # values, like configuration_filename) or global option not specific to
+        # an action (ex: debug). These options will be ignored in the check.
+        default_args = ['configuration_filename',
+                        'actions',
+                        'debug']
 
-        error_str = u"{attribute} has no sense with {action} action"
+        # For each action, list of all compatible options
+        action_args = {
+            'boot': [ 'domain',
+                      'bootdev',
+                      'overwrite_disks',
+                      'recreate_networks' ],
+            'gen' : [ 'domain', 'filename' ],
+            'wait': [ 'domain', 'event' ],
+            'status': [],
+            'cleanup': [],
+            'xml': [ 'resource' ]
+        }
 
-        for action_name, compatible_args in optional_args.iteritems():
+        # For each argument, the name of the corresponding long option
+        options = {
+            'domain': '--domain',
+            'bootdev': '--bootdev',
+            'overwrite_disks': '--overwrite-disks',
+            'recreate_networks': '--recreate-networks',
+            'filename': '--filename',
+            'event': '--event',
+            'resource': '--resource'
+        }
 
-            if action_name == action:
-                continue # go to next item in optional_args
+        error_str = u"{attribute} is not compatible with {action} action"
 
-            for attr, arg in compatible_args.iteritems():
-                if hasattr(self._args, attr) and \
-                   getattr(self._args, attr) is not None:
-                    raise CloubedArgumentException(
-                              error_str.format(attribute=arg,
-                                               action=action))
+        # Get list of compatible args
+        compatible_args = action_args[action]
+        # Loop over the list of defined args
+        for arg, value in self._args.__dict__.iteritems():
+            if arg not in default_args \
+               and value is not None \
+               and arg not in compatible_args:
+                raise CloubedArgumentException(
+                          error_str.format(attribute=options[arg],
+                                           action=action))
 
     def parse_bootdev(self):
 
         if self._args.bootdev:
-            return self._args.bootdev
+            return self._args.bootdev[0]
         else:
             return 'hd' # default value
             # It is not set in parameter of argparse.add_argument(default='hd')
@@ -271,26 +290,22 @@ class CloubedArgumentParser(argparse.ArgumentParser):
            raises exception if problem is found
         """
 
-        if self._args.event:
-
-            waited_event_str = self._args.event[0]
-            waited_event = waited_event_str.split(':')
-            if len(waited_event) is not 2:
-                raise CloubedArgumentException(u"Badly formated --event" \
-                          " parameter, should respect format" \
-                          " <event_type>:<event_detail>")
-            return waited_event
-        else:
-
-            logging.debug(u"--event parameter not specified")
-            return None
+        waited_event_str = self._args.event[0]
+        waited_event = waited_event_str.split(':')
+        if len(waited_event) is not 2:
+            raise CloubedArgumentException(u"format of --event parameter " \
+                                            "is not valid")
+        return waited_event
 
     def parse_resource(self):
+        """
+           Parses and returns values of --resource parameter of xml action or
+           raises exception if problem is found
+        """
 
         resource_str = self._args.resource[0]
         resource = resource_str.split(':')
         if len(resource) is not 2:
-            raise CloubedArgumentException(u"Badly formated --resource" \
-                      " parameter, should respect format" \
-                      " <resource_type>:<resource_name>")
+            raise CloubedArgumentException(u"format of --resource parameter " \
+                                            "is not valid")
         return resource
