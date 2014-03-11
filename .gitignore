@@ -1,3 +1,4 @@
 *.pyc
 build
 tests/.coverage
+doc/_*
