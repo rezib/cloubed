@@ -137,8 +137,8 @@ def main():
         elif action_name == u"boot":
 
              domain_name = args.domain[0]
-             disks_to_overwrite = parser.parse_disks(cloubed)
-             networks_to_recreate = parser.parse_networks(cloubed)
+             disks_to_overwrite = parser.parse_disks()
+             networks_to_recreate = parser.parse_networks()
              bootdev = parser.parse_bootdev()
 
              logging.debug(u"Action boot on {domain}" \
