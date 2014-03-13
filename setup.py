@@ -31,9 +31,8 @@ setup(name='cloubed',
                   'cloubed.cli',
                   'cloubed.conf' ],
       scripts=['scripts/cloubed'],
-      install_requires=['pyyaml'],
-      # cloubed also requires python-libvirt but this
-      # library is not published on pypi
+      install_requires = ['pyyaml',
+                          'libvirt-python'],
       license="LGPLv3",
       platforms=['GNU/Linux']
      )
