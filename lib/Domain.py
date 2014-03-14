@@ -123,9 +123,9 @@ class Domain:
 
     def get_disks(self):
 
-        """ get_disks: Returns the list of disks of the Domain """
+        """ Returns the list of storage volume names of the Domain """
 
-        return self._disks
+        return [ disk.get_storage_volume_name() for disk in self._disks ]
 
     def get_netifs(self):
 
@@ -325,7 +325,6 @@ class Domain:
                 else:
                     overwrite_storage_volume = False
                 storage_volume.create(overwrite_storage_volume)
-        # TODO: check if overwrite_disks has disks not in self._disks
 
         for netif in self._netifs:
             network = netif.get_network()

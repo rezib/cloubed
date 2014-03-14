@@ -43,3 +43,9 @@ class DomainDisk:
         """ get_storage_volume: Returns the StorageVolume of the DomainDisk """
 
         return self._storage_volume
+
+    def get_storage_volume_name(self):
+
+        """ Returns the name of the StorageVolume """
+
+        return self._storage_volume.get_name()

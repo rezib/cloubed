@@ -229,10 +229,25 @@ class Cloubed():
         try:
             if type(overwrite_disks) == bool:
                 if overwrite_disks == True:
-                    overwrite_disks = [ disk.get_storage_volume().get_name() \
-                                            for disk in domain.get_disks() ]
+                    overwrite_disks = domain.get_disks()
                 else:
                     overwrite_disks = []
+            else:
+                # type(overwrite_disks) is list
+                # remove non-existing disks and log warning
+                domain_disks = domain.get_disks()
+                for disk in set(overwrite_disks) - set(domain_disks):
+                    logging.warning("domain {domain} does not have disk " \
+                                    "{disk}, removing it of disks to " \
+                                    "overwrite" \
+                                        .format(domain=domain.get_name(),
+                                                disk=disk))
+                    overwrite_disks.remove(disk)
+
+            logging.debug("disks to overwrite for domain {domain}: {disks}" \
+                              .format(domain=domain.get_name(),
+                                      disks=str(overwrite_disks)))
+
             if type(recreate_networks) == bool:
                 if recreate_networks == True:
                     recreate_networks = [ netif.get_network().get_name() \
