@@ -250,10 +250,25 @@ class Cloubed():
 
             if type(recreate_networks) == bool:
                 if recreate_networks == True:
-                    recreate_networks = [ netif.get_network().get_name() \
-                                              for netif in domain.get_netifs() ]
+                    recreate_networks = domain.get_networks()
                 else:
                     recreate_networks = []
+            else:
+                # type(recreate_networks) is list
+                # remove non-existing networks and log warning
+                domain_networks = domain.get_networks()
+                for network in set(recreate_networks) - set(domain_networks):
+                    logging.warning("domain {domain} is not connected to " \
+                                    "network {network}, removing it of " \
+                                    "networks to recreate" \
+                                        .format(domain=domain.get_name(),
+                                                network=network))
+                    recreate_networks.remove(network)
+
+            logging.debug("networks to recreate for domain {domain}: " \
+                          "{networks}" \
+                              .format(domain=domain.get_name(),
+                                      networks=str(recreate_networks)))
 
             domain.create(bootdev, overwrite_disks, recreate_networks, True)
 

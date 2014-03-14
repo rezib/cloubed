@@ -51,4 +51,12 @@ class DomainNetif:
 
         return self._network
 
+    def get_network_name(self):
+
+        """
+            Returns the name of the Network connected to the domain interface
+        """
+
+        return self._network.get_name()
+
 

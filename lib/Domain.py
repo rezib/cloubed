@@ -127,6 +127,12 @@ class Domain:
 
         return [ disk.get_storage_volume_name() for disk in self._disks ]
 
+    def get_networks(self):
+
+        """ Returns the list of network names of the Domain """
+
+        return [ netif.get_network_name() for netif in self._netifs ]
+
     def get_netifs(self):
 
         """ get_netifs: Returns the list of netifs of the Domain """
@@ -334,7 +340,6 @@ class Domain:
                 else:
                     recreate_network = False
                 network.create(recreate_network)
-        # TODO: check if recreate_networks has disks not in self._netifs
 
         if overwrite:
             # delete all existing domain
