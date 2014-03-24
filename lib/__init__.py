@@ -18,6 +18,58 @@
 # License along with Cloubed.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-""" init of Cloubed """
+""" cloubed module with Cloubed external API"""
 
-__all__ = [ "cloubed" ]
+import libvirt
+import logging
+import atexit
+
+from Cloubed import Cloubed
+
+# It is not actually used in this module but it has to be exported in
+# cloubed external API
+from CloubedException import *
+
+def gen_file(domain_name, template_name):
+
+    """ gen_file: """
+
+    cloubed = Cloubed()
+    cloubed.gen_file(domain_name, template_name)
+
+def boot_vm(domain_name, bootdev = "hd", overwrite_disks = [], recreate_networks = []):
+
+    """ boot_vm: """
+
+    cloubed = Cloubed()
+    cloubed.boot_vm(domain_name, bootdev, overwrite_disks, recreate_networks)
+
+def create_network(network_name, recreate):
+
+    """ Creates network in libvirt """
+
+    cloubed = Cloubed()
+    cloubed.create_network(network_name, recreate)
+
+def cleanup():
+
+    """ Destroys all resources in libvirt """
+
+    cloubed = Cloubed()
+    cloubed.cleanup()
+
+def wait_event(domain_name, event_type, event_detail):
+
+    """ wait_event: """
+
+    cloubed = Cloubed()
+    cloubed.wait_event(domain_name, event_type, event_detail)
+
+def _clean_exit():
+
+    if Cloubed.initialized():
+        # get the singleton instance
+        cloubed = Cloubed()
+        cloubed.clean_exit()
+
+atexit.register(_clean_exit)
