@@ -77,11 +77,12 @@ class Cloubed():
         if self._conn == None:
             logging.error("Failed to open connection to the hypervisor")
             sys.exit(1)
+
         #
-        # initialize event manager
+        # EventManager, None at the beginning. Initialized by
+        # self.launch_event_manager() in self.wait_event()
         #
-    
-        self._event_manager = EventManager()
+        self._event_manager = None
         
         #
         # parse configuration file
@@ -211,6 +212,13 @@ class Cloubed():
                                   .format(address=address))
                 self._http_server.launch(address)
 
+    def launch_event_manager(self):
+
+        """ Launch event manager thread unless already done """
+
+        if self._event_manager is None:
+            self._event_manager = EventManager()
+
     def gen_file(self, domain_name, template_name):
 
         """ gen_file: """
@@ -291,6 +299,9 @@ class Cloubed():
 
         # search the domain
         domain = self.get_domain_by_name(domain_name)
+
+        # launch event manager tread
+        self.launch_event_manager()
 
         if enable_http:
             # build the list of host ip addresses on all networks connected to
@@ -379,4 +390,5 @@ class Cloubed():
         logging.debug("clean exit")
         if self._http_server.launched():
             self._http_server.terminate()
-        self._event_manager.terminate()
+        if self._event_manager is not None:
+            self._event_manager.terminate()
