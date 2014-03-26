@@ -1,6 +1,34 @@
 Cloubed API
 ===========
 
+.. py:function:: storage_pools()
+
+   Returns the list of storage pools names.
+
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+
+.. py:function:: storage_volumes()
+
+   Returns the list of storage volumes names.
+
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+
+.. py:function:: networks()
+
+   Returns the list of networks names.
+
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+
+.. py:function:: domains()
+
+   Returns the list of domains names.
+
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+
 .. py:function:: gen_file(domain_name, template_name)
 
    Generates the file `template_name` of the domain `domain_name` based on its

@@ -138,6 +138,32 @@ class Cloubed():
         #
         self._http_server = HTTPServer()
 
+    def storage_pools(self):
+
+        """ Returns the list of storage pools names """
+
+        return [ storage_pool.get_name() \
+                 for storage_pool in self._storage_pools ]
+
+    def storage_volumes(self):
+
+        """ Returns the list of storage volumes names """
+
+        return [ storage_volume.get_name() \
+                 for storage_volume in self._storage_volumes ]
+
+    def networks(self):
+
+        """ Returns the list of networks names """
+
+        return [ network.get_name() for network in self._networks ]
+
+    def domains(self):
+
+        """ Returns the list of domains names """
+
+        return [ domain.get_name() for domain in self._domains ]
+
     def get_domain_by_name(self, name):
 
         """ get_domain_by_name: """

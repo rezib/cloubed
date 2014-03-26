@@ -65,6 +65,34 @@ def wait_event(domain_name, event_type, event_detail):
     cloubed = Cloubed()
     cloubed.wait_event(domain_name, event_type, event_detail)
 
+def storage_pools():
+
+    """ Returns the list of storage pools names """
+
+    cloubed = Cloubed()
+    return cloubed.storage_pools()
+
+def storage_volumes():
+
+    """ Returns the list of storage volumes names """
+
+    cloubed = Cloubed()
+    return cloubed.storage_volumes()
+
+def networks():
+
+    """ Returns the list of networks names """
+
+    cloubed = Cloubed()
+    return cloubed.networks()
+
+def domains():
+
+    """ Returns the list of domains names """
+
+    cloubed = Cloubed()
+    return cloubed.domains()
+
 def _clean_exit():
 
     if Cloubed.initialized():
