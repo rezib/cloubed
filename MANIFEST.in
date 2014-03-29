@@ -1,0 +1,5 @@
+include README.md COPYING
+recursive-include doc *
+recursive-include tests *
+global-exclude *.pyc .coverage
+prune doc/_*
