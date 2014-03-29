@@ -1,4 +1,6 @@
 *.pyc
 build
+cloubed.egg-info*
+dist
 tests/.coverage
 doc/_*
