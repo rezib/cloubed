@@ -1,9 +1,22 @@
 cloubed 0.3
 -----------
 
-  * New xml action on script to print XML generated for libvirt
+  * New xml action on script to print XML generated for libvirt (#19)
+  * New status action on script to print current status of resources in libvirt (#10)
   * Support usage of already existing bridges on the node as network
   * Set spice as the default value for domains graphics
+  * Better checks of disks to overwrite and networks to recreate
+  * New functions to get list of resources in API (#16)
+  * Rock solid YAML parsing with exceptions
+  * API exported through __init__.py instead of cloubed.py (#18)
+    Warning: it implies changes on import statement in external scripts!
+  * First set of unit tests with 100% coverage on YAML and CLI parsing (#17)
+  * Better coherency checking logic in CLI args parsing
+  * Migration setup.py from deprecated distutils to setuptools
+  * New sphinx documentation with manpage (#15) and reference API (#12)
+  * Debian and RPM packages built and released (#13, #14)
+  * Several small bug fixes and various code cleanups, esp. issues:
+    - #20: avoid call to unreliable os.getlogin()
 
 cloubed 0.2
 -----------
