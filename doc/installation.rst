@@ -22,12 +22,35 @@ technologies, it only works on GNU/Linux based operating systems.
 Installation
 ------------
 
+From Sources
+^^^^^^^^^^^^
+
+Download the source tarball of the latest stable release on `Cloubed website`_
+and extract it. Alternatively, you can also clone the Git repository `hosted
+on Github`_.
+
+Then run the install with::
+
+    sudo python setup.py install
+
+.. _Cloubed website: http://cloubed.org/pub/
+.. _hosted on GitHub: http://github.com/rezib/cloubed
+
 Debian/Ubuntu
 ^^^^^^^^^^^^^
 
-First, install all packages dependencies::
+Add Cloubed Debian repository in a new repository file (eg.
+``/etc/apt/sources.list.d/cloubed.list``), with the following content::
 
-    sudo apt-get install python-libvirt python-yaml qemu-utils kvm
+    deb http://localhost/debian cloubed contrib
+
+Update your package sources database::
+
+    sudo apt-get update
+
+Then, install Cloubed package::
+
+    sudo apt-get install cloubed
 
 Then load the kernel module for hardware virtualization instruction set support:
 
@@ -43,27 +66,26 @@ Become a member of ``libvirtd`` system group::
 
     sudo adduser $USER libvirtd
 
-Download and extract a copy of this repository and finally install ClouBed
-Python package::
+RHEL/CentOS/Fedora
+^^^^^^^^^^^^^^^^^^
 
-    sudo python setup.py install
+Add Cloubed Yum repository in a new repository file (eg.
+``/etc/yum.repos.d/cloubed.repo``), with the following content::
 
+    [cloubed]
+    name=Cloubed upstream repository
+    baseurl=http://cloubed.org/rpm
+    enabled=1
+    gpgcheck=0
 
-CentOS/Fedora
-^^^^^^^^^^^^^
+Then install and enable EPEL repositories as explained in the `official EPEL
+documentation`_.
 
-First, install all packages dependencies from official distribution::
+.. _official EPEL documentation: http://fedoraproject.org/wiki/EPEL
 
-    sudo yum install libvirt libvirt-python qemu-kvm
+Then install Cloubed package::
 
-
-Then, install PyYAML and argparse libraries from EPEL repository. Please refer
-to the `official EPEL documentation`_ for instructions to add EPEL repository on
-your system::
-
-    sudo yum install python-yaml python-argparse # from EPEL
-
-.. _official EPEL documentation: http://fedoraproject.org/wiki/EPEL 
+    sudo yum install cloubed
 
 Then configure libvirt to disable authentication. Please note that this is just
 a proposal for a minimal configuration of libvirt daemon to work easily with
@@ -88,8 +110,3 @@ Edit file ``/etc/libvirt/libvirtd.conf``::
 Then start the libvirt daemon::
 
     sudo service libvirtd start
-
-Download and extract a copy of this repository and finally install Cloubed
-Python package::
-
-    sudo python setup.py install
