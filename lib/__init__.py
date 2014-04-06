@@ -20,7 +20,6 @@
 
 """ cloubed module with Cloubed external API"""
 
-import libvirt
 import logging
 import atexit
 
