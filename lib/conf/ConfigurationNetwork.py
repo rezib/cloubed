@@ -21,7 +21,6 @@
 
 """ ConfigurationNetwork class """
 
-import logging
 import os
 import re
 from ConfigurationItem import ConfigurationItem
@@ -101,11 +100,11 @@ class ConfigurationNetwork(ConfigurationItem):
 
         # forward is not bridge -> bridge parameter has no sense
         if self._forward_mode != 'bridge' and conf.has_key('bridge'):
-             raise CloubedConfigurationException(
-                 "Bridge parameter has no sense on network {network} with " \
-                 "forwarding mode {forward}" \
-                     .format(network = self._name,
-                             forward = self._forward_mode))
+            raise CloubedConfigurationException(
+                "Bridge parameter has no sense on network {network} with " \
+                "forwarding mode {forward}" \
+                    .format(network = self._name,
+                            forward = self._forward_mode))
 
         # forward is bridge -> bridge parameter is mandatory
         elif self._forward_mode == 'bridge':
@@ -143,22 +142,22 @@ class ConfigurationNetwork(ConfigurationItem):
         # forward is bridge -> ip_host and netmask have no sense
         if self._forward_mode == 'bridge' and \
            ( conf.has_key('ip_host') or conf.has_key('netmask') ):
-             raise CloubedConfigurationException(
-                 "ip_host and netmask parameters have no sense on network " \
-                 "{network} with bridge forwarding mode" \
-                     .format(network = self._name))
+            raise CloubedConfigurationException(
+                "ip_host and netmask parameters have no sense on network " \
+                "{network} with bridge forwarding mode" \
+                    .format(network = self._name))
 
         # ip_host needs netmask
         if conf.has_key('ip_host') and not conf.has_key('netmask'):
-             raise CloubedConfigurationException(
-                 "ip_host cannot be set without netmask parameter on network " \
-                 "{network}".format(network = self._name))
+            raise CloubedConfigurationException(
+                "ip_host cannot be set without netmask parameter on network " \
+                "{network}".format(network = self._name))
 
         # netmask needs ip_host
         if conf.has_key('netmask') and not conf.has_key('ip_host'):
-             raise CloubedConfigurationException(
-                 "netmask cannot be set without ip_host parameter on network " \
-                 "{network}".format(network = self._name))
+            raise CloubedConfigurationException(
+                "netmask cannot be set without ip_host parameter on network " \
+                "{network}".format(network = self._name))
 
         if conf.has_key('ip_host') and conf.has_key('netmask'):
 
@@ -211,9 +210,9 @@ class ConfigurationNetwork(ConfigurationItem):
 
         # dhcp cannot be set-up without ip_host/netmask
         if self._ip_host is None and conf.has_key('dhcp'):
-             raise CloubedConfigurationException(
-                 "dhcp service cannot be set-up on network {network} without " \
-                 "ip_host and netmask".format(network = self._name))
+            raise CloubedConfigurationException(
+                "dhcp service cannot be set-up on network {network} without " \
+                "ip_host and netmask".format(network = self._name))
 
         if conf.has_key('dhcp'):
 
@@ -266,9 +265,9 @@ class ConfigurationNetwork(ConfigurationItem):
 
         # pxe cannot be set-up without dhcp
         if self._dhcp_start is None and conf.has_key('pxe'):
-             raise CloubedConfigurationException(
-                 "pxe service cannot be set-up on network {network} without " \
-                 "dhcp".format(network = self._name))
+            raise CloubedConfigurationException(
+                "pxe service cannot be set-up on network {network} without " \
+                "dhcp".format(network = self._name))
 
         if conf.has_key('pxe'):
 
