@@ -28,71 +28,72 @@ import sys
 import logging
 
 def print_testbed_infos(testbed):
-     """
-         Prints nicely a dict full of informations about the testbed and its
-         resources, including their status in Libvirt.
-     """
+    """
+        Prints nicely a dict full of informations about the testbed and its
+        resources, including their status in Libvirt.
+    """
 
-     print "storage pools:"
-     for name, infos in testbed['storagepools'].iteritems():
-         print_storage_pool_infos(name, infos)
+    print "storage pools:"
+    for name, infos in testbed['storagepools'].iteritems():
+        print_storage_pool_infos(name, infos)
 
-     print "storage volumes:"
-     for name, infos in testbed['storagevolumes'].iteritems():
-         print_storage_volume_infos(name, infos)
+    print "storage volumes:"
+    for name, infos in testbed['storagevolumes'].iteritems():
+        print_storage_volume_infos(name, infos)
 
-     print "networks:"
-     for name, infos in testbed['networks'].iteritems():
-         print_network_infos(name, infos)
-     print "domains:"
-     for name, infos in testbed['domains'].iteritems():
-         print_domain_infos(name, infos)
+    print "networks:"
+    for name, infos in testbed['networks'].iteritems():
+        print_network_infos(name, infos)
+
+    print "domains:"
+    for name, infos in testbed['domains'].iteritems():
+        print_domain_infos(name, infos)
 
 def print_storage_pool_infos(name, infos):
-     """
-         Prints nicely a dict full of informations about a storage pool.
-     """
+    """
+        Prints nicely a dict full of informations about a storage pool.
+    """
 
-     print "  - {name}".format(name=name)
-     for key, value in infos.iteritems():
-         print "    - {key:10s}: {value:10s}".format(key=key, value=value)
+    print "  - {name}".format(name=name)
+    for key, value in infos.iteritems():
+        print "    - {key:10s}: {value:10s}".format(key=key, value=value)
 
 def print_storage_volume_infos(name, infos):
-     """
-         Prints nicely a dict full of informations about a storage volume.
-     """
+    """
+        Prints nicely a dict full of informations about a storage volume.
+    """
 
-     print "  - {name}".format(name=name)
-     print "    - status    : {status}".format(status=infos['status'])
-     if infos.has_key('path'):
-         print "    - path      : {path}".format(path=infos['path'])
-     if infos.has_key('allocation') and infos.has_key('capacity'):
-         print "    - size      : {allocation:.2f}/{capacity:.2f}GB" \
-                   .format(allocation = infos['allocation']/1024,
-                           capacity = infos['capacity']/1024)
+    print "  - {name}".format(name=name)
+    print "    - status    : {status}".format(status=infos['status'])
+    if infos.has_key('path'):
+        print "    - path      : {path}".format(path=infos['path'])
+    if infos.has_key('allocation') and infos.has_key('capacity'):
+        print "    - size      : {allocation:.2f}/{capacity:.2f}GB" \
+                  .format(allocation = infos['allocation']/1024,
+                          capacity = infos['capacity']/1024)
 
 def print_network_infos(name, infos):
-     """
-         Prints nicely a dict full of informations about a network.
-     """
+    """
+        Prints nicely a dict full of informations about a network.
+    """
 
-     print "  - {name}".format(name=name)
-     print "    - status    : {status}".format(status=infos['status'])
-     if infos.has_key('bridge'):
-         print "    - bridge    : {bridge}".format(bridge=infos['bridge'])
-     if infos.has_key('ip') and infos.has_key('netmask'):
-         print "    - ip        : {ip}/{netmask}" \
-                   .format(ip = infos['ip'],
-                           netmask = infos['netmask'])
+    print "  - {name}".format(name=name)
+    print "    - status    : {status}".format(status=infos['status'])
+    if infos.has_key('bridge'):
+        print "    - bridge    : {bridge}".format(bridge=infos['bridge'])
+    if infos.has_key('ip') and infos.has_key('netmask'):
+        print "    - ip        : {ip}/{netmask}" \
+                  .format(ip = infos['ip'],
+                          netmask = infos['netmask'])
 
 def print_domain_infos(name, infos):
-     """
-         Prints nicely a dict full of informations about a domain.
-     """
+    """
+        Prints nicely a dict full of informations about a domain.
+    """
 
-     print "  - {name}".format(name=name)
-     for key, value in infos.iteritems():
-         print "    - {key:10s}: {value:10s}".format(key=key, value=value)
+    print "  - {name}".format(name=name)
+    for key, value in infos.iteritems():
+        print "    - {key:10s}: {value:10s}".format(key=key, value=value)
 
 def main():
 
@@ -125,61 +126,61 @@ def main():
 
         if action_name == "gen":
 
-             domain_name = args.domain[0]
-             filename = args.filename[0]
+            domain_name = args.domain[0]
+            filename = args.filename[0]
 
-             logging.debug(u"Action gen on {domain} with template {template}" \
-                               .format(domain=domain_name,
-                                       template=filename))
+            logging.debug(u"Action gen on {domain} with template {template}" \
+                              .format(domain=domain_name,
+                                      template=filename))
 
-             cloubed.gen_file(domain_name, filename)
+            cloubed.gen_file(domain_name, filename)
 
         elif action_name == u"boot":
 
-             domain_name = args.domain[0]
-             disks_to_overwrite = parser.parse_disks()
-             networks_to_recreate = parser.parse_networks()
-             bootdev = parser.parse_bootdev()
+            domain_name = args.domain[0]
+            disks_to_overwrite = parser.parse_disks()
+            networks_to_recreate = parser.parse_networks()
+            bootdev = parser.parse_bootdev()
 
-             logging.debug(u"Action boot on {domain}" \
-                               .format(domain=domain_name))
+            logging.debug(u"Action boot on {domain}" \
+                              .format(domain=domain_name))
 
-             cloubed.boot_vm(domain_name, bootdev,
-                             disks_to_overwrite,
-                             networks_to_recreate)
+            cloubed.boot_vm(domain_name, bootdev,
+                            disks_to_overwrite,
+                            networks_to_recreate)
 
         elif action_name == u"wait":
 
-             domain_name = args.domain[0]
-             waited_event = parser.parse_event()
-             event_type = waited_event[0]
-             event_detail = waited_event[1]
+            domain_name = args.domain[0]
+            waited_event = parser.parse_event()
+            event_type = waited_event[0]
+            event_detail = waited_event[1]
 
-             logging.debug(u"Action wait on {domain} with " \
-                            "{event_type}/{event_detail}" \
-                            .format(domain=domain_name,
-                                    event_type=event_type,
-                                    event_detail=event_detail))
+            logging.debug(u"Action wait on {domain} with " \
+                           "{event_type}/{event_detail}" \
+                           .format(domain=domain_name,
+                                   event_type=event_type,
+                                   event_detail=event_detail))
 
-             cloubed.wait_event(domain_name, event_type, event_detail)
+            cloubed.wait_event(domain_name, event_type, event_detail)
 
         elif action_name == u"status":
 
-             testbed = cloubed.get_infos()
+            testbed = cloubed.get_infos()
 
-             print_testbed_infos(testbed)
+            print_testbed_infos(testbed)
 
         elif action_name == u"cleanup":
 
-             logging.debug(u"Action cleanup")
-             cloubed.cleanup()
+            logging.debug(u"Action cleanup")
+            cloubed.cleanup()
 
         elif action_name == u"xml":
 
-             logging.debug(u"Action xml")
-             resource_type, resource_name = parser.parse_resource()
-             xml = cloubed.xml(resource_type, resource_name)
-             print xml.toprettyxml(indent="  ")
+            logging.debug(u"Action xml")
+            resource_type, resource_name = parser.parse_resource()
+            xml = cloubed.xml(resource_type, resource_name)
+            print xml.toprettyxml(indent="  ")
 
         else:
             raise CloubedArgumentException(
