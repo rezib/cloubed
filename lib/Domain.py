@@ -66,10 +66,7 @@ class Domain:
             mac = gen_mac("{domain_name:s}-{network_name:s}" \
                               .format(domain_name=self._name,
                                       network_name=network_name))
-            if netif.has_key("ip"):
-                ip = netif["ip"]
-            else:
-                ip = None
+            ip = netif.get('ip')
             netif = DomainNetif(self._name, mac, ip, network_name)
             self._netifs.append(netif)
 
