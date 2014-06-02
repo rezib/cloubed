@@ -261,15 +261,21 @@ class Cloubed():
 
         domain = self.get_domain_by_name(domain_name)
 
+        #
+        # manage disks
+        #
+
+        # build list of storage volumes to overwrite
+
         if type(overwrite_disks) == bool:
             if overwrite_disks == True:
-                overwrite_disks = domain.get_disks()
+                overwrite_disks = domain.get_storage_volumes_names()
             else:
                 overwrite_disks = []
         else:
             # type(overwrite_disks) is list
             # remove non-existing disks and log warning
-            domain_disks = domain.get_disks()
+            domain_disks = domain.get_storage_volumes_names()
             for disk in set(overwrite_disks) - set(domain_disks):
                 logging.warning("domain {domain} does not have disk " \
                                 "{disk}, removing it of disks to " \
@@ -282,15 +288,30 @@ class Cloubed():
                           .format(domain=domain.get_name(),
                                   disks=str(overwrite_disks)))
 
+        for storage_volume in domain.get_storage_volumes():
+            #if not storage_volume.created(): #useless?
+            if storage_volume.get_name() in overwrite_disks:
+                overwrite_storage_volume = True
+            else:
+                overwrite_storage_volume = False
+            storage_volume.create(overwrite_storage_volume)
+
+
+        #
+        # manage networks
+        #
+
+        # build list of networks to recreate
+
         if type(recreate_networks) == bool:
             if recreate_networks == True:
-                recreate_networks = domain.get_networks()
+                recreate_networks = domain.get_networks_names()
             else:
                 recreate_networks = []
         else:
             # type(recreate_networks) is list
             # remove non-existing networks and log warning
-            domain_networks = domain.get_networks()
+            domain_networks = domain.get_networks_names()
             for network in set(recreate_networks) - set(domain_networks):
                 logging.warning("domain {domain} is not connected to " \
                                 "network {network}, removing it of " \
@@ -304,7 +325,20 @@ class Cloubed():
                           .format(domain=domain.get_name(),
                                   networks=str(recreate_networks)))
 
-        domain.create(bootdev, overwrite_disks, recreate_networks, True)
+
+        for network in domain.get_networks():
+            #if not network.created(): #useless?
+            if network.get_name() in recreate_networks:
+                recreate_network = True
+            else:
+                recreate_network = False
+            network.create(recreate_network)
+
+        #
+        # manage domain
+        #
+
+        domain.create(bootdev, True)
 
     def create_network(self, network_name, recreate):
 

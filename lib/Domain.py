@@ -120,13 +120,25 @@ class Domain:
 
         return self._libvirt_name
 
-    def get_disks(self):
+    def get_storage_volumes(self):
+
+        """ Returns the list of storage volume of the Domain """
+
+        return [ disk.get_storage_volume() for disk in self._disks ]
+
+    def get_storage_volumes_names(self):
 
         """ Returns the list of storage volume names of the Domain """
 
         return [ disk.get_storage_volume_name() for disk in self._disks ]
 
     def get_networks(self):
+
+        """ Returns the list of network of the Domain """
+
+        return [ netif.get_network() for netif in self._netifs ]
+
+    def get_networks_names(self):
 
         """ Returns the list of network names of the Domain """
 
@@ -316,29 +328,9 @@ class Domain:
 
     def create(self,
                bootdev='hd',
-               overwrite_disks = [],
-               recreate_networks = [],
                overwrite = False):
 
         """ Creates the Domain and all its dependancies in libvirt """
-
-        for disk in self._disks:
-            storage_volume = disk.get_storage_volume()
-            if not storage_volume.created():
-                if storage_volume.get_name() in overwrite_disks:
-                    overwrite_storage_volume = True
-                else:
-                    overwrite_storage_volume = False
-                storage_volume.create(overwrite_storage_volume)
-
-        for netif in self._netifs:
-            network = netif.get_network()
-            if not network.created():
-                if network.get_name() in recreate_networks:
-                    recreate_network = True
-                else:
-                    recreate_network = False
-                network.create(recreate_network)
 
         if overwrite:
             # delete all existing domain
