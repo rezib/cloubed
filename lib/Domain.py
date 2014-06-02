@@ -24,7 +24,6 @@
 import logging
 import time
 import threading
-import libvirt
 from xml.dom.minidom import Document, parseString
 
 from CloubedException import CloubedException
@@ -409,18 +408,6 @@ class Domain:
             #logging.debug("domain {domain}: lock released by waitForEvent" \
             #                  .format(domain=self._name))
             time.sleep(1)
-
-    def snapshot(self, snapshot_name):
-
-        """ snapshot: Make a snapshot of a Domain """
-
-        domain_snapshot = DomainSnapshot(self._conn,
-                                         snapshot_name,
-                                         self._disks[0])
-        self._virtobj = self._conn.lookupByName(self._name)
-        self._virtobj.snapshotCreateXML(
-                          domain_snapshot.toxml(),
-                          libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY)
 
     def __init_xml(self):
 

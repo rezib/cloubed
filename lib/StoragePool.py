@@ -272,9 +272,11 @@ class StoragePool:
             self._libvirt_name = storage_pool.name() # override libvirt name
 
             # if not active in libvirt (defined but not started), activate it
+            # TODO: virStoragePool.isActive() should be called in VirtController
             if not self._virtobj.isActive():
                 logging.info("storage pool {name} is not active, activating it..." \
                                  .format(name=self._libvirt_name))
+                # TODO: virStoragePool.create() should be called in VirtController
                 self._virtobj.create(0)
 
         else:

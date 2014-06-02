@@ -23,7 +23,8 @@
 
 __all__ = [ "CloubedException",
             "CloubedArgumentException",
-            "CloubedConfigurationException" ]
+            "CloubedConfigurationException",
+            "CloubedControllerException" ]
 
 class CloubedException(Exception):
 
@@ -53,3 +54,11 @@ class CloubedConfigurationException(CloubedException):
     def __init__(self, msg):
 
         super(CloubedConfigurationException, self).__init__(msg)
+
+class CloubedControllerException(CloubedException):
+
+    """ Class for Virtualisation Controller exceptions in Cloubed """
+
+    def __init__(self, msg):
+
+        super(CloubedControllerException, self).__init__(msg)

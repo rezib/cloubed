@@ -22,8 +22,9 @@
 """ EventManager class of Cloubed """
 
 import threading
-import libvirt
 import logging
+
+from VirtController import VirtController
 from Domain import Domain
 from DomainEvent import DomainEvent
 
@@ -33,8 +34,7 @@ class EventManager:
 
     def __init__(self):
 
-        libvirt.virEventRegisterDefaultImpl()
-
+        VirtController.event_register()
         self._stop = threading.Event()
 
         self._thread = threading.Thread(target=self.run_event_loop,
@@ -42,10 +42,8 @@ class EventManager:
         self._thread.setDaemon(True)
         self._thread.start()
 
-        self._conn = libvirt.openReadOnly('qemu:///system')
-        self._conn.domainEventRegisterAny(None, \
-                                          libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE, \
-                                          EventManager.manage_event, None)
+        self._conn = VirtController(read_only=True)
+        self._conn.domain_event_register(EventManager.manage_event)
         self._conn.setKeepAlive(5, 3)
 
         logging.debug("initialized event manager")
@@ -61,10 +59,9 @@ class EventManager:
 
         # In race conditions on python interpreter exit, libvirt sometimes
         # becomes None. So loop conditioner tests if it is still defined in
-        # order to avoid awful errors.
-        while not self._stop.is_set() and \
-              libvirt is not None:
-            libvirt.virEventRunDefaultImpl()
+        # order to avoid  errors.
+        while not self._stop.is_set():
+            VirtController.event_run()
 
     @staticmethod
     def manage_event(conn, dom, event_type, event_detail, opaque):

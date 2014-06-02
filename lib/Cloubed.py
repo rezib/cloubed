@@ -21,12 +21,12 @@
 
 """ Cloubed """
 
-import libvirt
 import sys
 import os
 import logging
 import thread
 
+from VirtController import VirtController
 from StoragePool import StoragePool
 from StorageVolume import StorageVolume
 from Domain import Domain
@@ -73,7 +73,7 @@ class Cloubed():
         # connection to the hypervisor
         #
         
-        self._conn = libvirt.open("qemu:///system")
+        self._conn = VirtController()
         if self._conn == None:
             logging.error("Failed to open connection to the hypervisor")
             sys.exit(1)
@@ -260,64 +260,57 @@ class Cloubed():
         """ boot_vm: """
 
         domain = self.get_domain_by_name(domain_name)
-        try:
-            if type(overwrite_disks) == bool:
-                if overwrite_disks == True:
-                    overwrite_disks = domain.get_disks()
-                else:
-                    overwrite_disks = []
+
+        if type(overwrite_disks) == bool:
+            if overwrite_disks == True:
+                overwrite_disks = domain.get_disks()
             else:
-                # type(overwrite_disks) is list
-                # remove non-existing disks and log warning
-                domain_disks = domain.get_disks()
-                for disk in set(overwrite_disks) - set(domain_disks):
-                    logging.warning("domain {domain} does not have disk " \
-                                    "{disk}, removing it of disks to " \
-                                    "overwrite" \
-                                        .format(domain=domain.get_name(),
-                                                disk=disk))
-                    overwrite_disks.remove(disk)
+                overwrite_disks = []
+        else:
+            # type(overwrite_disks) is list
+            # remove non-existing disks and log warning
+            domain_disks = domain.get_disks()
+            for disk in set(overwrite_disks) - set(domain_disks):
+                logging.warning("domain {domain} does not have disk " \
+                                "{disk}, removing it of disks to " \
+                                "overwrite" \
+                                    .format(domain=domain.get_name(),
+                                            disk=disk))
+                overwrite_disks.remove(disk)
 
-            logging.debug("disks to overwrite for domain {domain}: {disks}" \
-                              .format(domain=domain.get_name(),
-                                      disks=str(overwrite_disks)))
+        logging.debug("disks to overwrite for domain {domain}: {disks}" \
+                          .format(domain=domain.get_name(),
+                                  disks=str(overwrite_disks)))
 
-            if type(recreate_networks) == bool:
-                if recreate_networks == True:
-                    recreate_networks = domain.get_networks()
-                else:
-                    recreate_networks = []
+        if type(recreate_networks) == bool:
+            if recreate_networks == True:
+                recreate_networks = domain.get_networks()
             else:
-                # type(recreate_networks) is list
-                # remove non-existing networks and log warning
-                domain_networks = domain.get_networks()
-                for network in set(recreate_networks) - set(domain_networks):
-                    logging.warning("domain {domain} is not connected to " \
-                                    "network {network}, removing it of " \
-                                    "networks to recreate" \
-                                        .format(domain=domain.get_name(),
-                                                network=network))
-                    recreate_networks.remove(network)
+                recreate_networks = []
+        else:
+            # type(recreate_networks) is list
+            # remove non-existing networks and log warning
+            domain_networks = domain.get_networks()
+            for network in set(recreate_networks) - set(domain_networks):
+                logging.warning("domain {domain} is not connected to " \
+                                "network {network}, removing it of " \
+                                "networks to recreate" \
+                                    .format(domain=domain.get_name(),
+                                            network=network))
+                recreate_networks.remove(network)
 
-            logging.debug("networks to recreate for domain {domain}: " \
-                          "{networks}" \
-                              .format(domain=domain.get_name(),
-                                      networks=str(recreate_networks)))
+        logging.debug("networks to recreate for domain {domain}: " \
+                      "{networks}" \
+                          .format(domain=domain.get_name(),
+                                  networks=str(recreate_networks)))
 
-            domain.create(bootdev, overwrite_disks, recreate_networks, True)
-
-        except libvirt.libvirtError as err:
-            logging.error("libvirt error: {error}".format(error=err))
-            raise CloubedException(err)
+        domain.create(bootdev, overwrite_disks, recreate_networks, True)
 
     def create_network(self, network_name, recreate):
 
         """ Create network in Cloubed """
         network = self.get_network_by_name(network_name)
-        try:
-            network.create(recreate)
-        except libvirt.libvirtError as err:
-            raise CloubedException(err)
+        network.create(recreate)
 
     def wait_event(self, domain_name, event_type, event_detail, enable_http = True):
 
