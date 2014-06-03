@@ -142,7 +142,7 @@ class Cloubed():
 
         """ Returns the list of storage pools names """
 
-        return [ storage_pool.get_name() \
+        return [ storage_pool.name \
                  for storage_pool in self._storage_pools ]
 
     def storage_volumes(self):
@@ -214,7 +214,7 @@ class Cloubed():
         """
 
         for storage_pool in self._storage_pools:
-            if storage_pool.get_name() == name:
+            if storage_pool.name == name:
                 return storage_pool
 
         # storage pool not found
@@ -389,7 +389,7 @@ class Cloubed():
 
         infos['storagepools'] = {}
         for storage_pool in self._storage_pools:
-            name = storage_pool.get_name()
+            name = storage_pool.name
             infos['storagepools'][name] = storage_pool.get_infos()
 
         infos['storagevolumes'] = {}

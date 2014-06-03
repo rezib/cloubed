@@ -134,7 +134,7 @@ class StorageVolume:
             getpath: Returns the full absolute path of the StorageVolume
         """
 
-        return os.path.join(self._storage_pool.getpath(), self.getfilename())
+        return os.path.join(self._storage_pool.path, self.getfilename())
 
     def get_name(self):
 

@@ -36,17 +36,17 @@ class StoragePool:
         self._conn = conn
         self._virtobj = None
 
-        self._name = storage_pool_conf.get_name()
+        self.name = storage_pool_conf.get_name()
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
-            self._libvirt_name = \
+            self.libvirt_name = \
                 "{user}:{testbed}:{name}" \
                     .format(user = getuser(),
                             testbed = storage_pool_conf.get_testbed(),
-                            name = self._name)
+                            name = self.name)
         else:
-            self._libvirt_name = self._name
-        self._path = storage_pool_conf.get_path()
+            self.libvirt_name = self.name
+        self.path = storage_pool_conf.get_path()
 
         StoragePool._storage_pools.append(self)
 
@@ -61,7 +61,7 @@ class StoragePool:
 
     def __eq__(self, other): # needed for __del__
 
-        return self._name == other.get_name()
+        return self.name == other.name
 
     @classmethod
     def get_storage_pools_list(cls):
@@ -81,7 +81,7 @@ class StoragePool:
         """
 
         for storage_pool in cls._storage_pools:
-            if storage_pool.get_name() == storage_pool_name:
+            if storage_pool.name == storage_pool_name:
                 return storage_pool
 
         return None
@@ -111,22 +111,6 @@ class StoragePool:
 
         return self._virtobj
 
-    def getpath(self):
-
-        """
-            getpath: Returns the path of the StoragePool
-        """
-
-        return self._path
-
-    def get_name(self):
-
-        """
-            get_name: Returns the name of the StoragePool
-        """
-
-        return self._name
-
     def find_storage_pool(self):
 
         """
@@ -143,7 +127,7 @@ class StoragePool:
             xml = storage_pool.XMLDesc(0)
             path = StoragePool.extract_path(xml)
 
-            if path == self._path:
+            if path == self.path:
 
                 logging.info("found storage pool {name} with the same path" \
                                  .format(name=storage_pool_name))
@@ -224,12 +208,6 @@ class StoragePool:
 
         return states[state_code]
 
-    def get_libvirt_name(self):
-
-        """
-            Returns the name of the StoragePool in libvirt
-        """
-
     def destroy(self):
 
         """
@@ -239,7 +217,7 @@ class StoragePool:
         storage_pool = self.find_storage_pool()
         if storage_pool is None:
             logging.debug("unable to destroy storage pool {name} since not " \
-                          "found in libvirt".format(name=self._name))
+                          "found in libvirt".format(name=self.name))
             return # do nothing and leave
 
         if storage_pool.isActive():
@@ -247,13 +225,13 @@ class StoragePool:
             # including volume of other testbeds
             nb_vols = storage_pool.numOfVolumes()
             if nb_vols == 0:
-                logging.warn("destroying storage pool {name}".format(name=self._name))
+                logging.warn("destroying storage pool {name}".format(name=self.name))
                 storage_pool.destroy()
             else:
                 logging.warn("unable storage pool {name} because it still has " \
-                             "{nb} volumes".format(name=self._name, nb=nb_vols))
+                             "{nb} volumes".format(name=self.name, nb=nb_vols))
         else:
-            logging.warn("undefining storage pool {name}".format(name=self._name))
+            logging.warn("undefining storage pool {name}".format(name=self.name))
             storage_pool.undefine()
 
     def create(self):
@@ -269,13 +247,13 @@ class StoragePool:
             logging.info("found storage pool {name} with the same path" \
                              .format(name=storage_pool.name()))
             self._virtobj = storage_pool
-            self._libvirt_name = storage_pool.name() # override libvirt name
+            self.libvirt_name = storage_pool.name() # override libvirt name
 
             # if not active in libvirt (defined but not started), activate it
             # TODO: virStoragePool.isActive() should be called in VirtController
             if not self._virtobj.isActive():
                 logging.info("storage pool {name} is not active, activating it..." \
-                                 .format(name=self._libvirt_name))
+                                 .format(name=self.libvirt_name))
                 # TODO: virStoragePool.create() should be called in VirtController
                 self._virtobj.create(0)
 
@@ -305,7 +283,7 @@ class StoragePool:
 
         # name node
         element_name = self._doc.createElement("name")
-        node_name = self._doc.createTextNode(self._libvirt_name)
+        node_name = self._doc.createTextNode(self.libvirt_name)
         element_name.appendChild(node_name)
         element_pool.appendChild(element_name)
 
@@ -315,7 +293,7 @@ class StoragePool:
 
         # path node
         element_path = self._doc.createElement("path")
-        node_path = self._doc.createTextNode(self._path)
+        node_path = self._doc.createTextNode(self.path)
         element_path.appendChild(node_path)
         element_target.appendChild(element_path)
 
