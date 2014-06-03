@@ -271,7 +271,7 @@ class Domain:
         """ Returns the DomainTemplate with this name """
 
         for template in self._templates:
-            if template.get_name() == template_name:
+            if template.name == template_name:
                 return template
 
         # template not found therefore raise exception

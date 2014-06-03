@@ -42,15 +42,9 @@ class DomainTemplate():
 
     def __init__(self, domain_template_conf):
 
-        self._name = domain_template_conf['name']
+        self.name = domain_template_conf['name']
         self._source_file = domain_template_conf['input']
         self._output_file = domain_template_conf['output']
-
-    def get_name(self):
-
-        """ get_name: Returns the name of the template """
-
-        return self._name
 
     def render(self, template_dict):
 
