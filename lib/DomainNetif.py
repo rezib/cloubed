@@ -43,6 +43,6 @@ class DomainNetif:
             Returns the name of the Network connected to the domain interface
         """
 
-        return self.network.get_name()
+        return self.network.name
 
 

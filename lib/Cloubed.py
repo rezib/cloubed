@@ -156,7 +156,7 @@ class Cloubed():
 
         """ Returns the list of networks names """
 
-        return [ network.get_name() for network in self._networks ]
+        return [ network.name for network in self._networks ]
 
     def domains(self):
 
@@ -184,7 +184,7 @@ class Cloubed():
         """
 
         for network in self._networks:
-            if network.get_name() == name:
+            if network.name == name:
                 return network
 
         # network not found
@@ -328,7 +328,7 @@ class Cloubed():
 
         for network in domain.get_networks():
             #if not network.created(): #useless?
-            if network.get_name() in recreate_networks:
+            if network.name in recreate_networks:
                 recreate_network = True
             else:
                 recreate_network = False
@@ -359,9 +359,9 @@ class Cloubed():
         if enable_http:
             # build the list of host ip addresses on all networks connected to
             # the domain
-            list_ip_hosts = [ dom_netif.network.get_ip_host() \
+            list_ip_hosts = [ dom_netif.network.ip_host \
                               for dom_netif in domain.netifs \
-                              if dom_netif.network.get_ip_host() \
+                              if dom_netif.network.ip_host \
                                  is not None ]
             if len(list_ip_hosts) > 0:
                 # arbitrary take the first ip address
@@ -399,7 +399,7 @@ class Cloubed():
 
         infos['networks'] = {}
         for network in self._networks:
-            name = network.get_name()
+            name = network.name
             infos['networks'][name] = network.get_infos()
 
         infos['domains'] = {}

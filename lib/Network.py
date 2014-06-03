@@ -36,26 +36,26 @@ class Network:
         self._conn = conn
         self._virtobj = None
 
-        self._name = network_conf.get_name()
+        self.name = network_conf.get_name()
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
-            self._libvirt_name = \
+            self.libvirt_name = \
                 "{user}:{testbed}:{name}" \
                     .format(user = getuser(),
                             testbed = network_conf.get_testbed(),
-                            name = self._name)
+                            name = self.name)
         else:
-            self._libvirt_name = self._name
+            self.libvirt_name = self.name
 
         self._forward_mode = network_conf.get_forward_mode()
         self._bridge_name = network_conf.get_bridge_name()
 
         self._with_local_settings = False
-        self._ip_host = None
+        self.ip_host = None
         self._netmask = None
         if network_conf.has_local_settings():
             self._with_local_settings = True
-            self._ip_host = network_conf.get_ip_host()
+            self.ip_host = network_conf.get_ip_host()
             self._netmask = network_conf.get_netmask()
 
         self._with_dhcp = False
@@ -90,7 +90,7 @@ class Network:
 
     def __eq__(self, other): # needed for __del__
 
-        return self._name == other.get_name()
+        return self.name == other.name
 
     @classmethod
     def get_network_list(cls):
@@ -105,7 +105,7 @@ class Network:
         """ get_by_name: Returns the Network with name given in parameter """
 
         for network in cls._networks:
-            if network.get_name() == network_name:
+            if network.name == network_name:
                 return network
 
         return None
@@ -134,7 +134,7 @@ class Network:
         networks = self._conn.listNetworks() + self._conn.listDefinedNetworks()
         for network_name in networks:
 
-            if network_name == self._libvirt_name:
+            if network_name == self.libvirt_name:
 
                 return self._conn.networkLookupByName(network_name)
 
@@ -186,31 +186,13 @@ class Network:
 
         return infos
 
-    def get_name(self):
-
-        """ get_name: Returns the name of the network """
-
-        return self._name
-
-    def get_libvirt_name(self):
-
-        """ Returns the name of the Network in libvirt """
-
-        return self._libvirt_name
-
-    def get_ip_host(self):
-
-        """ Return the IP address of the host in the Network """
-
-        return self._ip_host
-
     def register_host(self, hostname, mac, ip):
 
         """ Register a host with a static IP address in DHCP """
 
         logging.debug("registering host {hostname} in network {network}" \
                           .format(hostname=hostname,
-                                  network=self._name))
+                                  network=self.name))
         self._hosts.append({"hostname": hostname, "mac": mac, "ip": ip})
 
     def created(self):
@@ -228,13 +210,13 @@ class Network:
         network = self.find_network()
         if network is None:
             logging.debug("unable to destroy network {name} since not found " \
-                          "in libvirt".format(name=self._name))
+                          "in libvirt".format(name=self.name))
             return # do nothing and leave
         if network.isActive():
-            logging.warn("destroying network {name}".format(name=self._name))
+            logging.warn("destroying network {name}".format(name=self.name))
             network.destroy()
         else:
-            logging.warn("undefining network {name}".format(name=self._name))
+            logging.warn("undefining network {name}".format(name=self.name))
             network.undefine()
 
     def create(self, overwrite = False):
@@ -243,19 +225,19 @@ class Network:
 
         if overwrite:
             for network_name in self._conn.listDefinedNetworks():
-                if network_name == self._libvirt_name:
+                if network_name == self.libvirt_name:
                     network = self._conn.networkLookupByName(network_name)
                     logging.info("undefining network " + network_name)
                     network.undefine()
             for network_name in self._conn.listNetworks():
-                if network_name == self._libvirt_name:
+                if network_name == self.libvirt_name:
                     network = self._conn.networkLookupByName(network_name)
                     logging.info("destroying network " + network_name)
                     network.destroy()
             self._virtobj = self._conn.networkCreateXML(self.toxml())
         else:
-            if self._libvirt_name in self._conn.listNetworks():
-                self._virtobj = self._conn.networkLookupByName(self._libvirt_name)
+            if self.libvirt_name in self._conn.listNetworks():
+                self._virtobj = self._conn.networkLookupByName(self.libvirt_name)
             else:
                 self._virtobj = self._conn.networkCreateXML(self.toxml())
 
@@ -318,7 +300,7 @@ class Network:
 
         # name element
         element_name = self._doc.createElement("name")
-        node_name = self._doc.createTextNode(self._libvirt_name)
+        node_name = self._doc.createTextNode(self.libvirt_name)
         element_name.appendChild(node_name)
         element_network.appendChild(element_name)
 
@@ -341,7 +323,7 @@ class Network:
             # ip element
             if self._with_local_settings:
                 element_ip = self._doc.createElement("ip")
-                element_ip.setAttribute("address", self._ip_host)
+                element_ip.setAttribute("address", self.ip_host)
                 element_ip.setAttribute("netmask", self._netmask)
                 element_network.appendChild(element_ip)
 

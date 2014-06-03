@@ -584,7 +584,7 @@ class Domain:
             # devices/interface/source
             element_source = self._doc.createElement("source")
             element_source.setAttribute("network",
-                                        netif.network.get_libvirt_name())
+                                        netif.network.libvirt_name)
             element_interface.appendChild(element_source)
 
             # devices/interface/target
