@@ -133,7 +133,7 @@ class Domain:
 
         """ Returns the list of network of the Domain """
 
-        return [ netif.get_network() for netif in self._netifs ]
+        return [ netif.network for netif in self._netifs ]
 
     def get_networks_names(self):
 
@@ -602,7 +602,7 @@ class Domain:
             # devices/interface/source
             element_source = self._doc.createElement("source")
             element_source.setAttribute("network",
-                                        netif.get_network().get_libvirt_name())
+                                        netif.network.get_libvirt_name())
             element_interface.appendChild(element_source)
 
             # devices/interface/target
@@ -612,7 +612,7 @@ class Domain:
 
             # devices/interface/mac
             element_mac = self._doc.createElement("mac")
-            element_mac.setAttribute("address", netif.get_mac())
+            element_mac.setAttribute("address", netif.mac)
             element_interface.appendChild(element_mac)
 
             # devices/interface/model

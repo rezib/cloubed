@@ -30,26 +30,12 @@ class DomainNetif:
 
     def __init__(self, hostname, mac, ip, network):
 
-        self._hostname = hostname
-        self._mac = mac
-        self._ip = ip
-        self._network = Network.get_by_name(network)
-        if self._ip is not None:
-            self._network.register_host(hostname, mac, ip)
-
-    def get_mac(self):
-
-        """ get_mac: Returns the MAC address of the domain interface """
-
-        return self._mac
-
-    def get_network(self):
-
-        """
-            get_network: Returns the Network connected to the domain interface
-        """
-
-        return self._network
+        self.hostname = hostname
+        self.mac = mac
+        self.ip = ip
+        self.network = Network.get_by_name(network)
+        if self.ip is not None:
+            self.network.register_host(hostname, mac, ip)
 
     def get_network_name(self):
 
@@ -57,6 +43,6 @@ class DomainNetif:
             Returns the name of the Network connected to the domain interface
         """
 
-        return self._network.get_name()
+        return self.network.get_name()
 
 
