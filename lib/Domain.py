@@ -275,12 +275,6 @@ class Domain:
 
         return self.xml().toxml()
 
-    def getvirtobj(self):
-
-        """ Returns the libvirt object of the Domain """
-
-        return self._virtobj
-
     def created(self):
 
         """ Returns True if the Domain has been created in libvirt """

@@ -123,12 +123,6 @@ class Network:
 
         return self.xml().toxml()
 
-    def getvirtobj(self):
-
-        """ getvirtobj: Returns the libvirt object of the Network """
-
-        return self._virtobj
-
     def find_network(self):
 
         networks = self._conn.listNetworks() + self._conn.listDefinedNetworks()

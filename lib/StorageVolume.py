@@ -205,14 +205,6 @@ class StorageVolume:
 
         return infos
 
-    def getvirtobj(self):
-
-        """
-            getvirtobj: Returns the libvirt object of the StorageVolume
-        """
-
-        return self._virtobj
-
     def created(self):
 
         """
