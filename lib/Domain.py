@@ -43,45 +43,45 @@ class Domain:
 
         self._conn = conn
         self._virtobj = None
-        self._name = domain_conf.get_name()
+        self.name = domain_conf.get_name()
 
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
-            self._libvirt_name = \
+            self.libvirt_name = \
                 "{user}:{testbed}:{name}" \
                     .format(user = getuser(),
                             testbed = domain_conf.get_testbed(),
-                            name = self._name)
+                            name = self.name)
         else:
-            self._libvirt_name = self._name
+            self.libvirt_name = self.name
 
-        self._vcpu = domain_conf.get_cpu()
-        self._memory = domain_conf.get_memory()
+        self.vcpu = domain_conf.get_cpu()
+        self.memory = domain_conf.get_memory()
 
-        self._netifs = []
+        self.netifs = []
         netifs_list = domain_conf.get_netifs_list()
         # ex: [ 'admin', 'backbone' ]
         for netif in netifs_list:
             network_name = netif["network"]
             mac = gen_mac("{domain_name:s}-{network_name:s}" \
-                              .format(domain_name=self._name,
+                              .format(domain_name=self.name,
                                       network_name=network_name))
             ip = netif.get('ip')
-            netif = DomainNetif(self._name, mac, ip, network_name)
-            self._netifs.append(netif)
+            netif = DomainNetif(self.name, mac, ip, network_name)
+            self.netifs.append(netif)
 
-        self._disks = []
+        self.disks = []
         disks_dict = domain_conf.get_disks_dict()
         # ex: { 'sda': 'vol-admin', 'sdb': 'vol-array' ]
         for device, storage_volume_name in disks_dict.iteritems():
-            self._disks.append(DomainDisk(device, storage_volume_name))
+            self.disks.append(DomainDisk(device, storage_volume_name))
 
-        self._bootdev = None # defined at boot time
-        self._graphics = domain_conf.get_graphics()
+        self.bootdev = None # defined at boot time
+        self.graphics = domain_conf.get_graphics()
 
-        self._templates = []
+        self.templates = []
         for template_conf in domain_conf.get_templates_list():
-            self._templates.append(DomainTemplate(template_conf))
+            self.templates.append(DomainTemplate(template_conf))
 
         self._events = []
         self._doc = None
@@ -99,53 +99,35 @@ class Domain:
 
     def __eq__(self, other): # needed for __del__
 
-        return self._name == other.get_name()
+        return self.name == other.name
 
     #
     # accessors
     #
 
-    def get_name(self):
-
-        """ get_name: Returns name of Domain """
-
-        return self._name
-
-    def get_libvirt_name(self):
-
-        """ Returns name of Domain in libvirt """
-
-        return self._libvirt_name
-
     def get_storage_volumes(self):
 
         """ Returns the list of storage volume of the Domain """
 
-        return [ disk.storage_volume for disk in self._disks ]
+        return [ disk.storage_volume for disk in self.disks ]
 
     def get_storage_volumes_names(self):
 
         """ Returns the list of storage volume names of the Domain """
 
-        return [ disk.get_storage_volume_name() for disk in self._disks ]
+        return [ disk.get_storage_volume_name() for disk in self.disks ]
 
     def get_networks(self):
 
         """ Returns the list of network of the Domain """
 
-        return [ netif.network for netif in self._netifs ]
+        return [ netif.network for netif in self.netifs ]
 
     def get_networks_names(self):
 
         """ Returns the list of network names of the Domain """
 
-        return [ netif.get_network_name() for netif in self._netifs ]
-
-    def get_netifs(self):
-
-        """ get_netifs: Returns the list of netifs of the Domain """
-
-        return self._netifs
+        return [ netif.get_network_name() for netif in self.netifs ]
 
     def find_domain(self):
 
@@ -163,7 +145,7 @@ class Domain:
         domains = active_domains + self._conn.listDefinedDomains()
         for domain_name in domains:
 
-            if domain_name == self._libvirt_name:
+            if domain_name == self.libvirt_name:
 
                 return self._conn.lookupByName(domain_name)
 
@@ -260,7 +242,7 @@ class Domain:
         """ Returns the Domain with this name """
 
         for domain in cls._domains:
-            if domain.get_libvirt_name() == name:
+            if domain.libvirt_name == name:
                 return domain
 
         return None
@@ -270,7 +252,7 @@ class Domain:
 
         """ Returns the DomainTemplate with this name """
 
-        for template in self._templates:
+        for template in self.templates:
             if template.name == template_name:
                 return template
 
@@ -278,7 +260,7 @@ class Domain:
         raise CloubedException(
                   "template {template} not defined for domain {domain}" \
                       .format(template = template_name,
-                              domain = self._name))
+                              domain = self.name))
 
     def xml(self):
 
@@ -314,13 +296,13 @@ class Domain:
         domain = self.find_domain()
         if domain is None:
             logging.debug("unable to destroy domain {name} since not found " \
-                          "in libvirt".format(name=self._name))
+                          "in libvirt".format(name=self.name))
             return # do nothing and leave
         if domain.isActive():
-            logging.warn("destroying domain {name}".format(name=self._name))
+            logging.warn("destroying domain {name}".format(name=self.name))
             domain.destroy()
         else:
-            logging.warn("undefining domain {name}".format(name=self._name))
+            logging.warn("undefining domain {name}".format(name=self.name))
             domain.undefine()
 
     def create(self,
@@ -332,36 +314,36 @@ class Domain:
         if overwrite:
             # delete all existing domain
             for domain_name in self._conn.listDefinedDomains():
-                if domain_name == self._libvirt_name:
+                if domain_name == self.libvirt_name:
                     domain = self._conn.lookupByName(domain_name)
                     logging.info("undefining domain " + domain_name)
                     domain.undefine()
             for domain_id in self._conn.listDomainsID():
                 domain_name = self._conn.lookupByID(domain_id).name()
-                if domain_name == self._libvirt_name:
+                if domain_name == self.libvirt_name:
                     domain = self._conn.lookupByName(domain_name)
                     logging.info("destroying domain " + domain_name)
                     domain.destroy()
 
-        self._bootdev = bootdev
+        self.bootdev = bootdev
 
         # create the domain
         self._virtobj = self._conn.createXML(self.toxml(), 0)
-        logging.info("domain {domain}: created".format(domain=self._name))
+        logging.info("domain {domain}: created".format(domain=self.name))
 
     def notify_event(self, event):
 
         """ notify_event: used to notify a Domain about a DomainEvent """
 
         logging.debug("domain {domain}: notified with event {event}" \
-                          .format(domain = self._name, event = event))
+                          .format(domain=self.name, event=event))
         self._lock.acquire()        
         logging.debug("domain {domain}: lock acquired by notifyEvent" \
-                          .format(domain=self._name))
+                          .format(domain=self.name))
         self._events.append(event)
         self._lock.release()
         logging.debug("domain {domain}: lock released by notifyEvent" \
-                          .format(domain=self._name))
+                          .format(domain=self.name))
 
     def wait_for_event(self, event):
 
@@ -372,30 +354,30 @@ class Domain:
 
         logging.debug("domain {domain}: entering in wait_for_event loop" \
                       " waiting for event {event}" \
-                      .format(domain=self._name,
+                      .format(domain=self.name,
                               event=event))
 
         while True:
             self._lock.acquire()        
             #logging.debug("domain {domain}: lock acquired by waitForEvent" \
-            #                  .format(domain=self._name))
+            #                  .format(domain=self.name))
             for loop_event in self._events:
                 if loop_event == event:
                     logging.info("domain {domain}: waited event {event}" \
                                  " found!" \
-                                      .format(domain=self._name,
+                                      .format(domain=self.name,
                                               event=loop_event))
                     self._lock.release()
                     return
                 else:
                     logging.info("domain {domain}: removing needless event" \
                                  " {event}" \
-                                      .format(domain=self._name,
+                                      .format(domain=self.name,
                                               event=loop_event))
                     self._events.remove(loop_event)
             self._lock.release()
             #logging.debug("domain {domain}: lock released by waitForEvent" \
-            #                  .format(domain=self._name))
+            #                  .format(domain=self.name))
             time.sleep(1)
 
     def __init_xml(self):
@@ -454,20 +436,20 @@ class Domain:
 
         # name 
         element_name = self._doc.createElement("name")
-        node_name = self._doc.createTextNode(self._libvirt_name)
+        node_name = self._doc.createTextNode(self.libvirt_name)
         element_name.appendChild(node_name)
         element_domain.appendChild(element_name)
         
         # memory
         element_memory = self._doc.createElement("memory")
         element_memory.setAttribute("unit", "MiB")
-        node_memory = self._doc.createTextNode(str(self._memory))
+        node_memory = self._doc.createTextNode(str(self.memory))
         element_memory.appendChild(node_memory)
         element_domain.appendChild(element_memory)
         
         # vcpu
         element_vcpu = self._doc.createElement("vcpu")
-        node_vcpu = self._doc.createTextNode(str(self._vcpu))
+        node_vcpu = self._doc.createTextNode(str(self.vcpu))
         element_vcpu.appendChild(node_vcpu)
         element_domain.appendChild(element_vcpu)
 
@@ -492,9 +474,9 @@ class Domain:
         element_os.appendChild(element_type)
 
         # os/boot
-        if self._bootdev is not None:
+        if self.bootdev is not None:
             element_boot = self._doc.createElement("boot")
-            element_boot.setAttribute("dev", self._bootdev)
+            element_boot.setAttribute("dev", self.bootdev)
             element_os.appendChild(element_boot)
 
         # clock
@@ -540,7 +522,7 @@ class Domain:
 
         # hard disk
 
-        for disk in self._disks:
+        for disk in self.disks:
             # devices/disk
             element_disk = self._doc.createElement("disk")
             element_disk.setAttribute("type", "file")
@@ -592,7 +574,7 @@ class Domain:
 
         # netif 
 
-        for netif in self._netifs:
+        for netif in self.netifs:
 
             # devices/interface
             element_interface = self._doc.createElement("interface")
@@ -621,11 +603,11 @@ class Domain:
             element_interface.appendChild(element_model)
 
         # devices/graphics
-        if self._graphics:
+        if self.graphics:
             element_graphics = self._doc.createElement("graphics")
-            element_graphics.setAttribute("type", self._graphics)
+            element_graphics.setAttribute("type", self.graphics)
             # if spice is used, enable port auto-allocation
-            if self._graphics == "spice":
+            if self.graphics == "spice":
                 element_graphics.setAttribute("autoport", "yes")
             element_devices.appendChild(element_graphics)
 

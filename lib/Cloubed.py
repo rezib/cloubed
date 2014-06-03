@@ -162,14 +162,14 @@ class Cloubed():
 
         """ Returns the list of domains names """
 
-        return [ domain.get_name() for domain in self._domains ]
+        return [ domain.name for domain in self._domains ]
 
     def get_domain_by_name(self, name):
 
         """ get_domain_by_name: """
 
         for domain in self._domains:
-            if domain.get_name() == name:
+            if domain.name == name:
                 return domain
 
         # domain not found
@@ -280,12 +280,12 @@ class Cloubed():
                 logging.warning("domain {domain} does not have disk " \
                                 "{disk}, removing it of disks to " \
                                 "overwrite" \
-                                    .format(domain=domain.get_name(),
+                                    .format(domain=domain.name,
                                             disk=disk))
                 overwrite_disks.remove(disk)
 
         logging.debug("disks to overwrite for domain {domain}: {disks}" \
-                          .format(domain=domain.get_name(),
+                          .format(domain=domain.name,
                                   disks=str(overwrite_disks)))
 
         for storage_volume in domain.get_storage_volumes():
@@ -316,13 +316,13 @@ class Cloubed():
                 logging.warning("domain {domain} is not connected to " \
                                 "network {network}, removing it of " \
                                 "networks to recreate" \
-                                    .format(domain=domain.get_name(),
+                                    .format(domain=domain.name,
                                             network=network))
                 recreate_networks.remove(network)
 
         logging.debug("networks to recreate for domain {domain}: " \
                       "{networks}" \
-                          .format(domain=domain.get_name(),
+                          .format(domain=domain.name,
                                   networks=str(recreate_networks)))
 
 
@@ -360,7 +360,7 @@ class Cloubed():
             # build the list of host ip addresses on all networks connected to
             # the domain
             list_ip_hosts = [ dom_netif.network.get_ip_host() \
-                              for dom_netif in domain.get_netifs() \
+                              for dom_netif in domain.netifs \
                               if dom_netif.network.get_ip_host() \
                                  is not None ]
             if len(list_ip_hosts) > 0:
@@ -404,7 +404,7 @@ class Cloubed():
 
         infos['domains'] = {}
         for domain in self._domains:
-            name = domain.get_name()
+            name = domain.name
             infos['domains'][name] = domain.get_infos()
 
         return infos
