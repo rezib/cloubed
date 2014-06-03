@@ -29,23 +29,11 @@ class DomainDisk:
 
     def __init__(self, device, storage_volume_name):
 
-        self._device = device
-        self._storage_volume = StorageVolume.get_by_name(storage_volume_name)
-
-    def get_device(self):
-
-        """ get_device: Returns the device name of the DomainDisk """
-
-        return self._device
-
-    def get_storage_volume(self):
-
-        """ get_storage_volume: Returns the StorageVolume of the DomainDisk """
-
-        return self._storage_volume
+        self.device = device
+        self.storage_volume = StorageVolume.get_by_name(storage_volume_name)
 
     def get_storage_volume_name(self):
 
         """ Returns the name of the StorageVolume """
 
-        return self._storage_volume.get_name()
+        return self.storage_volume.get_name()

@@ -121,7 +121,7 @@ class Domain:
 
         """ Returns the list of storage volume of the Domain """
 
-        return [ disk.get_storage_volume() for disk in self._disks ]
+        return [ disk.storage_volume for disk in self._disks ]
 
     def get_storage_volumes_names(self):
 
@@ -550,12 +550,12 @@ class Domain:
             # devices/disk/source
             element_source = self._doc.createElement("source")
             element_source.setAttribute("file",
-                                        disk.get_storage_volume().getpath())
+                                        disk.storage_volume.getpath())
             element_disk.appendChild(element_source)
     
             # devices/disk/target
             element_target = self._doc.createElement("target")
-            element_target.setAttribute("dev", disk.get_device())
+            element_target.setAttribute("dev", disk.device)
             element_target.setAttribute("bus", "virtio")
             element_disk.appendChild(element_target)
            
