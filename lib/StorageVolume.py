@@ -41,16 +41,16 @@ class StorageVolume:
         sp_name = storage_volume_conf.get_storage_pool()
         self._storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
         self._virtobj = None
-        self._name = storage_volume_conf.get_name()
+        self.name = storage_volume_conf.get_name()
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
-            self._libvirt_name = \
+            self.libvirt_name = \
                 "{user}:{testbed}:{name}" \
                     .format(user = getuser(),
                             testbed = storage_volume_conf.get_testbed(),
-                            name = self._name)
+                            name = self.name)
         else:
-            self._libvirt_name = self._name
+            self.libvirt_name = self.name
         self._size = storage_volume_conf.get_size()
         self._imgtype = storage_volume_conf.get_format()
 
@@ -67,11 +67,11 @@ class StorageVolume:
 
     def __eq__(self, other): # needed for __del__
 
-        return self._name == other.get_name()
+        return self.name == other.name
 
     def __repr__(self):
 
-        return "{name} [{size}GB]".format(name=self._name,
+        return "{name} [{size}GB]".format(name=self.name,
                                           size=self._size)
 
     @classmethod
@@ -93,7 +93,7 @@ class StorageVolume:
         """
 
         for storage_volume in cls._storage_volumes:
-            if storage_volume.get_name() == storage_volume_name:
+            if storage_volume.name == storage_volume_name:
                 return storage_volume
 
         # none
@@ -126,7 +126,7 @@ class StorageVolume:
             getfilename: Returns the file name of the StorageVolume
         """
 
-        return self._libvirt_name + "." + self._imgtype
+        return self.libvirt_name + "." + self._imgtype
 
     def getpath(self):
 
@@ -135,14 +135,6 @@ class StorageVolume:
         """
 
         return os.path.join(self._storage_pool.path, self.getfilename())
-
-    def get_name(self):
-
-        """
-            get_name: Returns the name of the StorageVolume
-        """
-
-        return self._name
 
     def find_storage_volume(self):
 
@@ -240,10 +232,10 @@ class StorageVolume:
 
         if storage_volume is None:
             logging.debug("unable to destroy storage volume {name} since not " \
-                          "found in libvirt".format(name=self._name))
+                          "found in libvirt".format(name=self.name))
             return # do nothing and leave
 
-        logging.warn("destroying storage volume {name}".format(name=self._name))
+        logging.warn("destroying storage volume {name}".format(name=self.name))
         storage_volume.delete(0)
 
     def create(self, overwrite = True):

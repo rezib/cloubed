@@ -149,7 +149,7 @@ class Cloubed():
 
         """ Returns the list of storage volumes names """
 
-        return [ storage_volume.get_name() \
+        return [ storage_volume.name \
                  for storage_volume in self._storage_volumes ]
 
     def networks(self):
@@ -199,7 +199,7 @@ class Cloubed():
         """
 
         for storage_volume in self._storage_volumes:
-            if storage_volume.get_name() == name:
+            if storage_volume.name == name:
                 return storage_volume
 
         # storage volume not found
@@ -290,7 +290,7 @@ class Cloubed():
 
         for storage_volume in domain.get_storage_volumes():
             #if not storage_volume.created(): #useless?
-            if storage_volume.get_name() in overwrite_disks:
+            if storage_volume.name in overwrite_disks:
                 overwrite_storage_volume = True
             else:
                 overwrite_storage_volume = False
@@ -394,7 +394,7 @@ class Cloubed():
 
         infos['storagevolumes'] = {}
         for storage_volume in self._storage_volumes:
-            name = storage_volume.get_name()
+            name = storage_volume.name
             infos['storagevolumes'][name] = storage_volume.get_infos()
 
         infos['networks'] = {}

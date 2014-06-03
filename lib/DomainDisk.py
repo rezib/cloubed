@@ -36,4 +36,4 @@ class DomainDisk:
 
         """ Returns the name of the StorageVolume """
 
-        return self.storage_volume.get_name()
+        return self.storage_volume.name
