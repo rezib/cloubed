@@ -73,8 +73,8 @@ class EventManager:
                       "{event_type} {event_detail}" \
                           .format(domain_name=dom.name(),
                                   domain_id=dom.ID(),
-                                  event_type=event.get_type(),
-                                  event_detail=event.get_detail()))
+                                  event_type=event.type,
+                                  event_detail=event.detail))
         domain = Domain.get_by_libvirt_name(dom.name())
         # test if notified event comes from a domain in current testbed
         if domain is None:

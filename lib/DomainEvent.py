@@ -88,15 +88,15 @@ class DomainEvent:
 
         if isinstance(event_type, int) and isinstance(event_detail, int):
 
-            self._type = DomainEvent \
+            self.type = DomainEvent \
                              ._domain_event_infos[event_type][0]
-            self._detail = DomainEvent \
+            self.detail = DomainEvent \
                                ._domain_event_infos[event_type][1][event_detail]
 
         elif isinstance(event_type, str) and isinstance(event_detail, str):
 
-            self._type = event_type
-            self._detail = event_detail
+            self.type = event_type
+            self.detail = event_detail
 
         else:
 
@@ -105,30 +105,18 @@ class DomainEvent:
     def __str__(self):
 
         return "{event_type}>{event_detail}" \
-                   .format(event_type=self._type, event_detail=self._detail)
+                   .format(event_type=self.type, event_detail=self.detail)
 
     def __eq__(self, other):
 
         logging.debug("comparing events: {event1} {event2}" \
                           .format(event1=self, event2=other))
 
-        if self._type == other.get_type() \
-           and self._detail == other.get_detail():
+        if self.type == other.type \
+           and self.detail == other.detail:
             return True
 
         return False
-
-    def get_type(self):
-
-        """ get_type: Returns the type of the DomainEvent """
-
-        return self._type
-
-    def get_detail(self):
-
-        """ get_detail: """
-
-        return self._detail
 
     @classmethod
     def get_event_info(cls, event_type, event_detail):
