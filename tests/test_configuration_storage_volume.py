@@ -23,28 +23,28 @@ class TestConfigurationStorageVolume(CloubedTestCase):
         self.assertEqual(self.storage_volume_conf._get_type(), 'storage volume')
 
 
-    def test_get_format(self):
+    def test_attr_format(self):
         """
-            ConfigurationStorageVolume.get_format() should return the format of
-            the storage volume
-        """
-        self.assertEqual(self.storage_volume_conf.get_format(),
-                         'qcow2')
-
-    def test_get_size(self):
-        """
-            ConfigurationStorageVolume.get_size() should return the size of the
+            ConfigurationStorageVolume.format should be the format of the
             storage volume
         """
-        self.assertEqual(self.storage_volume_conf.get_size(),
+        self.assertEqual(self.storage_volume_conf.format,
+                         'qcow2')
+
+    def test_attr_size(self):
+        """
+            ConfigurationStorageVolume.size should be the size of the storage
+            volume
+        """
+        self.assertEqual(self.storage_volume_conf.size,
                          30)
 
-    def test_get_storage_pool(self):
+    def test_attr_storage_pool(self):
         """
-            ConfigurationStorageVolume.get_storage_pool() should return the name
-            of the storage pool
+            ConfigurationStorageVolume.storage_pool should be the name of the
+            storage pool
         """
-        self.assertEqual(self.storage_volume_conf.get_storage_pool(),
+        self.assertEqual(self.storage_volume_conf.storage_pool,
                          'test_storage_pool')
 
 class TestConfigurationStorageVolumeSize(CloubedTestCase):
@@ -65,7 +65,7 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
         """
         conf = { 'size': 50 }
         self.storage_volume_conf._ConfigurationStorageVolume__parse_size(conf)
-        self.assertEqual(self.storage_volume_conf.get_size(), 50)
+        self.assertEqual(self.storage_volume_conf.size, 50)
 
     def test_parse_size_missing(self):
         """
@@ -119,7 +119,7 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
         """
         conf = { 'storagepool': 'test_storage_pool_bis' }
         self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool(conf)
-        self.assertEqual(self.storage_volume_conf.get_storage_pool(), 
+        self.assertEqual(self.storage_volume_conf.storage_pool, 
                          'test_storage_pool_bis')
 
     def test_parse_storage_pool_missing(self):
@@ -175,11 +175,11 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
 
         conf = { 'format': 'raw' }
         self.storage_volume_conf._ConfigurationStorageVolume__parse_format(conf)
-        self.assertEqual(self.storage_volume_conf.get_format(), 'raw')
+        self.assertEqual(self.storage_volume_conf.format, 'raw')
 
         conf = { }
         self.storage_volume_conf._ConfigurationStorageVolume__parse_format(conf)
-        self.assertEqual(self.storage_volume_conf.get_format(), 'qcow2')
+        self.assertEqual(self.storage_volume_conf.format, 'qcow2')
 
     def test_parse_format_invalid_format(self):
         """
