@@ -18,16 +18,16 @@ class TestConfigurationStoragePoolPath(CloubedTestCase):
     def test_parse_path_ok(self):
         """
             ConfigurationStoragePool.__parse_path() should parse valid values
-            without errors and set _path instance attribute properly
+            without errors and set path instance attribute properly
         """
         conf = { 'path': '/test_absolute_path' }
         self.storage_pool_conf._ConfigurationStoragePool__parse_path(conf)
-        self.assertEqual(self.storage_pool_conf.get_path(),
+        self.assertEqual(self.storage_pool_conf.path,
                          '/test_absolute_path')
 
         conf = { 'path': 'test_relative_path' }
         self.storage_pool_conf._ConfigurationStoragePool__parse_path(conf)
-        self.assertEqual(self.storage_pool_conf.get_path(),
+        self.assertEqual(self.storage_pool_conf.path,
                          os.path.join(os.getcwd(), 'test_relative_path') )
 
     def test_parse_path_missing(self):
