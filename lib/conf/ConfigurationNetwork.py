@@ -35,26 +35,26 @@ class ConfigurationNetwork(ConfigurationItem):
         super(ConfigurationNetwork, self).__init__(network_item)
 
         # forward
-        self._forward_mode = None
+        self.forward_mode = None
         self.__parse_forward_mode(network_item)
 
         # bridge name
-        self._bridge_name = None
+        self.bridge_name = None
         self.__parse_bridge_name(network_item)
 
         # local settings
-        self._ip_host = None
-        self._netmask = None
+        self.ip_host = None
+        self.netmask = None
         self.__parse_ip_host_netmask(network_item)
 
         # dhcp parameters
-        self._dhcp_start = None
-        self._dhcp_end = None
+        self.dhcp_start = None
+        self.dhcp_end = None
         self.__parse_dhcp(network_item)
 
         # pxe parameters
-        self._pxe_tftp_dir = None
-        self._pxe_boot_file = None
+        self.pxe_tftp_dir = None
+        self.pxe_boot_file = None
         self.__parse_pxe(network_item)
 
     def __parse_forward_mode(self, conf):
@@ -73,9 +73,9 @@ class ConfigurationNetwork(ConfigurationItem):
 
                 if forward in valid_forwards:
                     if forward == "none":
-                        self._forward_mode = None
+                        self.forward_mode = None
                     else:
-                        self._forward_mode = forward
+                        self.forward_mode = forward
                 else:
                     raise CloubedConfigurationException(
                         "Forward parameter of network {network} is not valid" \
@@ -88,7 +88,7 @@ class ConfigurationNetwork(ConfigurationItem):
 
         else:
 
-            self._forward_mode = None # default value if not defined
+            self.forward_mode = None # default value if not defined
 
     def __parse_bridge_name(self, conf):
         """
@@ -99,21 +99,21 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # forward is not bridge -> bridge parameter has no sense
-        if self._forward_mode != 'bridge' and conf.has_key('bridge'):
+        if self.forward_mode != 'bridge' and conf.has_key('bridge'):
             raise CloubedConfigurationException(
                 "Bridge parameter has no sense on network {network} with " \
                 "forwarding mode {forward}" \
                     .format(network = self.name,
-                            forward = self._forward_mode))
+                            forward = self.forward_mode))
 
         # forward is bridge -> bridge parameter is mandatory
-        elif self._forward_mode == 'bridge':
+        elif self.forward_mode == 'bridge':
 
             if conf.has_key('bridge'):
 
                 bridge = conf['bridge']
                 if type(bridge) is str:
-                    self._bridge_name = bridge
+                    self.bridge_name = bridge
                 else:
                     raise CloubedConfigurationException(
                         "Bridge parameter format of network {network} is not " \
@@ -127,7 +127,7 @@ class ConfigurationNetwork(ConfigurationItem):
 
         else:
             # not bridge forward mode and bridge parameter not defined
-            self._bridge_name = None
+            self.bridge_name = None
 
     def __parse_ip_host_netmask(self, conf):
         """
@@ -140,7 +140,7 @@ class ConfigurationNetwork(ConfigurationItem):
         # NOTE: maybe use cidr notation here in the future?
 
         # forward is bridge -> ip_host and netmask have no sense
-        if self._forward_mode == 'bridge' and \
+        if self.forward_mode == 'bridge' and \
            ( conf.has_key('ip_host') or conf.has_key('netmask') ):
             raise CloubedConfigurationException(
                 "ip_host and netmask parameters have no sense on network " \
@@ -188,13 +188,13 @@ class ConfigurationNetwork(ConfigurationItem):
                     "IPv4 netmask".format(network = self.name))
 
             # at this point, everything is clear
-            self._ip_host = ip_host
-            self._netmask = netmask
+            self.ip_host = ip_host
+            self.netmask = netmask
 
         else:
             # attributes default to None
-            self._ip_host = None
-            self._netmask = None
+            self.ip_host = None
+            self.netmask = None
 
     def __parse_dhcp(self, conf):
         """
@@ -209,7 +209,7 @@ class ConfigurationNetwork(ConfigurationItem):
         # with the ip_host
 
         # dhcp cannot be set-up without ip_host/netmask
-        if self._ip_host is None and conf.has_key('dhcp'):
+        if self.ip_host is None and conf.has_key('dhcp'):
             raise CloubedConfigurationException(
                 "dhcp service cannot be set-up on network {network} without " \
                 "ip_host and netmask".format(network = self.name))
@@ -247,13 +247,13 @@ class ConfigurationNetwork(ConfigurationItem):
                                     network = self.name))
 
             # everything is clear at this point
-            self._dhcp_start = dhcp_conf['start']
-            self._dhcp_end = dhcp_conf['end']
+            self.dhcp_start = dhcp_conf['start']
+            self.dhcp_end = dhcp_conf['end']
 
         else:
             # default to None if not defined
-            self._dhcp_start = None
-            self._dhcp_end = None
+            self.dhcp_start = None
+            self.dhcp_end = None
 
     def __parse_pxe(self, conf):
         """
@@ -264,7 +264,7 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # pxe cannot be set-up without dhcp
-        if self._dhcp_start is None and conf.has_key('pxe'):
+        if self.dhcp_start is None and conf.has_key('pxe'):
             raise CloubedConfigurationException(
                 "pxe service cannot be set-up on network {network} without " \
                 "dhcp".format(network = self.name))
@@ -292,16 +292,16 @@ class ConfigurationNetwork(ConfigurationItem):
                                     network = self.name))
 
             # everything is clear at this point
-            self._pxe_tftp_dir = pxe_conf['tftp_dir']
-            if self._pxe_tftp_dir[0] != '/': # relative path
-                self._pxe_tftp_dir = os.path.join(os.getcwd(),
-                                                  self._pxe_tftp_dir)
-            self._pxe_boot_file = pxe_conf['boot_file']
+            self.pxe_tftp_dir = pxe_conf['tftp_dir']
+            if self.pxe_tftp_dir[0] != '/': # relative path
+                self.pxe_tftp_dir = os.path.join(os.getcwd(),
+                                                 self.pxe_tftp_dir)
+            self.pxe_boot_file = pxe_conf['boot_file']
 
         else:
             # default to None if not defined
-            self._pxe_tftp_dir = None
-            self._pxe_boot_file = None
+            self.pxe_tftp_dir = None
+            self.pxe_boot_file = None
 
     def _get_type(self):
 
@@ -316,8 +316,8 @@ class ConfigurationNetwork(ConfigurationItem):
             settings, False otherwise.
         """
 
-        return (self._ip_host is not None
-                and self._netmask is not None)
+        return (self.ip_host is not None
+                and self.netmask is not None)
 
     def has_dhcp(self):
 
@@ -326,8 +326,8 @@ class ConfigurationNetwork(ConfigurationItem):
             server, False otherwise.
         """
 
-        return (self._dhcp_start is not None
-                and self._dhcp_end is not None)
+        return (self.dhcp_start is not None
+                and self.dhcp_end is not None)
 
     def has_pxe(self):
 
@@ -336,65 +336,8 @@ class ConfigurationNetwork(ConfigurationItem):
             False otherwise.
         """
 
-        return (self._pxe_tftp_dir is not None
-                and self._pxe_boot_file is not None)
-
-    def get_forward_mode(self):
-
-        """ Returns the forward mode parameter in Network Configuration """
-
-        return self._forward_mode
-
-    def get_bridge_name(self):
-
-        """ Returns the bridge name parameter in Network Configuration """
-
-        return self._bridge_name
-
-    def get_ip_host(self):
-
-        """ Returns the IP of host in Network Configuration """
-
-        return self._ip_host
-
-    def get_netmask(self):
-
-        """ Returns the netmask in Network Configuration """
-
-        return self._netmask
-
-    def get_dhcp_start(self):
-
-        """
-            Returns the start of IP addresses range for DHCP server in this
-            Network Configuration
-        """
-
-        return self._dhcp_start
-
-    def get_dhcp_end(self):
-
-        """
-            Returns the end of IP addresses range for DHCP server in this
-            Network Configuration
-        """
-
-        return self._dhcp_end
-
-    def get_pxe_tftp_dir(self):
-
-        """
-            Returns the root directory of the TFTP server in this Network
-            Configuration
-        """
-
-        return self._pxe_tftp_dir
-
-    def get_pxe_boot_file(self):
-
-        """ Returns the boot file for PXE in this Network Configuration """
-
-        return self._pxe_boot_file
+        return (self.pxe_tftp_dir is not None
+                and self.pxe_boot_file is not None)
 
     def get_templates_dict(self):
 
@@ -406,18 +349,18 @@ class ConfigurationNetwork(ConfigurationItem):
         clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
         return { "network.{name}.forward_mode" \
-                     .format(name=clean_name) : str(self._forward_mode),
+                     .format(name=clean_name) : str(self.forward_mode),
                  "network.{name}.bridge_name" \
-                     .format(name=clean_name) : str(self._bridge_name),
+                     .format(name=clean_name) : str(self.bridge_name),
                  "network.{name}.ip_host" \
-                     .format(name=clean_name) : str(self._ip_host),
+                     .format(name=clean_name) : str(self.ip_host),
                  "network.{name}.netmask" \
-                     .format(name=clean_name) : str(self._netmask),
+                     .format(name=clean_name) : str(self.netmask),
                  "network.{name}.dhcp_start" \
-                     .format(name=clean_name) : str(self._dhcp_start),
+                     .format(name=clean_name) : str(self.dhcp_start),
                  "network.{name}.dhcp_end" \
-                     .format(name=clean_name) : str(self._dhcp_end),
+                     .format(name=clean_name) : str(self.dhcp_end),
                  "network.{name}.pxe_tftp_dir" \
-                     .format(name=clean_name) : str(self._pxe_tftp_dir),
+                     .format(name=clean_name) : str(self.pxe_tftp_dir),
                  "network.{name}.pxe_boot_file" \
-                     .format(name=clean_name) : str(self._pxe_boot_file) }
+                     .format(name=clean_name) : str(self.pxe_boot_file) }

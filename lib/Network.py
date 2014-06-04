@@ -47,32 +47,32 @@ class Network:
         else:
             self.libvirt_name = self.name
 
-        self._forward_mode = network_conf.get_forward_mode()
-        self._bridge_name = network_conf.get_bridge_name()
+        self._forward_mode = network_conf.forward_mode
+        self._bridge_name = network_conf.bridge_name
 
         self._with_local_settings = False
         self.ip_host = None
         self._netmask = None
         if network_conf.has_local_settings():
             self._with_local_settings = True
-            self.ip_host = network_conf.get_ip_host()
-            self._netmask = network_conf.get_netmask()
+            self.ip_host = network_conf.ip_host
+            self._netmask = network_conf.netmask
 
         self._with_dhcp = False
         self._dhcp_range_start = None
         self._dhcp_range_stop = None
         if network_conf.has_dhcp():
             self._with_dhcp = True
-            self._dhcp_range_start = network_conf.get_dhcp_start()
-            self._dhcp_range_end = network_conf.get_dhcp_end()
+            self._dhcp_range_start = network_conf.dhcp_start
+            self._dhcp_range_end = network_conf.dhcp_end
 
         self._with_pxe = False
         self._tftproot = None
         self._bootfile = None
         if network_conf.has_pxe():
             self._with_pxe = True
-            self._tftproot = network_conf.get_pxe_tftp_dir()
-            self._bootfile = network_conf.get_pxe_boot_file()
+            self._tftproot = network_conf.pxe_tftp_dir
+            self._bootfile = network_conf.pxe_boot_file
 
         # list of statically declared hosts in the network
         self._hosts = []
