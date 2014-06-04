@@ -55,13 +55,12 @@ class Domain:
         else:
             self.libvirt_name = self.name
 
-        self.vcpu = domain_conf.get_cpu()
-        self.memory = domain_conf.get_memory()
+        self.vcpu = domain_conf.cpu
+        self.memory = domain_conf.memory
 
         self.netifs = []
-        netifs_list = domain_conf.get_netifs_list()
         # ex: [ 'admin', 'backbone' ]
-        for netif in netifs_list:
+        for netif in domain_conf.netifs:
             network_name = netif["network"]
             mac = gen_mac("{domain_name:s}-{network_name:s}" \
                               .format(domain_name=self.name,
@@ -71,16 +70,15 @@ class Domain:
             self.netifs.append(netif)
 
         self.disks = []
-        disks_dict = domain_conf.get_disks_dict()
         # ex: { 'sda': 'vol-admin', 'sdb': 'vol-array' ]
-        for device, storage_volume_name in disks_dict.iteritems():
+        for device, storage_volume_name in domain_conf.disks.iteritems():
             self.disks.append(DomainDisk(device, storage_volume_name))
 
         self.bootdev = None # defined at boot time
-        self.graphics = domain_conf.get_graphics()
+        self.graphics = domain_conf.graphics
 
         self.templates = []
-        for template_conf in domain_conf.get_templates_list():
+        for template_conf in domain_conf.template_files:
             self.templates.append(DomainTemplate(template_conf))
 
         self._events = []

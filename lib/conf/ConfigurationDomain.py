@@ -33,20 +33,20 @@ class ConfigurationDomain(ConfigurationItem):
 
         super(ConfigurationDomain, self).__init__(domain_item)
 
-        self._cpu = None
+        self.cpu = None
         self.__parse_cpu(domain_item)
-        self._memory = None
+        self.memory = None
         self.__parse_memory(domain_item)
-        self._graphics = None
+        self.graphics = None
         self.__parse_graphics(domain_item)
 
-        self._netifs = []
+        self.netifs = []
         self.__parse_netifs(domain_item)
 
-        self._disks = {}
+        self.disks = {}
         self.__parse_disks(domain_item)
 
-        self._template_files = []
+        self.template_files = []
         self._template_vars = {}
         self.__parse_templates(domain_item)
 
@@ -68,7 +68,7 @@ class ConfigurationDomain(ConfigurationItem):
                        "format of cpu parameter of domain {domain} is not " \
                        "valid".format(domain=self.name))
 
-        self._cpu = cpu
+        self.cpu = cpu
 
     def __parse_memory(self, conf):
         """
@@ -120,7 +120,7 @@ class ConfigurationDomain(ConfigurationItem):
                            .format(memory=memory,
                                    domain=self.name))
 
-        self._memory = multiplier * qty
+        self.memory = multiplier * qty
 
     def __parse_graphics(self, conf):
         """
@@ -147,11 +147,11 @@ class ConfigurationDomain(ConfigurationItem):
                               .format(graphics=graphics,
                                       domain=self.name))
 
-            self._graphics = graphics
+            self.graphics = graphics
 
         else:
             # default is spice
-            self._graphics = "spice"
+            self.graphics = "spice"
 
     def __parse_netifs(self, conf):
         """
@@ -206,7 +206,7 @@ class ConfigurationDomain(ConfigurationItem):
                               .format(netif_id=netif_id,
                                       domain=self.name))
 
-            self._netifs.append(netif)
+            self.netifs.append(netif)
 
             netif_id += 1
 
@@ -270,7 +270,7 @@ class ConfigurationDomain(ConfigurationItem):
                               .format(disk_id=disk_id,
                                       domain=self.name))
 
-            self._disks[disk["device"]] = disk["storage_volume"]
+            self.disks[disk["device"]] = disk["storage_volume"]
 
             disk_id += 1
 
@@ -286,7 +286,7 @@ class ConfigurationDomain(ConfigurationItem):
             self.__parse_templates_files(conf['templates'])
             self.__parse_templates_vars(conf['templates'])
         else:
-            self._template_files = []
+            self.template = []
             self._template_vars = {}
 
     def __parse_templates_files(self, conf):
@@ -322,9 +322,9 @@ class ConfigurationDomain(ConfigurationItem):
                                 .format(parameter = parameter,
                                         domain = self.name))
                 # everything is clear at this point
-                self._template_files.append(tpl_file)
+                self.template_files.append(tpl_file)
         else:
-            self._template_files = []
+            self.templates_files = []
 
     def __parse_templates_vars(self, conf):
         """
@@ -358,49 +358,6 @@ class ConfigurationDomain(ConfigurationItem):
 
         return u"domain"
 
-    def get_cpu(self):
-
-        """ Returns the number of CPU of the Domain Configuration """
-
-        return self._cpu 
-
-    def get_memory(self):
-
-        """ Returns the memory size of the Domain Configuration """
-
-        return self._memory
-
-    def get_graphics(self):
-
-        """ Returns graphics parameter of the Domain Configuration """
-
-        return self._graphics
-
-    def get_disks_dict(self):
-
-        """
-            Returns a dictionary of all parameters of all disks of the Domain
-            Configuration
-        """
-
-
-        return self._disks
-
-    def get_templates_list(self):
-
-        """ Returns the list of Templates of the Domain Configuration """
-
-        return self._template_files
-
-    def get_netifs_list(self):
-
-        """
-            Returns the list of network interfaces configurations of the Domain
-            Configuration
-        """
-
-        return self._netifs
-
     def get_contextual_templates_dict(self):
 
         """
@@ -431,15 +388,15 @@ class ConfigurationDomain(ConfigurationItem):
         domain_dict = { "{prefix}.name" \
                             .format(prefix=prefix) : str(clean_name),
                         "{prefix}.cpu" \
-                            .format(prefix=prefix) : str(self._cpu),
+                            .format(prefix=prefix) : str(self.cpu),
                         "{prefix}.memory" \
-                            .format(prefix=prefix) : str(self._memory),
+                            .format(prefix=prefix) : str(self.memory),
                         "{prefix}.graphics" \
-                            .format(prefix=prefix) : str(self._graphics),
+                            .format(prefix=prefix) : str(self.graphics),
                       }
 
         # add netifs
-        for netif in self._netifs:
+        for netif in self.netifs:
             if netif.has_key("ip"):
                 network_clean_name = \
                     ConfigurationItem.clean_string_for_template(netif['network'])
