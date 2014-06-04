@@ -38,7 +38,7 @@ class StorageVolume:
     def __init__(self, conn, storage_volume_conf):
 
         self._conn = conn
-        sp_name = storage_volume_conf.get_storage_pool()
+        sp_name = storage_volume_conf.storage_pool
         self._storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
         self._virtobj = None
         self.name = storage_volume_conf.name
@@ -51,8 +51,8 @@ class StorageVolume:
                             name = self.name)
         else:
             self.libvirt_name = self.name
-        self._size = storage_volume_conf.get_size()
-        self._imgtype = storage_volume_conf.get_format()
+        self._size = storage_volume_conf.size
+        self._imgtype = storage_volume_conf.format
 
         self._doc = None
 

@@ -32,11 +32,11 @@ class ConfigurationStorageVolume(ConfigurationItem):
 
         super(ConfigurationStorageVolume, self).__init__(storage_volume_item)
 
-        self._size = None
+        self.size = None
         self.__parse_size(storage_volume_item)
-        self._storage_pool = None
+        self.storage_pool = None
         self.__parse_storage_pool(storage_volume_item)
-        self._format = None
+        self.format = None
         self.__parse_format(storage_volume_item)
 
     def __parse_size(self, conf):
@@ -56,7 +56,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
                       "format of size parameter of storage volume {name} is " \
                       "not valid".format(name=self.name))
 
-        self._size = size
+        self.size = size
 
     def __parse_storage_pool(self, conf):
         """
@@ -75,7 +75,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
                       "format of storagepool parameter of storage volume " \
                       "{name} is not valid".format(name=self.name))
 
-        self._storage_pool = storage_pool
+        self.storage_pool = storage_pool
 
     def __parse_format(self, conf):
         """
@@ -98,35 +98,17 @@ class ConfigurationStorageVolume(ConfigurationItem):
                           "value of format parameter of storage volume " \
                           "{name} is not valid".format(name=self.name))
 
-            self._format = vol_format
+            self.format = vol_format
 
         else:
             # default value to qcow2
-            self._format = 'qcow2'
+            self.format = 'qcow2'
 
     def _get_type(self):
 
         """ Returns the type of the item """
 
         return u"storage volume"
-
-    def get_format(self):
-
-        """ Returns the format of the Storage Volume in Configuration """
-
-        return self._format
-
-    def get_size(self):
-
-        """ Returns the size of the Storage Volume in Configuration """
-
-        return self._size
-
-    def get_storage_pool(self):
-
-        """ Returns the name of associated Storage Pool in Configuration """
-
-        return self._storage_pool
 
     def get_templates_dict(self):
 
@@ -138,8 +120,8 @@ class ConfigurationStorageVolume(ConfigurationItem):
         clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
         return { "storagevolume.{name}.format"      \
-                     .format(name=clean_name) : str(self._format),
+                     .format(name=clean_name) : str(self.format),
                  "storagevolume.{name}.size"        \
-                     .format(name=clean_name) : str(self._size),
+                     .format(name=clean_name) : str(self.size),
                  "storagevolume.{name}.storagepool" \
-                     .format(name=clean_name) : str(self._storage_pool) }
+                     .format(name=clean_name) : str(self.storage_pool) }
