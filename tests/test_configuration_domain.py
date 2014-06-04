@@ -30,43 +30,43 @@ class TestConfigurationDomain(CloubedTestCase):
         """
         self.assertEqual(self.domain_conf._get_type(), 'domain')
 
-    def test_get_cpu(self):
+    def test_attr_cpu(self):
         """
-            ConfigurationDomain.get_cpu() should return the cpu of the domain
+            ConfigurationDomain.cpu should be the cpu of the domain
         """
-        self.assertEqual(self.domain_conf.get_cpu(),
+        self.assertEqual(self.domain_conf.cpu,
                          2)
 
-    def test_get_memory(self):
+    def test_attr_memory(self):
         """
-            ConfigurationDomain.get_memory() should return the memory size of
-            the domain (in MB)
+            ConfigurationDomain.memory should be the memory size of the domain
+            (in MB)
         """
-        self.assertEqual(self.domain_conf.get_memory(),
+        self.assertEqual(self.domain_conf.memory,
                          1024)
 
-    def test_get_templates_list(self):
+    def test_attr_template_files(self):
         """
-            ConfigurationDomain.get_templates_list() should return the list of
-            templates of the domain
+            ConfigurationDomain.template_files should be the list of templates
+            of the domain
         """
-        self.assertEqual(self.domain_conf.get_templates_list(),
+        self.assertEqual(self.domain_conf.template_files,
                          [])
 
-    def test_get_netifs_list(self):
+    def test_attr_netifs(self):
         """
-            ConfigurationDomain.get_netifs_list() should return the list of
-            netifs of the domain
+            ConfigurationDomain.netifs should be the list of netifs of the
+            domain
         """
-        self.assertEqual(self.domain_conf.get_netifs_list(),
+        self.assertEqual(self.domain_conf.netifs,
                          [{ 'network': 'test_netif', 'ip': '10.0.0.1' }])
 
-    def test_get_disks_dict(self): 
+    def test_attr_disks(self):
         """
-            ConfigurationDomain.get_disks_dict() should return a dict with all
-            disks of the domain
+            ConfigurationDomain.disks should be a dict with all disks of
+            the domain
         """
-        self.assertEqual(self.domain_conf.get_disks_dict(),
+        self.assertEqual(self.domain_conf.disks,
                          { 'test_device': 'test_storage_volume' })
 
 class TestConfigurationDomainCpu(CloubedTestCase):
@@ -126,7 +126,7 @@ class TestConfigurationDomainMemory(CloubedTestCase):
         for memory, expected_value in valid_memories.iteritems():
             config = { 'memory': memory }
             self.domain_conf._ConfigurationDomain__parse_memory(config)
-            self.assertEqual(self.domain_conf.get_memory(),
+            self.assertEqual(self.domain_conf.memory,
                              expected_value)
 
     def test_parse_memory_missing(self):
@@ -210,7 +210,7 @@ class TestConfigurationDomainGraphics(CloubedTestCase):
 
         conf = { 'graphics': 'vnc' }
         self.domain_conf._ConfigurationDomain__parse_graphics(conf)
-        self.assertEqual(self.domain_conf.get_graphics(), 'vnc')
+        self.assertEqual(self.domain_conf.graphics, 'vnc')
 
     def test_parse_graphics_invalid_format(self):
         """
@@ -517,7 +517,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
                                     'output': 'test_template_file_output' } ],
                        'vars': { 'var_name': 'var_value' } } }
         self.domain_conf._ConfigurationDomain__parse_templates(conf)
-        self.assertEquals(len(self.domain_conf.get_templates_list()), 1)
+        self.assertEquals(len(self.domain_conf.template_files), 1)
         self.assertDictContainsSubset(
                           {'domain.test_name.name': 'test_name'},
                           self.domain_conf.get_absolute_templates_dict())
@@ -527,8 +527,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
 
         conf = { 'templates': {} }
         self.domain_conf._ConfigurationDomain__parse_templates(conf)
-        self.assertEqual(self.domain_conf.get_templates_list(), [])
-        self.assertEqual(self.domain_conf._template_files, [])
+        self.assertEqual(self.domain_conf.templates_files, [])
         self.assertEqual(self.domain_conf._template_vars, {})
 
     def test_parse_templates_invalid_files_format(self):
