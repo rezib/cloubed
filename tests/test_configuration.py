@@ -49,36 +49,35 @@ class TestConfiguration(CloubedTestCase):
         self._loader = MockConfigurationLoader() 
         self._configuration = Configuration(self._loader)
 
-    def test_get_storage_pools_list(self):
+    def test_attr_storage_pools(self):
         """
-            Configuration.get_storage_pools_list() should return the list of
-            parsed storage pools
+            Configuration.storage_pools should be the list of parsed storage
+            pools
         """
-        self.assertIsInstance(self._configuration.get_storage_pools_list().pop(),
+        self.assertIsInstance(self._configuration.storage_pools.pop(),
                               ConfigurationStoragePool)
 
-    def test_get_storage_volumes_list(self):
+    def test_attr_storage_volumes(self):
         """
-            Configuration.get_storage_volumes_list() should return the list of
-            parsed storage volumes
+            Configuration.storage_volumes should return the list of parsed
+            storage volumes
         """
-        self.assertIsInstance(self._configuration.get_storage_volumes_list().pop(),
+        self.assertIsInstance(self._configuration.storage_volumes.pop(),
                               ConfigurationStorageVolume)
 
-    def test_get_networks_list(self):
+    def test_attr_networks(self):
         """
-            Configuration.get_networks_list() should return the list of parsed
+            Configuration.networks should be the list of parsed
             networks
         """
-        self.assertIsInstance(self._configuration.get_networks_list().pop(),
+        self.assertIsInstance(self._configuration.networks.pop(),
                               ConfigurationNetwork)
 
-    def test_get_domains_list(self):
+    def test_attr_domains(self):
         """
-            Configuration.get_domains_list() should return the list of parsed
-            domains
+            Configuration.domains should return the list of parsed domains
         """
-        self.assertIsInstance(self._configuration.get_domains_list().pop(),
+        self.assertIsInstance(self._configuration.domains.pop(),
                               ConfigurationDomain)
 
     def test_get_templates_dict(self):
@@ -104,7 +103,7 @@ class TestConfigurationTestbed(CloubedTestCase):
         conf = { 'testbed': 'new_test_testbed' }
 
         self._configuration._Configuration__parse_testbed(conf)
-        self.assertEqual(self._configuration.get_testbed_name(), 'new_test_testbed')
+        self.assertEqual(self._configuration.testbed, 'new_test_testbed')
 
     def test_parse_testbed_missing(self):
         """
@@ -153,7 +152,7 @@ class TestConfigurationItems(CloubedTestCase):
                  'domains': [ ] }
         
         self._configuration._Configuration__parse_items(conf)
-        self.assertIsInstance(self._configuration.get_storage_pools_list().pop(),
+        self.assertIsInstance(self._configuration.storage_pools.pop(),
                               ConfigurationStoragePool)
 
     def test_parse_items_missing_section(self):
