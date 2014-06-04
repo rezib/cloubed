@@ -41,13 +41,13 @@ class StorageVolume:
         sp_name = storage_volume_conf.get_storage_pool()
         self._storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
         self._virtobj = None
-        self.name = storage_volume_conf.get_name()
+        self.name = storage_volume_conf.name
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
             self.libvirt_name = \
                 "{user}:{testbed}:{name}" \
                     .format(user = getuser(),
-                            testbed = storage_volume_conf.get_testbed(),
+                            testbed = storage_volume_conf.testbed,
                             name = self.name)
         else:
             self.libvirt_name = self.name

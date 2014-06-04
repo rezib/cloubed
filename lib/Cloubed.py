@@ -98,7 +98,7 @@ class Cloubed():
         self._storage_pools = []
         for storage_pool_conf in self._conf.get_storage_pools_list():
             logging.info("initializing storage pool {name}" \
-                             .format(name=storage_pool_conf.get_name()))
+                             .format(name=storage_pool_conf.name))
             self._storage_pools.append(StoragePool(self._conn,
                                                    storage_pool_conf))
     
@@ -108,7 +108,7 @@ class Cloubed():
         self._storage_volumes = []
         for storage_volume_conf in self._conf.get_storage_volumes_list():
             logging.info("initializing storage volume {name}" \
-                             .format(name=storage_volume_conf.get_name()))
+                             .format(name=storage_volume_conf.name))
             self._storage_volumes.append(StorageVolume(self._conn,
                                                        storage_volume_conf))
     
@@ -118,7 +118,7 @@ class Cloubed():
         self._networks = []
         for network_conf in self._conf.get_networks_list():
             logging.info("initializing network {name}" \
-                             .format(name=network_conf.get_name()))
+                             .format(name=network_conf.name))
             self._networks.append(Network(self._conn,
                                           network_conf))
 
@@ -128,7 +128,7 @@ class Cloubed():
         self._domains = []
         for domain_conf in self._conf.get_domains_list():
             logging.info("initializing domain {name}" \
-                             .format(name=domain_conf.get_name()))
+                             .format(name=domain_conf.name))
             self._domains.append(Domain(self._conn,
                                         domain_conf))
 

@@ -43,14 +43,14 @@ class Domain:
 
         self._conn = conn
         self._virtobj = None
-        self.name = domain_conf.get_name()
+        self.name = domain_conf.name
 
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
             self.libvirt_name = \
                 "{user}:{testbed}:{name}" \
                     .format(user = getuser(),
-                            testbed = domain_conf.get_testbed(),
+                            testbed = domain_conf.testbed,
                             name = self.name)
         else:
             self.libvirt_name = self.name
@@ -231,7 +231,7 @@ class Domain:
         """ Returns the Domain with this name """
 
         for domain in cls._domains:
-            if domain.get_name() == name:
+            if domain.name == name:
                 return domain
 
         return None

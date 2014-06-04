@@ -45,14 +45,14 @@ class ConfigurationStoragePool(ConfigurationItem):
        if not conf.has_key('path'):
            raise CloubedConfigurationException(
                "path parameter is missing on storage pool {name}" \
-                   .format(name=self._name))
+                   .format(name=self.name))
 
        path = conf['path']
 
        if type(path) is not str:
            raise CloubedConfigurationException(
                "format of the path parameter on storage pool {name} is not " \
-               "valid".format(name=self._name))
+               "valid".format(name=self.name))
 
        self._path = conf['path']
 
@@ -76,7 +76,7 @@ class ConfigurationStoragePool(ConfigurationItem):
 
         """ Returns a dictionary with all parameters for the Storage Pool """
 
-        clean_name = ConfigurationItem.clean_string_for_template(self._name)
+        clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
         return { "storagepool.{name}.path" \
                      .format(name=clean_name) : str(self._path) }

@@ -29,14 +29,14 @@ class ConfigurationItem(object):
 
     def __init__(self, conf):
 
-        self._name = None
+        self.name = None
         self.__parse_name(conf)
 
         # There is no real need for a dedicated __parse_testbed() method here
         # since this item is not a user input. It has been set in the conf
         # dictionary by the Configuration class which has already checked its
         # format and value previously.
-        self._testbed = conf['testbed']
+        self.testbed = conf['testbed']
 
     def __parse_name(self, conf):
         """
@@ -54,25 +54,13 @@ class ConfigurationItem(object):
                 "the format of one {type_name} object is not valid" \
                     .format(type_name = self._get_type()))
 
-        self._name = conf['name']
-
-    def get_name(self):
-
-        """ Returns the name of the item """
-
-        return self._name
+        self.name = conf['name']
 
     def _get_type(self):
 
         """ Returns the type of the item """
 
         raise NotImplementedError
-
-    def get_testbed(self):
-
-        """ Returns the name of the testbed """
-
-        return self._testbed
 
     @staticmethod
     def clean_string_for_template(string):

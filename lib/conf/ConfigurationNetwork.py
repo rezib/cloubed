@@ -79,12 +79,12 @@ class ConfigurationNetwork(ConfigurationItem):
                 else:
                     raise CloubedConfigurationException(
                         "Forward parameter of network {network} is not valid" \
-                            .format(network=self._name))
+                            .format(network=self.name))
 
             else:
                 raise CloubedConfigurationException(
                     "Forward parameter format of network {network} is not " \
-                    "valid".format(network=self._name))
+                    "valid".format(network=self.name))
 
         else:
 
@@ -103,7 +103,7 @@ class ConfigurationNetwork(ConfigurationItem):
             raise CloubedConfigurationException(
                 "Bridge parameter has no sense on network {network} with " \
                 "forwarding mode {forward}" \
-                    .format(network = self._name,
+                    .format(network = self.name,
                             forward = self._forward_mode))
 
         # forward is bridge -> bridge parameter is mandatory
@@ -117,13 +117,13 @@ class ConfigurationNetwork(ConfigurationItem):
                 else:
                     raise CloubedConfigurationException(
                         "Bridge parameter format of network {network} is not " \
-                        "valid".format(network = self._name))
+                        "valid".format(network = self.name))
 
             else:
                 raise CloubedConfigurationException(
                     "Bridge parameter is missing on network {network} with " \
                     "bridge forwarding mode" \
-                        .format(network = self._name))
+                        .format(network = self.name))
 
         else:
             # not bridge forward mode and bridge parameter not defined
@@ -145,19 +145,19 @@ class ConfigurationNetwork(ConfigurationItem):
             raise CloubedConfigurationException(
                 "ip_host and netmask parameters have no sense on network " \
                 "{network} with bridge forwarding mode" \
-                    .format(network = self._name))
+                    .format(network = self.name))
 
         # ip_host needs netmask
         if conf.has_key('ip_host') and not conf.has_key('netmask'):
             raise CloubedConfigurationException(
                 "ip_host cannot be set without netmask parameter on network " \
-                "{network}".format(network = self._name))
+                "{network}".format(network = self.name))
 
         # netmask needs ip_host
         if conf.has_key('netmask') and not conf.has_key('ip_host'):
             raise CloubedConfigurationException(
                 "netmask cannot be set without ip_host parameter on network " \
-                "{network}".format(network = self._name))
+                "{network}".format(network = self.name))
 
         if conf.has_key('ip_host') and conf.has_key('netmask'):
 
@@ -168,11 +168,11 @@ class ConfigurationNetwork(ConfigurationItem):
             if type(ip_host) is not str:
                 raise CloubedConfigurationException(
                     "ip_host parameter format on network {network} is not " \
-                    "valid".format(network = self._name))
+                    "valid".format(network = self.name))
             if type(netmask) is not str:
                 raise CloubedConfigurationException(
                     "netmask parameter format on network {network} is not " \
-                    "valid".format(network = self._name))
+                    "valid".format(network = self.name))
 
             # check parameters against this regexp
             ip_address_regexp = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
@@ -180,12 +180,12 @@ class ConfigurationNetwork(ConfigurationItem):
             if re.match(ip_address_regexp, ip_host) is None:
                 raise CloubedConfigurationException(
                     "ip_host parameter on network {network} is not a valid " \
-                    "IPv4 address".format(network = self._name))
+                    "IPv4 address".format(network = self.name))
 
             if re.match(ip_address_regexp, netmask) is None:
                 raise CloubedConfigurationException(
                     "netmask parameter on network {network} is not a valid " \
-                    "IPv4 netmask".format(network = self._name))
+                    "IPv4 netmask".format(network = self.name))
 
             # at this point, everything is clear
             self._ip_host = ip_host
@@ -212,7 +212,7 @@ class ConfigurationNetwork(ConfigurationItem):
         if self._ip_host is None and conf.has_key('dhcp'):
             raise CloubedConfigurationException(
                 "dhcp service cannot be set-up on network {network} without " \
-                "ip_host and netmask".format(network = self._name))
+                "ip_host and netmask".format(network = self.name))
 
         if conf.has_key('dhcp'):
 
@@ -230,21 +230,21 @@ class ConfigurationNetwork(ConfigurationItem):
                         "{parameter} parameter must be defined in dhcp " \
                         "section of network {network}" \
                             .format(parameter = parameter,
-                                    network = self._name))
+                                    network = self.name))
 
                 if type(dhcp_conf[parameter]) is not str:
                     raise CloubedConfigurationException(
                         "{parameter} parameter format in dhcp section of " \
                         "network {network} is not valid" \
                             .format(parameter = parameter,
-                                    network = self._name))
+                                    network = self.name))
 
                 if re.match(ip_address_regexp, dhcp_conf[parameter]) is None:
                     raise CloubedConfigurationException(
                         "{parameter} parameter in dhcp section of network " \
                         "{network} is not a valid IPv4 address" \
                             .format(parameter = parameter,
-                                    network = self._name))
+                                    network = self.name))
 
             # everything is clear at this point
             self._dhcp_start = dhcp_conf['start']
@@ -267,7 +267,7 @@ class ConfigurationNetwork(ConfigurationItem):
         if self._dhcp_start is None and conf.has_key('pxe'):
             raise CloubedConfigurationException(
                 "pxe service cannot be set-up on network {network} without " \
-                "dhcp".format(network = self._name))
+                "dhcp".format(network = self.name))
 
         if conf.has_key('pxe'):
 
@@ -282,14 +282,14 @@ class ConfigurationNetwork(ConfigurationItem):
                         "{parameter} parameter must be defined in pxe " \
                         "section of network {network}" \
                             .format(parameter = parameter,
-                                    network = self._name))
+                                    network = self.name))
 
                 if type(pxe_conf[parameter]) is not str:
                     raise CloubedConfigurationException(
                         "{parameter} parameter format in pxe section of " \
                         "network {network} is not valid" \
                             .format(parameter = parameter,
-                                    network = self._name))
+                                    network = self.name))
 
             # everything is clear at this point
             self._pxe_tftp_dir = pxe_conf['tftp_dir']
@@ -403,7 +403,7 @@ class ConfigurationNetwork(ConfigurationItem):
             Configuration
         """
 
-        clean_name = ConfigurationItem.clean_string_for_template(self._name)
+        clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
         return { "network.{name}.forward_mode" \
                      .format(name=clean_name) : str(self._forward_mode),

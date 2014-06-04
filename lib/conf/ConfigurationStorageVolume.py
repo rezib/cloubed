@@ -47,14 +47,14 @@ class ConfigurationStorageVolume(ConfigurationItem):
         if not conf.has_key('size'):
             raise CloubedConfigurationException(
                       "size parameter of storage volume {name} is missing" \
-                          .format(name=self._name))
+                          .format(name=self.name))
 
         size = conf['size']
 
         if type(size) is not int:
             raise CloubedConfigurationException(
                       "format of size parameter of storage volume {name} is " \
-                      "not valid".format(name=self._name))
+                      "not valid".format(name=self.name))
 
         self._size = size
 
@@ -66,14 +66,14 @@ class ConfigurationStorageVolume(ConfigurationItem):
         if not conf.has_key('storagepool'):
             raise CloubedConfigurationException(
                       "storagepool parameter of storage volume {name} is " \
-                      "missing".format(name=self._name))
+                      "missing".format(name=self.name))
 
         storage_pool = conf['storagepool']
 
         if type(storage_pool) is not str:
             raise CloubedConfigurationException(
                       "format of storagepool parameter of storage volume " \
-                      "{name} is not valid".format(name=self._name))
+                      "{name} is not valid".format(name=self.name))
 
         self._storage_pool = storage_pool
 
@@ -89,14 +89,14 @@ class ConfigurationStorageVolume(ConfigurationItem):
             if type(vol_format) is not str:
                 raise CloubedConfigurationException(
                           "format of format parameter of storage volume " \
-                          "{name} is not valid".format(name=self._name))
+                          "{name} is not valid".format(name=self.name))
 
             valid_vol_formats = [ 'qcow2', 'raw' ]
 
             if vol_format not in valid_vol_formats:
                 raise CloubedConfigurationException(
                           "value of format parameter of storage volume " \
-                          "{name} is not valid".format(name=self._name))
+                          "{name} is not valid".format(name=self.name))
 
             self._format = vol_format
 
@@ -135,7 +135,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
             Configuration
         """
 
-        clean_name = ConfigurationItem.clean_string_for_template(self._name)
+        clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
         return { "storagevolume.{name}.format"      \
                      .format(name=clean_name) : str(self._format),
