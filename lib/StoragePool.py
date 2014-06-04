@@ -46,7 +46,7 @@ class StoragePool:
                             name = self.name)
         else:
             self.libvirt_name = self.name
-        self.path = storage_pool_conf.get_path()
+        self.path = storage_pool_conf.path
 
         StoragePool._storage_pools.append(self)
 
