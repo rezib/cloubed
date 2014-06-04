@@ -90,13 +90,13 @@ class Cloubed():
         configuration_filename = os.path.join(os.getcwd(), "cloubed.yaml")
         self._conf_loader = ConfigurationLoader(configuration_filename)
         self._conf = Configuration(self._conf_loader)
-        self._name = self._conf.get_testbed_name()
+        self._name = self._conf.testbed
     
         #
         # initialize storage pools
         #    
         self._storage_pools = []
-        for storage_pool_conf in self._conf.get_storage_pools_list():
+        for storage_pool_conf in self._conf.storage_pools:
             logging.info("initializing storage pool {name}" \
                              .format(name=storage_pool_conf.name))
             self._storage_pools.append(StoragePool(self._conn,
@@ -106,7 +106,7 @@ class Cloubed():
         # initialize storage volumes
         #
         self._storage_volumes = []
-        for storage_volume_conf in self._conf.get_storage_volumes_list():
+        for storage_volume_conf in self._conf.storage_volumes:
             logging.info("initializing storage volume {name}" \
                              .format(name=storage_volume_conf.name))
             self._storage_volumes.append(StorageVolume(self._conn,
@@ -116,7 +116,7 @@ class Cloubed():
         # initialize networks
         #
         self._networks = []
-        for network_conf in self._conf.get_networks_list():
+        for network_conf in self._conf.networks:
             logging.info("initializing network {name}" \
                              .format(name=network_conf.name))
             self._networks.append(Network(self._conn,
@@ -126,7 +126,7 @@ class Cloubed():
         # initialize domain and templates
         #
         self._domains = []
-        for domain_conf in self._conf.get_domains_list():
+        for domain_conf in self._conf.domains:
             logging.info("initializing domain {name}" \
                              .format(name=domain_conf.name))
             self._domains.append(Domain(self._conn,

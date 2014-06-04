@@ -37,13 +37,13 @@ class Configuration:
         self._loader = loader
         conf = self._loader.get_content()
 
-        self._testbed = None
+        self.testbed = None
         self.__parse_testbed(conf)
 
-        self._storage_pools_list   = []
-        self._storage_volumes_list = []
-        self._networks_list        = []
-        self._domains_list         = []
+        self.storage_pools   = []
+        self.storage_volumes = []
+        self.networks        = []
+        self.domains         = []
         self.__parse_items(conf)
 
         self._templates = {} # empty dict
@@ -63,7 +63,7 @@ class Configuration:
             raise CloubedConfigurationException(
                       "format of the testbed parameter is not valid")
 
-        self._testbed = conf['testbed']
+        self.testbed = conf['testbed']
 
     def __parse_items(self, conf):
         """
@@ -80,16 +80,16 @@ class Configuration:
 
         items = { 'storagepools':
                       { 'class': ConfigurationStoragePool,
-                        'list': self._storage_pools_list },
+                        'list': self.storage_pools },
                   'storagevolumes':
                       { 'class': ConfigurationStorageVolume,
-                        'list': self._storage_volumes_list },
+                        'list': self.storage_volumes },
                   'networks':
                       { 'class': ConfigurationNetwork,
-                        'list': self._networks_list },
+                        'list': self.networks },
                   'domains':
                       { 'class': ConfigurationDomain,
-                        'list': self._domains_list } }
+                        'list': self.domains } }
 
         # Iterations over the dict. The variables are:
         #   item_section: the name of the section in YAML
@@ -113,7 +113,7 @@ class Configuration:
             item_list = meta['list']
 
             for item in items:
-                item['testbed'] = self._testbed
+                item['testbed'] = self.testbed
                 item_list.append(item_class(item))
 
     def __parse_templates(self, conf):
@@ -146,51 +146,21 @@ class Configuration:
             # empty dict by default
             self._templates = {}
 
-    def get_testbed_name(self):
-
-        """ Returns the name of the testbed """
-
-        return self._testbed
-
-    def get_storage_pools_list(self):
-
-        """ Returns the list of storage pools configurations """
-
-        return self._storage_pools_list
-
-    def get_storage_volumes_list(self):
-
-        """ Returns the list of storage volumes configurations """
-
-        return self._storage_volumes_list
-
-    def get_networks_list(self):
-
-        """ Returns the list of networks configurations """
-
-        return self._networks_list
-
-    def get_domains_list(self):
-
-        """ Returns the list of domains configurations """
-
-        return self._domains_list
-
     def get_templates_dict(self, domain_name):
 
         """ Returns a dictionary with all parameters in configuration file """
 
-        result_dict = { 'testbed': self.get_testbed_name() }
+        result_dict = { 'testbed': self.testbed }
 
         result_dict.update(self._templates)
 
-        for storage_pool in self.get_storage_pools_list():
+        for storage_pool in self.storage_pools:
             result_dict.update(storage_pool.get_templates_dict())
-        for storage_volume in self.get_storage_volumes_list():
+        for storage_volume in self.storage_volumes:
             result_dict.update(storage_volume.get_templates_dict())
-        for network in self.get_networks_list():
+        for network in self.networks:
             result_dict.update(network.get_templates_dict())
-        for domain in self.get_domains_list():
+        for domain in self.domains:
             result_dict.update(domain.get_absolute_templates_dict())
             if domain.name == domain_name:
                 result_dict.update(domain.get_contextual_templates_dict())
