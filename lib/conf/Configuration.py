@@ -35,7 +35,7 @@ class Configuration:
     def __init__(self, loader):
 
         self._loader = loader
-        conf = self._loader.get_content()
+        conf = self._loader.content
 
         self.testbed = None
         self.__parse_testbed(conf)

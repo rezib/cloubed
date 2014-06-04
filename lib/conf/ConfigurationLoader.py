@@ -31,38 +31,26 @@ class ConfigurationLoader:
 
     def __init__(self, conf_file):
 
-        self._file_path = conf_file
+        self.file_path = conf_file
 
         try:
-            yaml_file = open(self._file_path)
+            yaml_file = open(self.file_path)
         except IOError:
             raise CloubedConfigurationException(
                       "Not able to open file {file_path}" \
-                          .format(file_path = self._file_path))
+                          .format(file_path = self.file_path))
 
         try:
-            self._content = yaml.load(yaml_file)
+            self.content = yaml.load(yaml_file)
         except yaml.YAMLError as err:
             raise CloubedConfigurationException(
                       "Error while loading {file_path} file (may" \
                       " not be valid YAML content): {error}" \
-                          .format(file_path=self._file_path,
+                          .format(file_path=self.file_path,
                                   error=err))
         yaml_file.close()
 
-        if type(self._content) is not dict:
+        if type(self.content) is not dict:
             raise CloubedConfigurationException(
                       "File {file_path} is not a valid YAML file for Cloubed" \
-                          .format(file_path=self._file_path))
-
-    def get_file_path(self):
-
-        """ Returns the absolute path of the configuration file """
-
-        return self._file_path
-
-    def get_content(self):
-
-        """ Returns the dict with the content loaded from configuration file """
-
-        return self._content
+                          .format(file_path=self.file_path))
