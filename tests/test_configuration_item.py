@@ -15,20 +15,20 @@ class TestConfigurationItem(CloubedTestCase):
                  "testbed": "test_testbed" }
         self.item_conf = ConfigurationItem(item)
 
-    def test_get_name(self):
+    def test_attr_name(self):
         """
-            ConfigurationItem.get_path() should return the name of the
+            ConfigurationItem.name should be the name of the
             item
         """
-        self.assertEqual(self.item_conf.get_name(),
+        self.assertEqual(self.item_conf.name,
                          "test_name")
 
-    def test_get_testbed(self):
+    def test_attr_testbed(self):
         """
-            ConfigurationItem.get_testbed() should return the name of the
+            ConfigurationItem.testbed should be the name of the
             testbed
         """
-        self.assertEqual(self.item_conf.get_testbed(),
+        self.assertEqual(self.item_conf.testbed,
                          "test_testbed")
 
     def test_get_type(self):

@@ -41,7 +41,7 @@ class TestConfigurationStoragePoolPath(CloubedTestCase):
         self.assertRaisesRegexp(
                  CloubedConfigurationException,
                  "path parameter is missing on storage pool {name}" \
-                     .format(name=self.storage_pool_conf.get_name()),
+                     .format(name=self.storage_pool_conf.name),
                  self.storage_pool_conf._ConfigurationStoragePool__parse_path,
                  invalid_conf)
 
@@ -60,7 +60,7 @@ class TestConfigurationStoragePoolPath(CloubedTestCase):
                      CloubedConfigurationException,
                      "format of the path parameter on storage pool {name} is " \
                      "not valid" \
-                         .format(name=self.storage_pool_conf.get_name()),
+                         .format(name=self.storage_pool_conf.name),
                      self.storage_pool_conf._ConfigurationStoragePool__parse_path,
                      invalid_conf)
 

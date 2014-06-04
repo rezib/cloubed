@@ -77,7 +77,7 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
         self.assertRaisesRegexp(
                  CloubedConfigurationException,
                  "size parameter of storage volume {name} is missing" \
-                     .format(name=self.storage_volume_conf.get_name()),
+                     .format(name=self.storage_volume_conf.name),
                  self.storage_volume_conf._ConfigurationStorageVolume__parse_size,
                  invalid_conf)
 
@@ -96,7 +96,7 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
                      CloubedConfigurationException,
                      "format of size parameter of storage volume {name} " \
                      "is not valid" \
-                         .format(name=self.storage_volume_conf.get_name()),
+                         .format(name=self.storage_volume_conf.name),
                      self.storage_volume_conf._ConfigurationStorageVolume__parse_size,
                      invalid_conf)
 
@@ -132,7 +132,7 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
         self.assertRaisesRegexp(
                  CloubedConfigurationException,
                  "storagepool parameter of storage volume {name} is missing" \
-                     .format(name=self.storage_volume_conf.get_name()),
+                     .format(name=self.storage_volume_conf.name),
                  self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool,
                  invalid_conf)
 
@@ -151,7 +151,7 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
                      CloubedConfigurationException,
                      "format of storagepool parameter of storage volume {name} " \
                      "is not valid" \
-                         .format(name=self.storage_volume_conf.get_name()),
+                         .format(name=self.storage_volume_conf.name),
                      self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool,
                      invalid_conf)
 
@@ -196,7 +196,7 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
                      CloubedConfigurationException,
                      "format of format parameter of storage volume {name} " \
                      "is not valid" \
-                         .format(name=self.storage_volume_conf.get_name()),
+                         .format(name=self.storage_volume_conf.name),
                      self.storage_volume_conf._ConfigurationStorageVolume__parse_format,
                      invalid_conf)
 
@@ -211,7 +211,7 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
         self.assertRaisesRegexp(
                  CloubedConfigurationException,
                  "value of format parameter of storage volume {name} is not valid" \
-                     .format(name=self.storage_volume_conf.get_name()),
+                     .format(name=self.storage_volume_conf.name),
                  self.storage_volume_conf._ConfigurationStorageVolume__parse_format,
                  invalid_conf)
 
