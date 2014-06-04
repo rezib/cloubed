@@ -14,21 +14,21 @@ class TestConfigurationLoader(CloubedTestCase):
         self.abs_filename = os.path.join(os.getcwd(), "config", filename)
         self.configuration_loader = ConfigurationLoader(self.abs_filename)
 
-    def test_get_file_path(self):
+    def test_attr_file_path(self):
         """
-            ConfigurationLoader.get_file_path() should return the absolute path
-            to the YAML file
+            ConfigurationLoader.file_path should be the absolute path to the
+            YAML file
         """
 
-        self.assertEquals(self.configuration_loader.get_file_path(),
+        self.assertEquals(self.configuration_loader.file_path,
                           self.abs_filename)
 
-    def test_get_content(self):
+    def test_attr_content(self):
         """
-            ConfigurationLoader.get_content() should return a dict with the
-            content of the YAML file
+            ConfigurationLoader.content should be a dict with the content of the
+            YAML file
         """
-        self.assertEquals(self.configuration_loader.get_content(),
+        self.assertEquals(self.configuration_loader.content,
                           { 'yaml': 'cloubed' })
 
 class TestConfigurationLoaderInvalid(CloubedTestCase):

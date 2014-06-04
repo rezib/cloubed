@@ -15,7 +15,7 @@ class MockConfigurationLoader:
 
     def __init__(self):
 
-        self._content = {
+        self.content = {
             'testbed': 'test_testbed',
             'storagepools':
                 [ { 'name': 'test_storage_pool',
@@ -37,11 +37,11 @@ class MockConfigurationLoader:
 
     def get_content(self):
 
-        return self._content
+        return self.content
 
     def remove(self, key):
 
-        self._content.pop(key, None)
+        self.content.pop(key, None)
 
 class TestConfiguration(CloubedTestCase):
 
