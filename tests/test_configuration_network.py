@@ -44,15 +44,15 @@ class TestConfigurationNetworkForwardMode(CloubedTestCase):
         """
         conf = {}
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
-        self.assertEqual(self.network_conf.get_forward_mode(), None)
+        self.assertEqual(self.network_conf.forward_mode, None)
 
         conf = {'forward': 'nat'}
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
-        self.assertEqual(self.network_conf.get_forward_mode(), 'nat')
+        self.assertEqual(self.network_conf.forward_mode, 'nat')
 
         conf = {'forward': 'none'}
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
-        self.assertEqual(self.network_conf.get_forward_mode(), None)
+        self.assertEqual(self.network_conf.forward_mode, None)
 
     def test_parse_forward_mode_not_str(self):
         """
@@ -98,7 +98,7 @@ class TestConfigurationNetworkBridgeName(CloubedTestCase):
     def test_parse_bridge_name_ok(self):
         """
             ConfigurationNetwork.__parse_bridge_name() should parse valid
-            values without errors and set _bridge_name instance attribute
+            values without errors and set bridge_name instance attribute
         """
 
         conf = { 'forward': 'bridge',
@@ -106,13 +106,13 @@ class TestConfigurationNetworkBridgeName(CloubedTestCase):
 
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
         self.network_conf._ConfigurationNetwork__parse_bridge_name(conf)
-        self.assertEqual(self.network_conf.get_bridge_name(),
+        self.assertEqual(self.network_conf.bridge_name,
                          'test_bridge_name')
 
         conf = { 'forward': 'nat' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
         self.network_conf._ConfigurationNetwork__parse_bridge_name(conf)
-        self.assertEqual(self.network_conf.get_bridge_name(),
+        self.assertEqual(self.network_conf.bridge_name,
                          None)
 
     def test_parse_bridge_name_wrong_forward(self):
@@ -181,7 +181,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
     def test_parse_ip_host_netmask_ok(self):
         """
             ConfigurationNetwork.__parse_ip_host_netmask() should parse valid
-            values without errors and set _ip_host and _netmask instance
+            values without errors and set ip_host and netmask instance
             attributes properly
         """
 
@@ -189,8 +189,8 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
                  'netmask': '255.255.255.0' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(conf)
-        self.assertEqual(self.network_conf.get_ip_host(), '10.0.0.1')
-        self.assertEqual(self.network_conf.get_netmask(), '255.255.255.0')
+        self.assertEqual(self.network_conf.ip_host, '10.0.0.1')
+        self.assertEqual(self.network_conf.netmask, '255.255.255.0')
 
         # in this case ConfigurationNetwork.has_local_settings() should also
         # return True
@@ -199,8 +199,8 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
         conf = { }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(conf)
-        self.assertEqual(self.network_conf.get_ip_host(), None)
-        self.assertEqual(self.network_conf.get_netmask(), None)
+        self.assertEqual(self.network_conf.ip_host, None)
+        self.assertEqual(self.network_conf.netmask, None)
 
         # in this case ConfigurationNetwork.has_local_settings() should also
         # return False
@@ -318,7 +318,7 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
     def test_parse_dhcp_ok(self):
         """
             ConfigurationNetwork.__parse_dhcp() should parse valid values
-            without errors and set _dhcp_start and _dhcp_end instance attributes
+            without errors and set dhcp_start and dhcp_end instance attributes
             properly
         """
 
@@ -331,16 +331,16 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
                      { 'start': '10.0.0.100',
                        'end'  : '10.0.0.200' } }
         self.network_conf._ConfigurationNetwork__parse_dhcp(conf)
-        self.assertEqual(self.network_conf.get_dhcp_start(), '10.0.0.100')
-        self.assertEqual(self.network_conf.get_dhcp_end(), '10.0.0.200')
+        self.assertEqual(self.network_conf.dhcp_start, '10.0.0.100')
+        self.assertEqual(self.network_conf.dhcp_end, '10.0.0.200')
 
         # in this case ConfigurationNetwork.has_dhcp() should also return True
         self.assertEqual(self.network_conf.has_dhcp(), True)
 
         conf = { }
         self.network_conf._ConfigurationNetwork__parse_dhcp(conf)
-        self.assertEqual(self.network_conf.get_dhcp_start(), None)
-        self.assertEqual(self.network_conf.get_dhcp_end(), None)
+        self.assertEqual(self.network_conf.dhcp_start, None)
+        self.assertEqual(self.network_conf.dhcp_end, None)
 
         # in this case ConfigurationNetwork.has_dhcp() should also return False
         self.assertEqual(self.network_conf.has_dhcp(), False)
@@ -435,7 +435,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
     def test_parse_pxe_ok(self):
         """
             ConfigurationNetwork.__parse_pxe() should parse valid values
-            without errors and set _pxe_tftp_dir and _pxe_boot_file instance
+            without errors and set pxe_tftp_dir and pxe_boot_file instance
             attributes properly
         """
 
@@ -452,8 +452,8 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
                      { 'tftp_dir': '/test_tftp_dir', # absolute path
                        'boot_file': 'test_boot_file' } }
         self.network_conf._ConfigurationNetwork__parse_pxe(conf)
-        self.assertEqual(self.network_conf.get_pxe_tftp_dir(), '/test_tftp_dir')
-        self.assertEqual(self.network_conf.get_pxe_boot_file(), 'test_boot_file')
+        self.assertEqual(self.network_conf.pxe_tftp_dir, '/test_tftp_dir')
+        self.assertEqual(self.network_conf.pxe_boot_file, 'test_boot_file')
 
         # in this case ConfigurationNetwork.has_pxe() should also return True
         self.assertEqual(self.network_conf.has_pxe(), True)
@@ -462,14 +462,14 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
                      { 'tftp_dir': 'test_tftp_dir', # relative path
                        'boot_file': 'test_boot_file' } }
         self.network_conf._ConfigurationNetwork__parse_pxe(conf)
-        self.assertEqual(self.network_conf.get_pxe_tftp_dir(),
+        self.assertEqual(self.network_conf.pxe_tftp_dir,
                          os.path.join(os.getcwd(),"test_tftp_dir"))
-        self.assertEqual(self.network_conf.get_pxe_boot_file(), 'test_boot_file')
+        self.assertEqual(self.network_conf.pxe_boot_file, 'test_boot_file')
 
         conf = { } 
         self.network_conf._ConfigurationNetwork__parse_pxe(conf)
-        self.assertEqual(self.network_conf.get_pxe_tftp_dir(), None)
-        self.assertEqual(self.network_conf.get_pxe_boot_file(), None)
+        self.assertEqual(self.network_conf.pxe_tftp_dir, None)
+        self.assertEqual(self.network_conf.pxe_boot_file, None)
 
         # in this case ConfigurationNetwork.has_pxe() should also return False
         self.assertEqual(self.network_conf.has_pxe(), False)
