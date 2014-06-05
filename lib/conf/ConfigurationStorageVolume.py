@@ -38,6 +38,8 @@ class ConfigurationStorageVolume(ConfigurationItem):
         self.__parse_storage_pool(storage_volume_item)
         self.format = None
         self.__parse_format(storage_volume_item)
+        self.backing = None
+        self.__parse_backing(storage_volume_item)
 
     def __parse_size(self, conf):
         """
@@ -103,6 +105,28 @@ class ConfigurationStorageVolume(ConfigurationItem):
         else:
             # default value to qcow2
             self.format = 'qcow2'
+
+    def __parse_backing(self, conf):
+        """
+            Parses the backing parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+        if conf.has_key('backing'):
+
+            # TODO: is size parameter useless in this case? TBC.
+
+            backing = conf['backing']
+
+            if type(backing) is not str:
+                raise CloubedConfigurationException(
+                          "format of backing parameter of storage volume " \
+                          "{name} is not valid".format(name=self.name))
+
+            self.backing = backing
+
+        else:
+            # default to None, aka. no backing
+            self.backing = None
 
     def _get_type(self):
 

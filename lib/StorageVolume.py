@@ -51,8 +51,11 @@ class StorageVolume:
                             name = self.name)
         else:
             self.libvirt_name = self.name
+
         self._size = storage_volume_conf.size
         self._imgtype = storage_volume_conf.format
+
+        self._backing = storage_volume_conf.backing
 
         self._doc = None
 
@@ -281,12 +284,17 @@ class StorageVolume:
         #   <target>
         #     <format type='qcow2'/>
         #     <permissions>
-        #       <owner>1001</owner>
-        #       <group>1000</group>
         #       <mode>0744</mode>
         #       <label>virt_image_t</label>
         #     </permissions>
         #   </target>
+        #   <backingStore>
+        #     <path>/home/rpalancher/Documents/git/examples-cloubed/debian/pool/rpalancher:debian:debian-vol-server.qcow2</path>
+        #     <permissions>
+        #       <mode>0744</mode>
+        #       <label>virt_image_t</label>
+        #     </permissions>
+        #   </backingStore>
         # </volume>
 
         # root element: volume
@@ -348,3 +356,48 @@ class StorageVolume:
         node_label = self._doc.createTextNode("virt_image_t")
         element_label.appendChild(node_label)
         element_permissions.appendChild(element_label)
+
+        #   <backingStore>
+        #     <path>/home/rpalancher/Documents/git/examples-cloubed/debian/pool/rpalancher:debian:debian-vol-server.qcow2</path>
+        #     <permissions>
+        #       <owner>107</owner>
+        #       <group>107</group>
+        #       <mode>0744</mode>
+        #       <label>virt_image_t</label>
+        #     </permissions>
+        #   </backingStore>
+
+        if self._backing is not None:
+
+            backing = StorageVolume.get_by_name(self._backing)
+
+            # backingStore element
+            element_backing = self._doc.createElement("backingStore")
+            element_volume.appendChild(element_backing)
+
+            # backingStore/path element
+            element_path = self._doc.createElement("path")
+            node_path = self._doc.createTextNode(backing.getpath())
+            element_path.appendChild(node_path)
+            element_backing.appendChild(element_path)
+
+            # backingStore/format element
+            element_format = self._doc.createElement("format")
+            element_format.setAttribute("type", backing._imgtype)
+            element_backing.appendChild(element_format)
+
+            # backingStore/permissions element
+            element_permissions = self._doc.createElement("permissions")
+            element_backing.appendChild(element_permissions)
+
+            # backingStore/permissions/mode element
+            element_mode = self._doc.createElement("mode")
+            node_mode = self._doc.createTextNode("0744")
+            element_mode.appendChild(node_mode)
+            element_permissions.appendChild(element_mode)
+
+            # backingStore/permissions/label element
+            element_label = self._doc.createElement("label")
+            node_label = self._doc.createTextNode("virt_image_t")
+            element_label.appendChild(node_label)
+            element_permissions.appendChild(element_label)
