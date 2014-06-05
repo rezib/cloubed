@@ -40,7 +40,6 @@ class StorageVolume:
         self._conn = conn
         sp_name = storage_volume_conf.storage_pool
         self._storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
-        self._virtobj = None
         self.name = storage_volume_conf.name
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
@@ -139,24 +138,6 @@ class StorageVolume:
 
         return os.path.join(self._storage_pool.path, self.getfilename())
 
-    def find_storage_volume(self):
-
-        """
-            Search for any storage volue with the same name among all storage
-            volumes in Libvirt. If one matches, returns it. Else returns None.
-        """
-
-        storage_pool = self._conn.find_storage_pool(self._storage_pool.path)
-
-        if storage_pool is not None:
-
-            for storage_volume_name in storage_pool.listVolumes():
-                if storage_volume_name == self.getfilename():
-                    return storage_pool \
-                        .storageVolLookupByName(storage_volume_name)
-
-        return None
-
     def get_infos(self):
         """
             Returns a dict full of key/value string pairs with information about
@@ -171,11 +152,11 @@ class StorageVolume:
 
         else:
 
-            storage_volume = self.find_storage_volume()
+            storage_volume = self._conn.find_storage_volume(self._storage_pool,
+                                                            self.getfilename())
 
             if storage_volume is not None:
 
-                self._virtobj = storage_volume
                 infos['status'] = 'active'
 
                 # extract infos out of libvirt XML
@@ -208,22 +189,14 @@ class StorageVolume:
 
         return infos
 
-    def created(self):
-
-        """
-            created: Returns True if the StorageVolume has been created in
-                     libvirt
-        """
-
-        return self._virtobj is not None
-
     def destroy(self):
 
         """
             Destroys the StorageVolume in libvirt
         """
 
-        storage_volume = self.find_storage_volume()
+        storage_volume = self._conn.find_storage_volume(self._storage_pool,
+                                                        self.getfilename())
 
         if storage_volume is None:
             logging.debug("unable to destroy storage volume {name} since not " \
@@ -245,28 +218,21 @@ class StorageVolume:
         sv_name = None
 
         # delete storage volumes w/ the same name
-        for sv_name in self._storage_pool.getvirtobj().listVolumes():
-            if sv_name == self.getfilename():
-                found = True
-                break # ends for loop
+        storage_volume = self._conn.find_storage_volume(self._storage_pool,
+                                                        self.getfilename())
+        found = storage_volume is not None
 
-        if found:
-            storage_volume = self._storage_pool \
-                                     .getvirtobj() \
-                                         .storageVolLookupByName(sv_name)
-            if overwrite:
-                # first delete then re-create the storage volume
-                logging.info("deleting storage volume " + sv_name)
-                storage_volume.delete(0)
-                self._virtobj = self._storage_pool \
-                                        .getvirtobj() \
-                                            .createXML(self.toxml(), 0)
-            else:
-                self._virtobj = storage_volume
-        else:
-            self._virtobj = self._storage_pool \
-                                    .getvirtobj() \
-                                        .createXML(self.toxml(), 0)
+        if found and overwrite:
+
+            # first delete then re-create the storage volume
+            logging.info("deleting storage volume {filename}" \
+                             .format(filename=self.getfilename()))
+            storage_volume.delete(0)
+            self._conn.create_storage_volume(self._storage_pool,
+                                             self.toxml())
+        elif not found:
+            self._conn.create_storage_volume(self._storage_pool,
+                                             self.toxml())
 
     def __init_xml(self):
 

@@ -102,8 +102,51 @@ class VirtController(object):
     # storage volumes
     #
 
-    # TODO: def find_storage_volume(self, storage_pool, name)
-    # TODO: def create_storage_volume(self, storage_pool, xml)
+    def find_storage_volume(self, storage_pool, name):
+        """Search for any storage volume with the same name among all defined
+           storage volumes within the storage pool in Libvirt. If one matches,
+           returns it as libvirt.virStorageVol or None if not found.
+
+           :param StoragePool storage_pool: a reference to the storage pool in
+               which the volume should be found
+           :param string name: the name of the filename of the storage volume to
+               find
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        # type(pool) is libvirt.virStoragePool
+        pool = self.find_storage_pool(storage_pool.path)
+
+        try:
+            if pool is not None:
+                for storage_volume_name in pool.listVolumes():
+                    if storage_volume_name == name:
+                        return pool.storageVolLookupByName(storage_volume_name)
+        except libvirt.libvirtError as err:
+            raise CloubedControllerException(err)
+
+        return None
+
+    def create_storage_volume(self, storage_pool, xml):
+        """Create a new storage volume in libvirt based on the XML description
+           in parameter. Returns the newly created storage volume as a
+           libvirt.virStorageVolume object.
+
+           :param StoragePool storage_pool: a reference to the storage pool in
+               which the volume will be created
+           :param string xml: the XML description of the storage volume to create
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        # type(pool) is libvirt.virStoragePool
+        pool = self.find_storage_pool(storage_pool.path)
+
+        try:
+            pool.createXML(xml, 0)
+        except libvirt.libvirtError as err:
+            raise CloubedControllerException(err)
 
     #
     # networks
