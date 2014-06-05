@@ -85,8 +85,7 @@ class VirtController(object):
 
     def create_storage_pool(self, xml):
         """Create a new storage pool in libvirt based on the XML description in
-           the string parameter. Returns the newly created storage pool as a
-           libvirt.virStoragePool object.
+           the string parameter.
 
            :param string xml: the XML description of the storage pool to create
            :exceptions CloubedControllerException:
@@ -94,7 +93,7 @@ class VirtController(object):
         """
 
         try:
-            return self.conn.storagePoolCreateXML(xml, 0)
+            self.conn.storagePoolCreateXML(xml, 0)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
@@ -130,8 +129,7 @@ class VirtController(object):
 
     def create_storage_volume(self, storage_pool, xml):
         """Create a new storage volume in libvirt based on the XML description
-           in parameter. Returns the newly created storage volume as a
-           libvirt.virStorageVolume object.
+           in parameter.
 
            :param StoragePool storage_pool: a reference to the storage pool in
                which the volume will be created

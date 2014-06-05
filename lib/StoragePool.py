@@ -34,7 +34,6 @@ class StoragePool:
     def __init__(self, conn, storage_pool_conf):
 
         self._conn = conn
-        self._virtobj = None
 
         self.name = storage_pool_conf.name
         use_namespace = True # should better be a conf parameter in the future
@@ -102,14 +101,6 @@ class StoragePool:
         """
 
         return self.xml().toxml()
-
-    def getvirtobj(self):
-
-        """
-            getvirtobj: Returns the libvirt object of the StoragePool
-        """
-
-        return self._virtobj
 
     def get_infos(self):
         """
@@ -222,19 +213,18 @@ class StoragePool:
         if storage_pool is not None:
             logging.info("found storage pool {name} with the same path" \
                              .format(name=storage_pool.name()))
-            self._virtobj = storage_pool
             self.libvirt_name = storage_pool.name() # override libvirt name
 
             # if not active in libvirt (defined but not started), activate it
             # TODO: virStoragePool.isActive() should be called in VirtController
-            if not self._virtobj.isActive():
+            if not storage_pool.isActive():
                 logging.info("storage pool {name} is not active, activating it..." \
                                  .format(name=self.libvirt_name))
                 # TODO: virStoragePool.create() should be called in VirtController
-                self._virtobj.create(0)
+                storage_pool.create(0)
 
         else:
-            self._virtobj = self._conn.create_storage_pool(self.toxml())
+            self._conn.create_storage_pool(self.toxml())
 
     def __init_xml(self):
 
