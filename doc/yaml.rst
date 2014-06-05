@@ -78,13 +78,39 @@ volume are:
 * ``size``: an integer representing the total size of the storage volume in
   gigabytes.
 * ``format`` *(optional)*: the format of the storage volume file. It must be one
-   of the formats supported by QEMU (see the the output of command
-   ``qemu-img --help`` for the complete list). The default value is ``qcow2``
-   and it should be appriopriate for most usages.
+  of the formats supported by QEMU (see the output of command
+  ``qemu-img --help`` for the complete list). The default value is ``qcow2`` and
+  it should be appropriate for most use cases.
+* ``backing`` *(optional)*: the name of another storage volume to use as
+  *backing volume* for this volume. This referenced storage volume must be
+  properly defined.
 
-In the given minimal example, one storage volume is defined. Its name is
-``bar-vol``, its size is 70GB and it will be stored in ``foo-pool`` storage
-pool. Its format is the default ``qcow2``.
+
+Examples
+^^^^^^^^
+
+*Example 1*::
+
+      - name: bar-vol
+        storagepool: foo-pool
+        size: 70
+
+There is one storage volume named ``bar-vol`` of 70GB in storage pool
+``foo-pool``. Its format is the default ``qcow2``.
+
+*Example 2*::
+
+      - name: bar-base
+        storagepool: foo-pool
+        size: 70
+      - name: bar-volume
+        storagepool: foo-pool
+        size: 70
+        backing: bar-base
+
+There are two storage volumes of 70GB named ``bar-base`` and ``bar-volume`` in
+storage pool ``foo-pool``. The storage volume ``bar-volume`` uses ``bar-base``
+as *backing volume*.
 
 Networks
 --------
