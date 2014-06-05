@@ -111,30 +111,6 @@ class StoragePool:
 
         return self._virtobj
 
-    def find_storage_pool(self):
-
-        """
-            Search for any storage pool with the same path among all defined
-            and active storage pools in Libvirt. If one matches, returns it.
-            Returns None if not found.
-        """
-
-        all_pools = self._conn.listStoragePools() + self._conn.listDefinedStoragePools()
-        for storage_pool_name in all_pools:
-
-            storage_pool = self._conn.storagePoolLookupByName(storage_pool_name)
-
-            xml = storage_pool.XMLDesc(0)
-            path = StoragePool.extract_path(xml)
-
-            if path == self.path:
-
-                logging.info("found storage pool {name} with the same path" \
-                                 .format(name=storage_pool_name))
-                return storage_pool
-
-        return None
-
     def get_infos(self):
         """
             Returns a dict full of key/value string pairs with information about
@@ -143,7 +119,7 @@ class StoragePool:
 
         infos = {}
 
-        storage_pool = self.find_storage_pool()
+        storage_pool = self._conn.find_storage_pool(self.path)
 
         if storage_pool is not None:
 
@@ -214,7 +190,7 @@ class StoragePool:
             Destroys the StoragePool in libvirt.
         """
 
-        storage_pool = self.find_storage_pool()
+        storage_pool = self._conn.find_storage_pool(self.path)
         if storage_pool is None:
             logging.debug("unable to destroy storage pool {name} since not " \
                           "found in libvirt".format(name=self.name))
@@ -241,7 +217,7 @@ class StoragePool:
             link to it.
         """
 
-        storage_pool = self.find_storage_pool()
+        storage_pool = self._conn.find_storage_pool(self.path)
 
         if storage_pool is not None:
             logging.info("found storage pool {name} with the same path" \
@@ -258,7 +234,7 @@ class StoragePool:
                 self._virtobj.create(0)
 
         else:
-            self._virtobj = self._conn.storagePoolCreateXML(self.toxml(), 0)
+            self._virtobj = self._conn.create_storage_pool(self.toxml())
 
     def __init_xml(self):
 
@@ -296,9 +272,3 @@ class StoragePool:
         node_path = self._doc.createTextNode(self.path)
         element_path.appendChild(node_path)
         element_target.appendChild(element_path)
-
-    @staticmethod
-    def extract_path(xml_str):
-
-        xml = parseString(xml_str)
-        return xml.getElementsByTagName(u'path')[0].firstChild.data

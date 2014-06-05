@@ -24,11 +24,17 @@
 """
 
 # still to implement:
-#  _virtobj[virStoragePool].create()
-#  _virtobj[virStoragePool].isActive()
+
+# virDomain.undefine()
+# virDomain.destroy()
+# virStoragePool.create()
+# virStoragePool.isActive()
+# virStoragePool.destroy()
+# virStoragePool.undefine()
 
 import libvirt
 import logging
+from xml.dom.minidom import parseString
 from CloubedException import CloubedControllerException
 
 class VirtController(object):
@@ -46,40 +52,58 @@ class VirtController(object):
     # storage pools
     #
 
-    def listStoragePools(self):
-        """Returns list
-        """
-        try:
-            return self.conn.listStoragePools()
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
+    def find_storage_pool(self, path):
+        """Search for any storage pool with the same path among all defined
+           and active storage pools in Libvirt. If one matches, returns it or
+           None if not found.
 
-    def listDefinedStoragePools(self):
-        """Returns list
+           :param string path: the absolute path of the storage pool to find
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
         """
 
         try:
-            return self.conn.listDefinedStoragePools()
+            all_pools = self.conn.listStoragePools() + self.conn.listDefinedStoragePools()
+            for storage_pool_name in all_pools:
+
+                storage_pool = self.conn.storagePoolLookupByName(storage_pool_name)
+
+                xml = storage_pool.XMLDesc(0)
+                dom = parseString(xml)
+                cur_path = dom.getElementsByTagName(u'path')[0].firstChild.data
+
+                if cur_path == path:
+
+                    logging.info("found storage pool {name} with the same path" \
+                                     .format(name=storage_pool_name))
+                    return storage_pool
+
+            return None
+
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
-    def storagePoolLookupByName(self, name):
-        """Returns libvirt.virStoragePool
+    def create_storage_pool(self, xml):
+        """Create a new storage pool in libvirt based on the XML description in
+           the string parameter. Returns the newly created storage pool as a
+           libvirt.virStoragePool object.
+
+           :param string xml: the XML description of the storage pool to create
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
         """
 
         try:
-            return self.conn.storagePoolLookupByName(name)
+            return self.conn.storagePoolCreateXML(xml, 0)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
-    def storagePoolCreateXML(self, xml, flags):
-        """Returns libvirt.virStoragePool
-        """
+    #
+    # storage volumes
+    #
 
-        try:
-            return self.conn.storagePoolCreateXML(xml, flags)
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
+    # TODO: def find_storage_volume(self, storage_pool, name)
+    # TODO: def create_storage_volume(self, storage_pool, xml)
 
     #
     # networks
@@ -111,6 +135,8 @@ class VirtController(object):
             return self.conn.networkLookupByName(name)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
+
+    # TODO: def create_network(self, xml)
 
     def networkCreateXML(self, xml):
         """Returns libvirt.virNetwork
@@ -160,6 +186,8 @@ class VirtController(object):
             return self.conn.lookupByID(id)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
+
+    # TODO: def create_domain(self, xml)
 
     def createXML(self, xml, flags):
         """Returns libvirt.virDomain

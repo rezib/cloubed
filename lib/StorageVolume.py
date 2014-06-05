@@ -146,7 +146,7 @@ class StorageVolume:
             volumes in Libvirt. If one matches, returns it. Else returns None.
         """
 
-        storage_pool = self._storage_pool.find_storage_pool()
+        storage_pool = self._conn.find_storage_pool(self._storage_pool.path)
 
         if storage_pool is not None:
 
