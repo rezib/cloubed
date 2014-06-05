@@ -150,41 +150,37 @@ class VirtController(object):
     # networks
     #
 
-    def listNetworks(self):
-        """Returns list
+    def find_network(self, name):
+        """Search for network with the same name among all defined and active
+           networks in Libvirt. If one matches, returns it as libvirt.virNetwork
+           or None if not found.
+
+           :param string name: the name of the network to find
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
         """
 
         try:
-            return self.conn.listNetworks()
+            networks = self.conn.listNetworks() + self.conn.listDefinedNetworks()
+            for network_name in networks:
+                if network_name == name:
+                    return self.conn.networkLookupByName(network_name)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
-    def listDefinedNetworks(self):
-        """Returns list
+        return None
+
+    def create_network(self, xml):
+        """Create a new network in libvirt based on the XML description in
+           parameter.
+
+           :param string xml: the XML description of the network to create
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
         """
 
         try:
-            return self.conn.listDefinedNetworks()
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
-
-    def networkLookupByName(self, name):
-        """Returns libvirt.virNetwork
-        """
-
-        try:
-            return self.conn.networkLookupByName(name)
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
-
-    # TODO: def create_network(self, xml)
-
-    def networkCreateXML(self, xml):
-        """Returns libvirt.virNetwork
-        """
-
-        try:
-            return self.conn.networkCreateXML(xml)
+            self.conn.networkCreateXML(xml)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 

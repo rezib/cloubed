@@ -34,7 +34,6 @@ class Network:
     def __init__(self, conn, network_conf):
 
         self._conn = conn
-        self._virtobj = None
 
         self.name = network_conf.name
         use_namespace = True # should better be a conf parameter in the future
@@ -123,17 +122,6 @@ class Network:
 
         return self.xml().toxml()
 
-    def find_network(self):
-
-        networks = self._conn.listNetworks() + self._conn.listDefinedNetworks()
-        for network_name in networks:
-
-            if network_name == self.libvirt_name:
-
-                return self._conn.networkLookupByName(network_name)
-
-        return None
-
     def get_infos(self):
         """
             Returns a dict full of key/value string pairs with information about
@@ -142,7 +130,8 @@ class Network:
 
         infos = {}
 
-        network = self.find_network()
+        network = self._conn.find_network(self.libvirt_name)
+
         if network is not None:
 
             # status name of the Network from Libvirt standpoint
@@ -189,19 +178,13 @@ class Network:
                                   network=self.name))
         self._hosts.append({"hostname": hostname, "mac": mac, "ip": ip})
 
-    def created(self):
-
-        """ created: Returns True if Network is created in libvirt """
-
-        return self._virtobj is not None
-
     def destroy(self):
 
         """
             Destroys the Network in libvirt
         """
 
-        network = self.find_network()
+        network = self._conn.find_network(self.libvirt_name)
         if network is None:
             logging.debug("unable to destroy network {name} since not found " \
                           "in libvirt".format(name=self.name))
@@ -217,23 +200,19 @@ class Network:
 
         """ create: Creates the Network in libvirt """
 
-        if overwrite:
-            for network_name in self._conn.listDefinedNetworks():
-                if network_name == self.libvirt_name:
-                    network = self._conn.networkLookupByName(network_name)
-                    logging.info("undefining network " + network_name)
-                    network.undefine()
-            for network_name in self._conn.listNetworks():
-                if network_name == self.libvirt_name:
-                    network = self._conn.networkLookupByName(network_name)
-                    logging.info("destroying network " + network_name)
-                    network.destroy()
-            self._virtobj = self._conn.networkCreateXML(self.toxml())
-        else:
-            if self.libvirt_name in self._conn.listNetworks():
-                self._virtobj = self._conn.networkLookupByName(self.libvirt_name)
+        network = self._conn.find_network(self.libvirt_name)
+        found = network is not None
+
+        if found and overwrite:
+            if network.isActive():
+                logging.info("destroying network {name}".format(name=self.name))
+                network.destroy()
             else:
-                self._virtobj = self._conn.networkCreateXML(self.toxml())
+                logging.info("undefining network {name}".format(name=self.name))
+                network.undefine()
+            self._conn.create_network(self.toxml())
+        elif not found:
+            self._conn.create_network(self.toxml())
 
     def __init_xml(self):
 
