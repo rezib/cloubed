@@ -12,7 +12,8 @@ class TestConfigurationStorageVolume(CloubedTestCase):
                                 'testbed': 'test_testbed',
                                 'format': 'qcow2',
                                 'size': 30,
-                                'storagepool': 'test_storage_pool' }
+                                'storagepool': 'test_storage_pool',
+                                'backing': 'test_backing' }
         self.storage_volume_conf = \
             ConfigurationStorageVolume(storage_volume_item)
 
@@ -46,6 +47,14 @@ class TestConfigurationStorageVolume(CloubedTestCase):
         """
         self.assertEqual(self.storage_volume_conf.storage_pool,
                          'test_storage_pool')
+
+    def test_attr_backing(self):
+        """
+            ConfigurationStorageVolume.backing should be the name of the
+            (optional) backing storage volume
+        """
+        self.assertEqual(self.storage_volume_conf.backing,
+                         'test_backing')
 
 class TestConfigurationStorageVolumeSize(CloubedTestCase):
 
@@ -215,7 +224,55 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
                  self.storage_volume_conf._ConfigurationStorageVolume__parse_format,
                  invalid_conf)
 
+class TestConfigurationStorageVolumeBacking(CloubedTestCase):
+
+    def setUp(self):
+        storage_volume_item = { 'name': 'test_name',
+                                'testbed': 'test_testbed',
+                                'format': 'qcow2',
+                                'size': 30,
+                                'storagepool': 'test_storage_pool' }
+        self.storage_volume_conf = \
+            ConfigurationStorageVolume(storage_volume_item)
+
+    def test_parse_backing_ok(self):
+        """
+            ConfigurationStorageVolume.__parse_backing() should parse valid
+            backing parameter without error and properly set backing instance
+            attribute
+        """
+        conf = { 'backing': 'test_backing' }
+        self.storage_volume_conf._ConfigurationStorageVolume__parse_backing(conf)
+        self.assertEqual(self.storage_volume_conf.backing,
+                         'test_backing')
+        # backing parameter is optional, backing attribute should be None in
+        # this case
+        conf = { }
+        self.storage_volume_conf._ConfigurationStorageVolume__parse_backing(conf)
+        self.assertEqual(self.storage_volume_conf.backing,
+                         None)
+
+    def test_parse_backing_invalid_format(self):
+        """
+            ConfigurationStorageVolume.__parse_backing() should raise
+            CloubedConfigurationException when the format of the backing
+            parameter is not valid
+        """
+        invalid_confs = [ { 'backing': 42   },
+                          { 'backing': []   } ]
+
+        for invalid_conf in invalid_confs:
+            self.assertRaisesRegexp(
+                     CloubedConfigurationException,
+                     "format of backing parameter of storage volume {name} " \
+                     "is not valid" \
+                         .format(name=self.storage_volume_conf.name),
+                     self.storage_volume_conf._ConfigurationStorageVolume__parse_backing,
+                     invalid_conf)
+
+
 loadtestcase(TestConfigurationStorageVolume)
 loadtestcase(TestConfigurationStorageVolumeSize)
 loadtestcase(TestConfigurationStorageVolumeStoragePool)
 loadtestcase(TestConfigurationStorageVolumeFormat)
+loadtestcase(TestConfigurationStorageVolumeBacking)
