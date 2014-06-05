@@ -23,15 +23,6 @@
     All calls to libvirt library are made through this file.
 """
 
-# still to implement:
-
-# virDomain.undefine()
-# virDomain.destroy()
-# virStoragePool.create()
-# virStoragePool.isActive()
-# virStoragePool.destroy()
-# virStoragePool.undefine()
-
 import libvirt
 import logging
 from xml.dom.minidom import parseString
@@ -188,50 +179,42 @@ class VirtController(object):
     # domains
     #
 
-    def listDefinedDomains(self):
-        """Returns list
+    def find_domain(self, name):
+        """Search for domain with the same name among all defined and active
+           domains in Libvirt. If one matches, returns it as libvirt.virDomain
+           or None if not found.
+
+           :param string name: the name of the domain to find
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
         """
 
         try:
-            return self.conn.listDefinedDomains()
+            # workaround since no way to directly get list of names of all
+            # active domains in Libvirt API
+            active_domains = [ self.conn.lookupByID(domain_id).name() \
+                                   for domain_id in self.conn.listDomainsID() ]
+
+            domains = active_domains + self.conn.listDefinedDomains()
+            for domain_name in domains:
+                if domain_name == name:
+                    return self.conn.lookupByName(domain_name)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
-    def listDomainsID(self):
-        """Returns list
+        return None
+
+    def create_domain(self, xml):
+        """Create a new domain in libvirt based on the XML description in
+           parameter.
+
+           :param string xml: the XML description of the domain to create
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
         """
 
         try:
-            return self.conn.listDomainsID()
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
-
-    def lookupByName(self, name):
-        """Returns libvirt.virDomain
-        """
-
-        try:
-            return self.conn.lookupByName(name)
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
-
-    def lookupByID(self, id):
-        """Returns libvirt.virDomain
-        """
-
-        try:
-            return self.conn.lookupByID(id)
-        except libvirt.libvirtError as err:
-            raise CloubedControllerException(err)
-
-    # TODO: def create_domain(self, xml)
-
-    def createXML(self, xml, flags):
-        """Returns libvirt.virDomain
-        """
-
-        try:
-            return self.conn.createXML(xml, flags)
+            self.conn.createXML(xml, 0)
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
@@ -322,10 +305,3 @@ class VirtController2(libvirt.virConnect):
                                     libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
                                     handler,
                                     None)
-
-# TODO:
-#   write VirtController class with self.conn attribute
-#   write all needed methods for Domain, Network, Storage* classes
-#   write EventManager related stuff
-
-

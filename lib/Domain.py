@@ -127,28 +127,6 @@ class Domain:
 
         return [ netif.get_network_name() for netif in self.netifs ]
 
-    def find_domain(self):
-
-        """
-            Search for any domain with the same name among all defined and
-            active domains in Libvirt. If one matches, returns it. Else returns
-            None.
-        """
-
-        # Workaround since no way to directly get list of names of all actives
-        # domains in Libvirt API
-        active_domains = [ self._conn.lookupByID(domain_id).name() \
-                               for domain_id in self._conn.listDomainsID() ]
-
-        domains = active_domains + self._conn.listDefinedDomains()
-        for domain_name in domains:
-
-            if domain_name == self.libvirt_name:
-
-                return self._conn.lookupByName(domain_name)
-
-        return None
-
     def get_infos(self):
         """
             Returns a dict full of key/value string pairs with information about
@@ -157,7 +135,7 @@ class Domain:
 
         infos = {}
 
-        domain = self.find_domain()
+        domain = self._conn.find_domain(self.libvirt_name)
         if domain is not None:
 
             # get libvirt status
@@ -285,7 +263,7 @@ class Domain:
             Destroys the Domain in libvirt
         """
 
-        domain = self.find_domain()
+        domain = self._conn.find_domain(self.libvirt_name)
         if domain is None:
             logging.debug("unable to destroy domain {name} since not found " \
                           "in libvirt".format(name=self.name))
@@ -298,29 +276,25 @@ class Domain:
             domain.undefine()
 
     def create(self,
-               bootdev='hd',
-               overwrite = False):
+               bootdev='hd'):
 
-        """ Creates the Domain and all its dependancies in libvirt """
+        """ Creates the Domain """
 
-        if overwrite:
-            # delete all existing domain
-            for domain_name in self._conn.listDefinedDomains():
-                if domain_name == self.libvirt_name:
-                    domain = self._conn.lookupByName(domain_name)
-                    logging.info("undefining domain " + domain_name)
-                    domain.undefine()
-            for domain_id in self._conn.listDomainsID():
-                domain_name = self._conn.lookupByID(domain_id).name()
-                if domain_name == self.libvirt_name:
-                    domain = self._conn.lookupByName(domain_name)
-                    logging.info("destroying domain " + domain_name)
-                    domain.destroy()
+        domain = self._conn.find_domain(self.libvirt_name)
+        if domain:
+            if domain.isActive():
+                logging.info("destroying domain {name}" \
+                                 .format(name=self.libvirt_name))
+                domain.destroy()
+            else:
+                logging.info("undefining domain {name}" \
+                                 .format(name=self.libvirt_name))
+                domain.undefine()
 
         self.bootdev = bootdev
 
         # create the domain
-        self._virtobj = self._conn.createXML(self.toxml(), 0)
+        self._conn.create_domain(self.toxml())
         logging.info("domain {domain}: created".format(domain=self.name))
 
     def notify_event(self, event):

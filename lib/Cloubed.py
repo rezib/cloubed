@@ -338,7 +338,7 @@ class Cloubed():
         # manage domain
         #
 
-        domain.create(bootdev, True)
+        domain.create(bootdev)
 
     def create_network(self, network_name, recreate):
 
