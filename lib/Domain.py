@@ -31,6 +31,7 @@ from DomainTemplate import DomainTemplate
 from DomainSnapshot import DomainSnapshot
 from DomainNetif import DomainNetif
 from DomainDisk import DomainDisk
+from DomainVirtfs import DomainVirtfs
 from Utils import gen_mac,getuser
 
 class Domain:
@@ -73,6 +74,9 @@ class Domain:
         # ex: { 'sda': 'vol-admin', 'sdb': 'vol-array' ]
         for device, storage_volume_name in domain_conf.disks.iteritems():
             self.disks.append(DomainDisk(device, storage_volume_name))
+
+        self.virtfs = [ DomainVirtfs(virtfs["source"], virtfs["target"]) \
+                        for virtfs in domain_conf.virtfs ]
 
         self.bootdev = None # defined at boot time
         self.graphics = domain_conf.graphics
@@ -385,6 +389,11 @@ class Domain:
         #       <target dev='hdc' bus='ide' tray='open' />
         #       <readonly />
         #     </disk>
+        #     <filesystem type='mount' accessmode='passthrough'>
+        #       <source dir='/export/to/guest'/>
+        #       <target dir='/import/from/host'/>
+        #       <readonly/>
+        #     </filesystem>
         #     <interface type="network">
         #       <source network="network-name"/>
         #       <mac address="00:16:3e:75:40:d5"/>
@@ -537,6 +546,27 @@ class Domain:
         # devices/disk/readonly
         element_readonly = self._doc.createElement("readonly")
         element_disk.appendChild(element_readonly)
+
+        # virtfs
+
+        for fs in self.virtfs:
+
+            # devices/filesystem
+            element_fs = self._doc.createElement("filesystem")
+            element_fs.setAttribute("type", "mount")
+            #element_fs.setAttribute("accessmode", "passthrough")
+            element_fs.setAttribute("accessmode", "mapped")
+            element_devices.appendChild(element_fs)
+
+            # devices/filesystem/source
+            element_source = self._doc.createElement("source")
+            element_source.setAttribute("dir", fs.source)
+            element_fs.appendChild(element_source)
+
+            # devices/filesystem/target
+            element_target = self._doc.createElement("target")
+            element_target.setAttribute("dir", fs.target)
+            element_fs.appendChild(element_target)
 
         # netif 
 

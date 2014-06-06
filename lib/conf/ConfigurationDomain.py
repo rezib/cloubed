@@ -22,6 +22,7 @@
 """ ConfigurationDomain class """
 
 import re
+import os
 from ConfigurationItem import ConfigurationItem
 from ..CloubedException import CloubedConfigurationException
 
@@ -45,6 +46,9 @@ class ConfigurationDomain(ConfigurationItem):
 
         self.disks = {}
         self.__parse_disks(domain_item)
+
+        self.virtfs = []
+        self.__parse_virtfs(domain_item)
 
         self.template_files = []
         self._template_vars = {}
@@ -273,6 +277,67 @@ class ConfigurationDomain(ConfigurationItem):
             self.disks[disk["device"]] = disk["storage_volume"]
 
             disk_id += 1
+
+    def __parse_virtfs(self, conf):
+        """
+            Parses the virtfs section of parameters over the conf dictionary
+            given in parameter and raises appropriate exception if a problem is
+            found.
+        """
+
+        self.virtfs = []
+
+        if conf.has_key('virtfs'):
+
+            virtfs = conf['virtfs']
+
+            if type(virtfs) is not list:
+                raise CloubedConfigurationException(
+                          "format of virtfs section of domain {domain} is " \
+                          "not valid".format(domain=self.name))
+
+            id = 0
+
+            for fs in virtfs:
+
+                if type(fs) is not dict:
+                    raise CloubedConfigurationException(
+                              "format of virtfs {id} of domain {domain} is " \
+                              "not valid" \
+                                  .format(id=id, domain=self.name))
+
+                if not fs.has_key("source"):
+                    raise CloubedConfigurationException(
+                              "source of virtfs {id} of domain {domain} is " \
+                              "missing" \
+                                  .format(id=id, domain=self.name))
+
+                if type(fs["source"]) is not str:
+                    raise CloubedConfigurationException(
+                              "format of source of virtfs {id} of domain " \
+                              "{domain} is not valid" \
+                                  .format(id=id, domain=self.name))
+
+                source = fs["source"]
+
+                # handle relative source path
+                if source[0] != '/':
+                    source = os.path.join(os.getcwd(), source)
+
+                if fs.has_key("target") and type(fs["target"]) is not str:
+                    raise CloubedConfigurationException(
+                              "format of target of virtfs {id} of domain " \
+                              "{domain} is not valid" \
+                                  .format(id=id, domain=self.name))
+
+                if fs.has_key("target"):
+                    target = fs["target"]
+                else:
+                    target = source # default target is equal to source
+
+                self.virtfs.append({"source": source, "target": target})
+
+            id += 1
 
     def __parse_templates(self, conf):
         """
