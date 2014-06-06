@@ -673,7 +673,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
 
         conf = { 'templates': {} }
         self.domain_conf._ConfigurationDomain__parse_templates(conf)
-        self.assertEqual(self.domain_conf.templates_files, [])
+        self.assertEqual(self.domain_conf.template_files, [])
         self.assertEqual(self.domain_conf._template_vars, {})
 
     def test_parse_templates_invalid_files_format(self):
