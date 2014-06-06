@@ -206,7 +206,7 @@ class StorageVolume:
         logging.warn("destroying storage volume {name}".format(name=self.name))
         storage_volume.delete(0)
 
-    def create(self, overwrite = True):
+    def create(self, overwrite=True):
 
         """
             create: Creates the StorageVolume in libvirt
