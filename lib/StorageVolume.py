@@ -39,7 +39,7 @@ class StorageVolume:
 
         self._conn = conn
         sp_name = storage_volume_conf.storage_pool
-        self._storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
+        self.storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
         self.name = storage_volume_conf.name
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class
@@ -136,7 +136,7 @@ class StorageVolume:
             getpath: Returns the full absolute path of the StorageVolume
         """
 
-        return os.path.join(self._storage_pool.path, self.getfilename())
+        return os.path.join(self.storage_pool.path, self.getfilename())
 
     def get_infos(self):
         """
@@ -146,13 +146,13 @@ class StorageVolume:
 
         infos = {}
 
-        if self._storage_pool.get_status() == 'undefined':
+        if self.storage_pool.get_status() == 'undefined':
 
             infos['status'] = "-"
 
         else:
 
-            storage_volume = self._conn.find_storage_volume(self._storage_pool,
+            storage_volume = self._conn.find_storage_volume(self.storage_pool,
                                                             self.getfilename())
 
             if storage_volume is not None:
@@ -195,7 +195,7 @@ class StorageVolume:
             Destroys the StorageVolume in libvirt
         """
 
-        storage_volume = self._conn.find_storage_volume(self._storage_pool,
+        storage_volume = self._conn.find_storage_volume(self.storage_pool,
                                                         self.getfilename())
 
         if storage_volume is None:
@@ -212,13 +212,11 @@ class StorageVolume:
             create: Creates the StorageVolume in libvirt
         """
 
-        self._storage_pool.create()
-
         found = False
         sv_name = None
 
         # delete storage volumes w/ the same name
-        storage_volume = self._conn.find_storage_volume(self._storage_pool,
+        storage_volume = self._conn.find_storage_volume(self.storage_pool,
                                                         self.getfilename())
         found = storage_volume is not None
 
@@ -228,10 +226,10 @@ class StorageVolume:
             logging.info("deleting storage volume {filename}" \
                              .format(filename=self.getfilename()))
             storage_volume.delete(0)
-            self._conn.create_storage_volume(self._storage_pool,
+            self._conn.create_storage_volume(self.storage_pool,
                                              self.toxml())
         elif not found:
-            self._conn.create_storage_volume(self._storage_pool,
+            self._conn.create_storage_volume(self.storage_pool,
                                              self.toxml())
 
     def __init_xml(self):

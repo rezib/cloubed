@@ -297,6 +297,7 @@ class Cloubed():
                 overwrite_storage_volume = True
             else:
                 overwrite_storage_volume = False
+            storage_volume.storage_pool.create()
             storage_volume.create(overwrite_storage_volume)
 
 
