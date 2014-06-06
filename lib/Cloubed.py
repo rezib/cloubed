@@ -255,7 +255,10 @@ class Cloubed():
         domain_template = domain.get_template_by_name(template_name)
         domain_template.render(templates_dict)
 
-    def boot_vm(self, domain_name, bootdev = "hd", overwrite_disks = [], recreate_networks = []):
+    def boot_vm(self, domain_name,
+                bootdev="hd",
+                overwrite_disks=[],
+                recreate_networks=[]):
 
         """ boot_vm: """
 
@@ -346,7 +349,9 @@ class Cloubed():
         network = self.get_network_by_name(network_name)
         network.create(recreate)
 
-    def wait_event(self, domain_name, event_type, event_detail, enable_http = True):
+    def wait_event(self, domain_name,
+                   event_type, event_detail,
+                   enable_http=True):
 
         """ wait_event: """
 
