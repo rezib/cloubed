@@ -269,6 +269,20 @@ domain. Each storage volume must have the following parameters:
 * ``storage_volume``: the name of the storage volume. This storage volume must
   be defined previously in the dedicated section.
 
+The optional sub-section ``virtfs``, if declared, must contain a list of
+directory on the host to export to the domain. With this feature, the domain can
+easily access files on the host without complicated setup. This feature relies
+on the 9p protocol and Qemu virtfs technology. Each declared ``virtfs`` must
+have the following parameters:
+
+* ``source``: path to a directory to export to the domain. This directory must
+  exist on the host. The path can be either an absolute or relative to the
+  directory where the YAML file is located. If the value starts with ``/``, an
+  absolute path is presumed. If the directory does not exist on the system,
+  Cloubed will raise an error when booting the domain.
+* ``target`` *(optional)*: the name of the exported 9p share inside the domain.
+  If not set, the default value is the absolute path of the ``source``.
+
 There is also an optional parameter for the domain:
 
 * ``graphics`` *(optional)*: either ``spice`` or ``vnc``. If defined, the given
