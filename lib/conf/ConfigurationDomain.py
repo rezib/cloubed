@@ -351,7 +351,7 @@ class ConfigurationDomain(ConfigurationItem):
             self.__parse_templates_files(conf['templates'])
             self.__parse_templates_vars(conf['templates'])
         else:
-            self.template = []
+            self.template_files = []
             self._template_vars = {}
 
     def __parse_templates_files(self, conf):
@@ -389,7 +389,7 @@ class ConfigurationDomain(ConfigurationItem):
                 # everything is clear at this point
                 self.template_files.append(tpl_file)
         else:
-            self.templates_files = []
+            self.template_files = []
 
     def __parse_templates_vars(self, conf):
         """
