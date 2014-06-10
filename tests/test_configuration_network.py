@@ -426,6 +426,76 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
              self.network_conf._ConfigurationNetwork__parse_dhcp,
              invalid_conf)
 
+class TestConfigurationNetworkDomain(CloubedTestCase):
+
+    def setUp(self):
+        self._network_item = valid_network_item
+        self.network_conf = ConfigurationNetwork(self._network_item)
+
+    def test_parse_domain_ok(self):
+        """
+            ConfigurationNetwork.__parse_domain() should parse valid values
+            without errors and set domain instance attribute properly
+        """
+
+        conf = { 'ip_host': '10.0.0.1',
+                 'netmask': '255.255.255.0',
+                 'dhcp':
+                     { 'start': '10.0.0.100',
+                       'end'  : '10.0.0.200' } }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
+        self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(conf)
+        self.network_conf._ConfigurationNetwork__parse_dhcp(conf)
+
+        conf = { 'domain': 'test_domain' }
+        self.network_conf._ConfigurationNetwork__parse_domain(conf)
+        self.assertEqual(self.network_conf.domain, 'test_domain')
+
+        conf = { }
+        self.network_conf._ConfigurationNetwork__parse_domain(conf)
+        self.assertEqual(self.network_conf.domain, None)
+
+    def test_parse_domain_no_dhcp(self):
+        """
+            ConfigurationNetwork.__parse_domain() should raise
+            CloubedConfigurationException if domain parameter is set on a
+            network without dhcp
+        """
+        invalid_conf = { 'ip_host': '10.0.0.1',
+                         'netmask': '255.255.255.0',
+                         'domain': 'test_domain' }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
+        self.assertRaisesRegexp(
+             CloubedConfigurationException,
+             "domain parameter cannot be set-up on network {network} without dhcp" \
+                 .format(network=self.network_conf.name),
+             self.network_conf._ConfigurationNetwork__parse_domain,
+             invalid_conf)
+
+    def test_parse_domain_invalid_format(self):
+        """
+            ConfigurationNetwork.__parse_domain() should raise
+            CloubedConfigurationException if the format of the domain parameter
+            is not valid
+        """
+        invalid_conf = { 'ip_host': '10.0.0.1',
+                         'netmask': '255.255.255.0',
+                         'dhcp':
+                             { 'start': '10.0.0.100',
+                               'end'  : '10.0.0.200' },
+                         'domain': 42 }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
+        self.assertRaisesRegexp(
+             CloubedConfigurationException,
+             "format of domain parameter of network {network} is not valid" \
+                 .format(network=self.network_conf.name),
+             self.network_conf._ConfigurationNetwork__parse_domain,
+             invalid_conf)
+
 class TestConfigurationNetworkPxe(CloubedTestCase):
 
     def setUp(self):
@@ -549,4 +619,5 @@ loadtestcase(TestConfigurationNetworkForwardMode)
 loadtestcase(TestConfigurationNetworkBridgeName)
 loadtestcase(TestConfigurationNetworkIpHostNetmask)
 loadtestcase(TestConfigurationNetworkDhcp)
+loadtestcase(TestConfigurationNetworkDomain)
 loadtestcase(TestConfigurationNetworkPxe)
