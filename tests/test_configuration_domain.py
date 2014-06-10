@@ -6,6 +6,7 @@ from CloubedTests import *
 
 from lib.conf.ConfigurationDomain import ConfigurationDomain
 from lib.CloubedException import CloubedConfigurationException
+from lib.VirtController import VirtController
 
 valid_domain_item = { 'name': 'test_name',
                       'testbed': 'test_testbed',
@@ -224,9 +225,12 @@ class TestConfigurationDomainGraphics(CloubedTestCase):
         self.domain_conf._ConfigurationDomain__parse_graphics(conf)
         self.assertEqual(self.domain_conf.graphics, 'vnc')
 
-        conf = { } # default is spice
+        conf = { } # default is spice if controller supports else it is vnc
         self.domain_conf._ConfigurationDomain__parse_graphics(conf)
-        self.assertEqual(self.domain_conf.graphics, 'spice')
+        if VirtController.supports_spice():
+            self.assertEqual(self.domain_conf.graphics, 'spice')
+        else:
+            self.assertEqual(self.domain_conf.graphics, 'vnc')
 
     def test_parse_graphics_invalid_format(self):
         """
