@@ -24,6 +24,7 @@
 import re
 import os
 from ConfigurationItem import ConfigurationItem
+from ..VirtController import VirtController
 from ..CloubedException import CloubedConfigurationException
 
 class ConfigurationDomain(ConfigurationItem):
@@ -154,8 +155,11 @@ class ConfigurationDomain(ConfigurationItem):
             self.graphics = graphics
 
         else:
-            # default is spice
-            self.graphics = "spice"
+            # default is spice if controller has support
+            if VirtController.supports_spice():
+                self.graphics = "spice"
+            else:
+                self.graphics = "vnc"
 
     def __parse_netifs(self, conf):
         """

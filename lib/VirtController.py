@@ -246,6 +246,13 @@ class VirtController(object):
                                          libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
                                          handler,
                                          None)
+    #
+    # Support testing methods
+    #
+
+    @staticmethod
+    def supports_spice():
+        return libvirt.getVersion() >= 8006
 
 class VirtController2(libvirt.virConnect):
     """This class could be used to log all libvirt calls made by other classes of
