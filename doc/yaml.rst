@@ -285,9 +285,10 @@ have the following parameters:
 
 There is also an optional parameter for the domain:
 
-* ``graphics`` *(optional)*: either ``spice`` or ``vnc``. If defined, the given
-  protocol will be enable for remote access to the graphical console of the
-  domain.
+* ``graphics`` *(optional)*: either ``spice`` or ``vnc``. The protocol to enable
+  for remote access to the graphical console of the domain. If not specified,
+  the default is ``spice`` if the installed version of libvirt supports it.
+  Otherwise, it falls back to ``vnc``.
 
 Optionally, the ``templates`` sub-section can also be defined to generate files
 based on templates. If defined, this sub-section can contain:
