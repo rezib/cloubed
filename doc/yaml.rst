@@ -173,6 +173,12 @@ These two parameters are globally optionals but they cannot be defined
 separately. They must be either both defined or both undefined within the
 ``dhcp`` sub-section.
 
+When DHCP service is properly enable, a domain name can be defined for the
+network. It is then used by DHCP and DNS services:
+
+* ``domain`` *(optional)*: the name of the DNS domain of the network (eg.
+  ``exemple.net``).
+
 Finally, when DHCP service is properly enable, the PXE service can also be
 defined. This service is controled within a dedicated ``pxe`` sub-section. When
 present, this sub-section must contain the following parameters:
@@ -223,8 +229,8 @@ bridge ``br0``. This bridge must be already existing on the node.
     networks:
       - name: foo4-net
         forward: nat
+        domain: foo.net
         ip_host: 10.1.0.1
-
         netmask: 255.255.255.0
         dhcp:
           start: 10.1.0.100
