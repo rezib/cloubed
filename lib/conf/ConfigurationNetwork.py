@@ -52,6 +52,10 @@ class ConfigurationNetwork(ConfigurationItem):
         self.dhcp_end = None
         self.__parse_dhcp(network_item)
 
+        # domain name
+        self.domain = None
+        self.__parse_domain(network_item)
+
         # pxe parameters
         self.pxe_tftp_dir = None
         self.pxe_boot_file = None
@@ -254,6 +258,35 @@ class ConfigurationNetwork(ConfigurationItem):
             # default to None if not defined
             self.dhcp_start = None
             self.dhcp_end = None
+
+    def __parse_domain(self, conf):
+        """
+            Parses the domain parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+            This method must be called *after* __parse_dhcp() since
+            it relies on the attributes set by this method.
+        """
+
+        # domain cannot be set-up without dhcp
+        if self.dhcp_start is None and conf.has_key('domain'):
+            raise CloubedConfigurationException(
+                "domain parameter cannot be set-up on network {network} " \
+                "without dhcp".format(network = self.name))
+
+        if conf.has_key('domain'):
+
+            domain = conf['domain']
+
+            if type(domain) is not str:
+                raise CloubedConfigurationException(
+                    "format of domain parameter of network {network} is not " \
+                    "valid".format(network = self.name))
+
+            self.domain = domain
+
+        else:
+            # default is None
+            self.domain = None
 
     def __parse_pxe(self, conf):
         """

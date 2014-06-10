@@ -65,6 +65,8 @@ class Network:
             self._dhcp_range_start = network_conf.dhcp_start
             self._dhcp_range_end = network_conf.dhcp_end
 
+        self._domain = network_conf.domain
+
         self._with_pxe = False
         self._tftproot = None
         self._bootfile = None
@@ -250,6 +252,7 @@ class Network:
         #   <name>private</name>
         #   <bridge name="virbr2" />
         #   <forward mode="nat"/>
+        #   <domain name="example.net">
         #   <ip address="192.168.152.1" netmask="255.255.255.0">
         #     <tftp root="/var/lib/tftp" />
         #     <dhcp>
@@ -288,6 +291,12 @@ class Network:
             element_forward = self._doc.createElement("forward")
             element_forward.setAttribute("mode", self._forward_mode)
             element_network.appendChild(element_forward)
+
+        # domain
+        if self._domain:
+            element_domain = self._doc.createElement("domain")
+            element_domain.setAttribute("name", self._domain)
+            element_network.appendChild(element_domain)
 
         # To avoid unwanted behaviour and conflicts on external LAN, DHCP and
         # PXE cannot be enable on bridge forwording networks
