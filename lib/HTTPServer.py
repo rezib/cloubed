@@ -45,7 +45,10 @@ class HTTPServer():
            Returns True if the HTTPServer is already launched
         """
 
-        return self._thread is not None
+        # check both the thread and the httpd server since httpd server could
+        # have failed when launched
+
+        return self._thread is not None and self._httpd is not None
 
     def launch(self, address):
 
