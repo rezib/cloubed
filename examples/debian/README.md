@@ -49,11 +49,11 @@ Here is the diff applied against this reference:
 @@ -384,3 +388,3 @@
  # packages and run commands in the target system.
 -#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
-+d-i preseed/late_command string wget http://${network.debiannet.ip_host}:5432/http/preseed-late-command.sh -O /target/opt/preseed-late-command.sh; in-target bash /opt/preseed-late-command.sh
++d-i preseed/late_command string wget http://${network.net.ip_host}:5432/http/preseed-late-command.sh -O /target/opt/preseed-late-command.sh; in-target bash /opt/preseed-late-command.sh
 ```
 
 The main modifications is the late command downloaded by HTTP, using the
-minimal embedded HTTP server in ClouBed.
+minimal embedded HTTP server in Cloubed.
 
 The purpose of the other minors modifications is only to avoid interactions in
 the installation process.
@@ -65,18 +65,15 @@ files. It is actually a workaround for Debian bug #693956.
 
 You really SHOULD adapt the following settings:
 
-* in `templates/preseed.cfg`:
-  + a geographically closer mirror of Debian package repository ;
-  + the root password.
-* in `http/preseed-late-command.sh`:
-  + your SSH public key
+* the root password in `templates/preseed.cfg`:
+* your SSH public key in `http/preseed-late-command.sh`:
 
 Before launching the installation, you will need to follow those steps:
 
 ### Download and extract official Debian PXE environment
 
 ```sh
-wget http://ftp.nl.debian.org/debian/dists/wheezy/main/installer-amd64/current/images/netboot/netboot.tar.gz \
+wget http://http.debian.net/debian/dists/wheezy/main/installer-amd64/current/images/netboot/netboot.tar.gz \
     -O http/netboot.tar.gz
 tar -C http -xzf http/netboot.tar.gz
 ```

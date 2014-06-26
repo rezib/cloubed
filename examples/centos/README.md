@@ -34,8 +34,8 @@ mkdir pool http
 Download both the kernel and initrd provided by CentOS for PXE boot:
 
 ```sh
-wget http://mirror.centos.org/centos/6.4/os/x86_64/images/pxeboot/initrd.img -O http/initrd.img
-wget http://mirror.centos.org/centos/6.4/os/x86_64/images/pxeboot/vmlinuz -O http/vmlinuz
+wget http://mirror.centos.org/centos/6/os/x86_64/images/pxeboot/initrd.img -O http/initrd.img
+wget http://mirror.centos.org/centos/6/os/x86_64/images/pxeboot/vmlinuz -O http/vmlinuz
 ```
 
 ### Launch installation
@@ -55,5 +55,5 @@ python install.py
 You're done! You can now connect with SSH to your newly created VM:
 
 ```sh
-ssh root@10.5.0.10
+ssh root@10.6.0.10
 ```

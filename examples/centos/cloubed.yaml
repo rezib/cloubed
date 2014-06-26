@@ -1,15 +1,15 @@
 testbed: centos
 storagepools:
-    - name: centos-pool
+    - name: pool
       path: pool
 storagevolumes:
-    - name: centos-vol-server
-      storagepool: centos-pool
+    - name: server
+      storagepool: pool
       size: 70
       format: qcow2
 networks:
-    - name: centos-net
-      nat: true
+    - name: net
+      forward: nat
       ip_host: 10.6.0.1
       netmask: 255.255.255.0
       dhcp:
@@ -23,14 +23,13 @@ domains:
       cpu: 2
       memory: 1
       netifs:
-          - network: centos-net   # eth0
+          - network: net   # eth0
+            ip: 10.6.0.10
       graphics: spice
       disks:
           - device: sda
-            storage_volume: centos-vol-server
+            storage_volume: server
       templates:
-          vars:
-              ip_vm: 10.6.0.10
           files:
               - name: kickstart
                 input: templates/centos.ks

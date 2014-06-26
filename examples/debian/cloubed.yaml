@@ -1,15 +1,15 @@
 testbed: debian
 storagepools:
-    - name: debian-pool
+    - name: pool
       path: pool
 storagevolumes:
-    - name: debian-vol-server
-      storagepool: debian-pool
+    - name: server
+      storagepool: pool
       size: 70
       format: qcow2
 networks:
-    - name: debian-net
-      nat: true
+    - name: net
+      forward: nat
       ip_host: 10.5.0.1
       netmask: 255.255.255.0
       dhcp:
@@ -23,15 +23,13 @@ domains:
       cpu: 2
       memory: 1
       netifs:
-          - network: debian-net   # eth0
+          - network: net   # eth0
+            ip: 10.5.0.10
       graphics: spice
       disks:
           - device: sda
-            storage_volume: debian-vol-server
+            storage_volume: server
       templates:
-          vars:
-              netif: eth0
-              ip_vm: 10.5.0.10
           files:
               - name: preseed
                 input: templates/preseed.cfg
