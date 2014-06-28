@@ -21,16 +21,14 @@
 
 """ DomainDisk class of Cloubed """
 
-from StorageVolume import StorageVolume
-
 class DomainDisk:
 
     """ DomainDisk class """
 
-    def __init__(self, device, storage_volume_name):
+    def __init__(self, tbd, device, storage_volume_name):
 
         self.device = device
-        self.storage_volume = StorageVolume.get_by_name(storage_volume_name)
+        self.storage_volume = tbd.get_storage_volume_by_name(storage_volume_name)
 
     def get_storage_volume_name(self):
 

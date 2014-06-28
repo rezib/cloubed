@@ -32,8 +32,6 @@ class StorageVolume:
 
     """ StorageVoluem class """
 
-    _storage_volumes = []
-
     def __init__(self, tbd, storage_volume_conf):
 
         self.tbd = tbd
@@ -59,52 +57,10 @@ class StorageVolume:
 
         self._doc = None
 
-        StorageVolume._storage_volumes.append(self)
-
-    def __del__(self):
-
-        try:
-            StorageVolume._storage_volumes.remove(self)
-        except ValueError:
-            pass
-
-    def __eq__(self, other): # needed for __del__
-
-        return self.name == other.name
-
     def __repr__(self):
 
         return "{name} [{size}GB]".format(name=self.name,
                                           size=self._size)
-
-    @classmethod
-    def get_storage_volumes_list(cls):
-
-        """
-            get_storage_volumes_list: Returns the list of all existing
-                                      StorageVolumes
-        """
-
-        return cls._storage_volumes
-
-    @classmethod
-    def get_by_name(cls, storage_volume_name):
-
-        """
-            get_by_name: Returns the StorageVolume with the name given in
-                         parameter
-        """
-
-        for storage_volume in cls._storage_volumes:
-            if storage_volume.name == storage_volume_name:
-                return storage_volume
-
-        # none
-        raise CloubedException("storage volume {storage_volume_name} " \
-                               "not found in the list of defined storage " \
-                               "volume ({list_storage_volumes})" \
-                                   .format(storage_volume_name = storage_volume_name,
-                                           list_storage_volumes = cls._storage_volumes))
 
     def xml(self):
 
@@ -334,7 +290,7 @@ class StorageVolume:
 
         if self._backing is not None:
 
-            backing = StorageVolume.get_by_name(self._backing)
+            backing = self.tbd.get_storage_volume_by_name(self._backing)
 
             # backingStore element
             element_backing = self._doc.createElement("backingStore")

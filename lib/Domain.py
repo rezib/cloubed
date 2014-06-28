@@ -74,7 +74,7 @@ class Domain:
         self.disks = []
         # ex: { 'sda': 'vol-admin', 'sdb': 'vol-array' ]
         for device, storage_volume_name in domain_conf.disks.iteritems():
-            self.disks.append(DomainDisk(device, storage_volume_name))
+            self.disks.append(DomainDisk(tbd, device, storage_volume_name))
 
         self.virtfs = [ DomainVirtfs(virtfs["source"], virtfs["target"]) \
                         for virtfs in domain_conf.virtfs ]
