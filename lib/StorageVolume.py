@@ -25,7 +25,6 @@ import logging
 import os
 from xml.dom.minidom import Document, parseString
 
-from StoragePool import StoragePool # used in __init__
 from CloubedException import CloubedException
 from Utils import getuser
 
@@ -41,7 +40,7 @@ class StorageVolume:
         self.ctl = self.tbd.ctl
 
         sp_name = storage_volume_conf.storage_pool
-        self.storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
+        self.storage_pool = self.tbd.get_storage_pool_by_name(sp_name)
         self.name = storage_volume_conf.name
         use_namespace = True # should better be a conf parameter in the future
         if use_namespace:    # logic should moved be in an abstract parent class

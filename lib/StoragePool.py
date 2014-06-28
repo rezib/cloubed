@@ -29,8 +29,6 @@ class StoragePool:
 
     """ StoragePool class """
 
-    _storage_pools = []
-
     def __init__(self, tbd, storage_pool_conf):
 
         self.tbd = tbd
@@ -48,43 +46,7 @@ class StoragePool:
             self.libvirt_name = self.name
         self.path = storage_pool_conf.path
 
-        StoragePool._storage_pools.append(self)
-
         self._doc = None
-
-    def __del__(self):
-
-        try:
-            StoragePool._storage_pools.remove(self)
-        except ValueError:
-            pass
-
-    def __eq__(self, other): # needed for __del__
-
-        return self.name == other.name
-
-    @classmethod
-    def get_storage_pools_list(cls):
-
-        """
-            get_storage_pools_list: Returns the list of existing StoragePools
-        """
-
-        return cls._storage_pools
-
-    @classmethod
-    def get_storage_pool_by_name(cls, storage_pool_name):
-
-        """
-            get_storage_pool_by_name: Returns the StoragePool with the name
-                                      given in parameter
-        """
-
-        for storage_pool in cls._storage_pools:
-            if storage_pool.name == storage_pool_name:
-                return storage_pool
-
-        return None
 
     def xml(self):
 
