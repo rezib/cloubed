@@ -32,7 +32,9 @@ class EventManager:
 
     """ EventManager class """
 
-    def __init__(self):
+    def __init__(self, tbd):
+
+        self.tbd = tbd
 
         VirtController.event_register()
         self._stop = threading.Event()
@@ -42,9 +44,9 @@ class EventManager:
         self._thread.setDaemon(True)
         self._thread.start()
 
-        self._conn = VirtController(read_only=True)
-        self._conn.domain_event_register(EventManager.manage_event)
-        self._conn.setKeepAlive(5, 3)
+        self._ctl = VirtController(read_only=True)
+        self._ctl.domain_event_register(EventManager.manage_event)
+        self._ctl.setKeepAlive(5, 3)
 
         logging.debug("initialized event manager")
 

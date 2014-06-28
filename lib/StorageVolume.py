@@ -35,9 +35,11 @@ class StorageVolume:
 
     _storage_volumes = []
 
-    def __init__(self, conn, storage_volume_conf):
+    def __init__(self, tbd, storage_volume_conf):
 
-        self._conn = conn
+        self.tbd = tbd
+        self.ctl = self.tbd.ctl
+
         sp_name = storage_volume_conf.storage_pool
         self.storage_pool = StoragePool.get_storage_pool_by_name(sp_name)
         self.name = storage_volume_conf.name
@@ -152,8 +154,8 @@ class StorageVolume:
 
         else:
 
-            storage_volume = self._conn.find_storage_volume(self.storage_pool,
-                                                            self.getfilename())
+            storage_volume = self.ctl.find_storage_volume(self.storage_pool,
+                                                          self.getfilename())
 
             if storage_volume is not None:
 
@@ -195,8 +197,8 @@ class StorageVolume:
             Destroys the StorageVolume in libvirt
         """
 
-        storage_volume = self._conn.find_storage_volume(self.storage_pool,
-                                                        self.getfilename())
+        storage_volume = self.ctl.find_storage_volume(self.storage_pool,
+                                                      self.getfilename())
 
         if storage_volume is None:
             logging.debug("unable to destroy storage volume {name} since not " \
@@ -216,8 +218,8 @@ class StorageVolume:
         sv_name = None
 
         # delete storage volumes w/ the same name
-        storage_volume = self._conn.find_storage_volume(self.storage_pool,
-                                                        self.getfilename())
+        storage_volume = self.ctl.find_storage_volume(self.storage_pool,
+                                                      self.getfilename())
         found = storage_volume is not None
 
         if found and overwrite:
@@ -226,11 +228,11 @@ class StorageVolume:
             logging.info("deleting storage volume {filename}" \
                              .format(filename=self.getfilename()))
             storage_volume.delete(0)
-            self._conn.create_storage_volume(self.storage_pool,
-                                             self.toxml())
+            self.ctl.create_storage_volume(self.storage_pool,
+                                           self.toxml())
         elif not found:
-            self._conn.create_storage_volume(self.storage_pool,
-                                             self.toxml())
+            self.ctl.create_storage_volume(self.storage_pool,
+                                           self.toxml())
 
     def __init_xml(self):
 

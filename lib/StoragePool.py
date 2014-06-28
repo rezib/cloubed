@@ -31,9 +31,10 @@ class StoragePool:
 
     _storage_pools = []
 
-    def __init__(self, conn, storage_pool_conf):
+    def __init__(self, tbd, storage_pool_conf):
 
-        self._conn = conn
+        self.tbd = tbd
+        self.ctl = self.tbd.ctl
 
         self.name = storage_pool_conf.name
         use_namespace = True # should better be a conf parameter in the future
@@ -110,7 +111,7 @@ class StoragePool:
 
         infos = {}
 
-        storage_pool = self._conn.find_storage_pool(self.path)
+        storage_pool = self.ctl.find_storage_pool(self.path)
 
         if storage_pool is not None:
 
@@ -181,7 +182,7 @@ class StoragePool:
             Destroys the StoragePool in libvirt.
         """
 
-        storage_pool = self._conn.find_storage_pool(self.path)
+        storage_pool = self.ctl.find_storage_pool(self.path)
         if storage_pool is None:
             logging.debug("unable to destroy storage pool {name} since not " \
                           "found in libvirt".format(name=self.name))
@@ -208,7 +209,7 @@ class StoragePool:
             link to it.
         """
 
-        storage_pool = self._conn.find_storage_pool(self.path)
+        storage_pool = self.ctl.find_storage_pool(self.path)
 
         if storage_pool is not None:
             logging.info("found storage pool {name} with the same path" \
@@ -224,7 +225,7 @@ class StoragePool:
                 storage_pool.create(0)
 
         else:
-            self._conn.create_storage_pool(self.toxml())
+            self.ctl.create_storage_pool(self.toxml())
 
     def __init_xml(self):
 

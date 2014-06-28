@@ -73,8 +73,8 @@ class Cloubed():
         # connection to the hypervisor
         #
         
-        self._conn = VirtController()
-        if self._conn == None:
+        self.ctl = VirtController()
+        if self.ctl == None:
             logging.error("Failed to open connection to the hypervisor")
             sys.exit(1)
 
@@ -99,7 +99,7 @@ class Cloubed():
         for storage_pool_conf in self._conf.storage_pools:
             logging.info("initializing storage pool {name}" \
                              .format(name=storage_pool_conf.name))
-            self._storage_pools.append(StoragePool(self._conn,
+            self._storage_pools.append(StoragePool(self,
                                                    storage_pool_conf))
     
         #
@@ -109,7 +109,7 @@ class Cloubed():
         for storage_volume_conf in self._conf.storage_volumes:
             logging.info("initializing storage volume {name}" \
                              .format(name=storage_volume_conf.name))
-            self._storage_volumes.append(StorageVolume(self._conn,
+            self._storage_volumes.append(StorageVolume(self,
                                                        storage_volume_conf))
     
         #
@@ -119,7 +119,7 @@ class Cloubed():
         for network_conf in self._conf.networks:
             logging.info("initializing network {name}" \
                              .format(name=network_conf.name))
-            self._networks.append(Network(self._conn,
+            self._networks.append(Network(self,
                                           network_conf))
 
         #
@@ -129,7 +129,7 @@ class Cloubed():
         for domain_conf in self._conf.domains:
             logging.info("initializing domain {name}" \
                              .format(name=domain_conf.name))
-            self._domains.append(Domain(self._conn,
+            self._domains.append(Domain(self,
                                         domain_conf))
 
         #
@@ -243,7 +243,7 @@ class Cloubed():
         """ Launch event manager thread unless already done """
 
         if self._event_manager is None:
-            self._event_manager = EventManager()
+            self._event_manager = EventManager(self)
 
     def gen_file(self, domain_name, template_name):
 

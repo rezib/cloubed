@@ -40,9 +40,10 @@ class Domain:
 
     _domains = []
 
-    def __init__(self, conn, domain_conf):
+    def __init__(self, tbd, domain_conf):
 
-        self._conn = conn
+        self.tbd = tbd
+        self.ctl = self.tbd.ctl
         self._virtobj = None
         self.name = domain_conf.name
 
@@ -139,7 +140,7 @@ class Domain:
 
         infos = {}
 
-        domain = self._conn.find_domain(self.libvirt_name)
+        domain = self.ctl.find_domain(self.libvirt_name)
         if domain is not None:
 
             # get libvirt status
@@ -267,7 +268,7 @@ class Domain:
             Destroys the Domain in libvirt
         """
 
-        domain = self._conn.find_domain(self.libvirt_name)
+        domain = self.ctl.find_domain(self.libvirt_name)
         if domain is None:
             logging.debug("unable to destroy domain {name} since not found " \
                           "in libvirt".format(name=self.name))
@@ -284,7 +285,7 @@ class Domain:
 
         """ Creates the Domain """
 
-        domain = self._conn.find_domain(self.libvirt_name)
+        domain = self.ctl.find_domain(self.libvirt_name)
         if domain:
             if domain.isActive():
                 logging.info("destroying domain {name}" \
@@ -298,7 +299,7 @@ class Domain:
         self.bootdev = bootdev
 
         # create the domain
-        self._conn.create_domain(self.toxml())
+        self.ctl.create_domain(self.toxml())
         logging.info("domain {domain}: created".format(domain=self.name))
 
     def notify_event(self, event):

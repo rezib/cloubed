@@ -31,9 +31,10 @@ class Network:
 
     _networks = [] 
 
-    def __init__(self, conn, network_conf):
+    def __init__(self, tbd, network_conf):
 
-        self._conn = conn
+        self.tbd = tbd
+        self.ctl = self.tbd.ctl
 
         self.name = network_conf.name
         use_namespace = True # should better be a conf parameter in the future
@@ -132,7 +133,7 @@ class Network:
 
         infos = {}
 
-        network = self._conn.find_network(self.libvirt_name)
+        network = self.ctl.find_network(self.libvirt_name)
 
         if network is not None:
 
@@ -186,7 +187,7 @@ class Network:
             Destroys the Network in libvirt
         """
 
-        network = self._conn.find_network(self.libvirt_name)
+        network = self.ctl.find_network(self.libvirt_name)
         if network is None:
             logging.debug("unable to destroy network {name} since not found " \
                           "in libvirt".format(name=self.name))
@@ -202,7 +203,7 @@ class Network:
 
         """ create: Creates the Network in libvirt """
 
-        network = self._conn.find_network(self.libvirt_name)
+        network = self.ctl.find_network(self.libvirt_name)
         found = network is not None
 
         if found and overwrite:
@@ -212,9 +213,9 @@ class Network:
             else:
                 logging.info("undefining network {name}".format(name=self.name))
                 network.undefine()
-            self._conn.create_network(self.toxml())
+            self.ctl.create_network(self.toxml())
         elif not found:
-            self._conn.create_network(self.toxml())
+            self.ctl.create_network(self.toxml())
 
     def __init_xml(self):
 
