@@ -25,16 +25,15 @@ import threading
 import logging
 
 from VirtController import VirtController
-from Domain import Domain
 from DomainEvent import DomainEvent
 
 class EventManager:
 
     """ EventManager class """
 
-    def __init__(self, tbd):
+    tbd = None
 
-        self.tbd = tbd
+    def __init__(self, tbd):
 
         VirtController.event_register()
         self._stop = threading.Event()
@@ -47,6 +46,8 @@ class EventManager:
         self._ctl = VirtController(read_only=True)
         self._ctl.domain_event_register(EventManager.manage_event)
         self._ctl.setKeepAlive(5, 3)
+
+        EventManager.tbd = tbd
 
         logging.debug("initialized event manager")
 
@@ -77,7 +78,8 @@ class EventManager:
                                   domain_id=dom.ID(),
                                   event_type=event.type,
                                   event_detail=event.detail))
-        domain = Domain.get_by_libvirt_name(dom.name())
+
+        domain = EventManager.tbd.get_domain_by_libvirt_name(dom.name())
         # test if notified event comes from a domain in current testbed
         if domain is None:
             logging.debug("event received for domain {domain} but not found " \

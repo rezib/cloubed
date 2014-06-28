@@ -166,10 +166,33 @@ class Cloubed():
 
     def get_domain_by_name(self, name):
 
-        """ get_domain_by_name: """
+        """Returns the Domain object of the testbed with the name in parameter.
+
+           :param string name: the name of the domain to find
+           :exceptions CloubedException:
+               * the domain could not be found in the testbed
+        """
 
         for domain in self._domains:
             if domain.name == name:
+                return domain
+
+        # domain not found
+        raise CloubedException("domain {domain} not found in configuration"
+                                   .format(domain=name))
+
+    def get_domain_by_libvirt_name(self, libvirt_name):
+
+        """Returns the Domain object of the testbed with the libvirt name in
+           parameter.
+
+           :param string libvirt_name: the name in libvirt of the domain to find
+           :exceptions CloubedException:
+               * the domain could not be found in the testbed
+        """
+
+        for domain in self._domains:
+            if domain.libvirt_name == libvirt_name:
                 return domain
 
         # domain not found

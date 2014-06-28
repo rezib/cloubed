@@ -38,8 +38,6 @@ class Domain:
 
     """ Domain class """
 
-    _domains = []
-
     def __init__(self, tbd, domain_conf):
 
         self.tbd = tbd
@@ -90,19 +88,6 @@ class Domain:
         self._doc = None
 
         self._lock = threading.Lock()
-
-        Domain._domains.append(self)
-
-    def __del__(self):
-
-        try:
-            Domain._domains.remove(self)
-        except ValueError:
-            pass
-
-    def __eq__(self, other): # needed for __del__
-
-        return self.name == other.name
 
     #
     # accessors
@@ -205,29 +190,6 @@ class Domain:
             # domain is not yet defined in Libvirt
             return 'undefined'
         return states[state_code]
-
-    @classmethod
-    def get_by_name(cls, name):
-
-        """ Returns the Domain with this name """
-
-        for domain in cls._domains:
-            if domain.name == name:
-                return domain
-
-        return None
-
-    @classmethod
-    def get_by_libvirt_name(cls, name):
-
-        """ Returns the Domain with this name """
-
-        for domain in cls._domains:
-            if domain.libvirt_name == name:
-                return domain
-
-        return None
-
 
     def get_template_by_name(self, template_name):
 
