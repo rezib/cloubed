@@ -22,18 +22,16 @@
 
 """ DomainNetif class of Cloubed """
 
-from Network import Network
-
 class DomainNetif:
 
     """ DomainNetif class """
 
-    def __init__(self, hostname, mac, ip, network):
+    def __init__(self, tbd, hostname, mac, ip, network):
 
         self.hostname = hostname
         self.mac = mac
         self.ip = ip
-        self.network = Network.get_by_name(network)
+        self.network = tbd.get_network_by_name(network)
         if self.ip is not None:
             self.network.register_host(hostname, mac, ip)
 

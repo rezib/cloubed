@@ -29,8 +29,6 @@ class Network:
 
     """ Network class """
 
-    _networks = [] 
-
     def __init__(self, tbd, network_conf):
 
         self.tbd = tbd
@@ -79,38 +77,7 @@ class Network:
         # list of statically declared hosts in the network
         self._hosts = []
 
-        Network._networks.append(self)
-
         self._doc = None
-
-    def __del__(self):
-
-        try:
-            Network._networks.remove(self)
-        except ValueError:
-            pass
-
-    def __eq__(self, other): # needed for __del__
-
-        return self.name == other.name
-
-    @classmethod
-    def get_network_list(cls):
-
-        """ get_network_list: Returns the list of Networks """
-
-        return cls._networks
-
-    @classmethod
-    def get_by_name(cls, network_name):
-
-        """ get_by_name: Returns the Network with name given in parameter """
-
-        for network in cls._networks:
-            if network.name == network_name:
-                return network
-
-        return None
 
     def xml(self):
 

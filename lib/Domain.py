@@ -68,13 +68,13 @@ class Domain:
                               .format(domain_name=self.name,
                                       network_name=network_name))
             ip = netif.get('ip')
-            netif = DomainNetif(self.name, mac, ip, network_name)
+            netif = DomainNetif(self.tbd, self.name, mac, ip, network_name)
             self.netifs.append(netif)
 
         self.disks = []
         # ex: { 'sda': 'vol-admin', 'sdb': 'vol-array' ]
         for device, storage_volume_name in domain_conf.disks.iteritems():
-            self.disks.append(DomainDisk(tbd, device, storage_volume_name))
+            self.disks.append(DomainDisk(self.tbd, device, storage_volume_name))
 
         self.virtfs = [ DomainVirtfs(virtfs["source"], virtfs["target"]) \
                         for virtfs in domain_conf.virtfs ]
