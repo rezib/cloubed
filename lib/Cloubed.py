@@ -178,7 +178,7 @@ class Cloubed():
                 return domain
 
         # domain not found
-        raise CloubedException("domain {domain} not found in configuration"
+        raise CloubedException("domain {domain} not found in configuration" \
                                    .format(domain=name))
 
     def get_domain_by_libvirt_name(self, libvirt_name):
@@ -196,8 +196,8 @@ class Cloubed():
                 return domain
 
         # domain not found
-        raise CloubedException("domain {domain} not found in configuration"
-                                   .format(domain=name))
+        raise CloubedException("domain {domain} not found in configuration" \
+                                   .format(domain=libvirt_name))
 
     def get_network_by_name(self, name):
 
