@@ -246,7 +246,18 @@ class Cloubed():
 
     def get_templates_dict(self, domain_name):
 
-        """ get_templates_dict: """
+        """Returns the dict with all variables that could be used in a template
+           for a domain.
+
+           :param string domain_name: the name of the domain
+           :exceptions CloubedException:
+               * the domain could not be found in the testbed
+        """
+
+        if domain_name not in self.domains():
+            raise CloubedException("domain {domain} not found in " \
+                                   "configuration" \
+                                       .format(domain=domain_name))
 
         templates_dict = self._conf.get_templates_dict(domain_name)
         return templates_dict

@@ -95,6 +95,39 @@ def print_domain_infos(name, infos):
     for key, value in infos.iteritems():
         print "    - {key:10s}: {value:10s}".format(key=key, value=value)
 
+def print_template_vars(domain_vars):
+    """Prints the dict of variables that could be used in the templates for a
+       domain.
+
+       :param dict domain_vars: the dict of variables that could be used in
+           templates for a domain.
+    """
+
+    tb_keys = []
+    sp_keys = []
+    sv_keys = []
+    nt_keys = []
+    dm_keys = []
+
+    for key in domain_vars.iterkeys():
+        if key.startswith('testbed'): tb_keys.append(key)
+        elif key.startswith('storagepool'): sp_keys.append(key)
+        elif key.startswith('storagevolume'): sv_keys.append(key)
+        elif key.startswith('network'): nt_keys.append(key)
+        elif key.startswith('domain'): dm_keys.append(key)
+        elif key.startswith('self'): dm_keys.append(key)
+
+    for key in sorted(tb_keys):
+        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+    for key in sorted(sp_keys):
+        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+    for key in sorted(sv_keys):
+        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+    for key in sorted(nt_keys):
+        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+    for key in sorted(dm_keys):
+        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+
 def main():
 
     """ run_cloubed: function launched by main() """
@@ -169,6 +202,12 @@ def main():
             testbed = cloubed.get_infos()
 
             print_testbed_infos(testbed)
+
+        elif action_name == u"vars":
+
+            domain_name = args.domain[0]
+            domain_vars = cloubed.get_templates_dict(domain_name)
+            print_template_vars(domain_vars)
 
         elif action_name == u"cleanup":
 

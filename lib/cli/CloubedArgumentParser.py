@@ -47,7 +47,8 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         self.add_argument("actions",
                             nargs=1,
-                            choices=['gen', 'boot', 'wait', 'status', 'cleanup', 'xml'],
+                            choices=['gen', 'boot', 'wait', 'status', 'cleanup',
+                                     'vars', 'xml'],
                             help="name of the action to perform")
 
         # TODO: actually still to be implemented
@@ -132,6 +133,9 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 },
                 "status": {},
                 "cleanup": {},
+                "vars": {
+                    "domain": "--domain"
+                },
                 "xml": {
                     "resource": "--resource"
                 }
@@ -174,6 +178,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             'wait': [ 'domain', 'event' ],
             'status': [],
             'cleanup': [],
+            'vars': [ 'domain' ],
             'xml': [ 'resource' ]
         }
 
