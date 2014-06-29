@@ -142,7 +142,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
         """
             Raises CloubedArgumentException because action requires domain
         """
-        actions = [ "boot", "gen", "wait" ]
+        actions = [ "boot", "gen", "wait", "vars" ]
         for action in actions:
             sys.argv = ["cloubed", action]
             parser = CloubedArgumentParser(u"test_description")
