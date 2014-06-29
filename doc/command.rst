@@ -36,6 +36,9 @@ Available actions:
   status
     Print the status of all resources of the testbed.
 
+  vars
+    Print variables usable in templates for a domain.
+
   cleanup
     Delete all existing resrouces of the testbed.
 
@@ -89,6 +92,13 @@ Required arguments for `gen` action:
     --domain=DOMAIN   The domain associated to the file to generate.
     --filename=FILE   The name of the file to generate.
 
+Vars options
+------------
+
+Required arguments for `vars` action:
+
+    --domain=DOMAIN  The domain of the variables to print.
+
 Xml options
 -----------
 
@@ -128,6 +138,10 @@ Wait for the domain *node2* to shutdown:
 Print the XML representation of network *backbone*:
 
   cloubed xml --resource=network:backbone
+
+Print the variables that could be used in templates of domain *node1*:
+
+  cloubed vars --domain=node1
 
 Print the current status of all resources of the testbed:
 
