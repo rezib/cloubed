@@ -42,9 +42,20 @@ Debian/Ubuntu
 Add Cloubed Debian repository in a new repository file (eg.
 ``/etc/apt/sources.list.d/cloubed.list``), with the following content::
 
-    deb http://localhost/debian cloubed contrib
+    deb http://cloubed.org/debian wheezy contrib
 
-Update your package sources database::
+.. note::
+
+   If you are running Debian Squeeze (aka. oldstable) you should add the
+   following line instead::
+
+       deb http://cloubed.org/debian squeeze contrib
+
+   Then, you will have to enable squeeze backports repository in order to
+   install Libvirt and Qemu from this repository since the versions available
+   by default in Debian Squeeze are really too old.
+
+Then, update your package sources database::
 
     sudo apt-get update
 
@@ -65,6 +76,7 @@ Then load the kernel module for hardware virtualization instruction set support:
 Become a member of ``libvirtd`` system group::
 
     sudo adduser $USER libvirtd
+
 
 RHEL/CentOS/Fedora
 ^^^^^^^^^^^^^^^^^^
