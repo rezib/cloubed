@@ -45,7 +45,7 @@ class ConfigurationDomain(ConfigurationItem):
         self.netifs = []
         self.__parse_netifs(domain_item)
 
-        self.disks = {}
+        self.disks = []
         self.__parse_disks(domain_item)
 
         self.virtfs = []
@@ -225,6 +225,8 @@ class ConfigurationDomain(ConfigurationItem):
             found.
         """
 
+        self.disks = []
+
         if not conf.has_key('disks'):
             raise CloubedConfigurationException(
                       "disks section of domain {domain} is missing" \
@@ -278,7 +280,31 @@ class ConfigurationDomain(ConfigurationItem):
                               .format(disk_id=disk_id,
                                       domain=self.name))
 
-            self.disks[disk["device"]] = disk["storage_volume"]
+            if disk.has_key("bus"):
+                bus = disk["bus"]
+                if type(bus) is not str:
+                    raise CloubedConfigurationException(
+                              "format of bus of disk {disk_id} of domain " \
+                              "{domain} is not valid" \
+                                  .format(disk_id=disk_id,
+                                          domain=self.name))
+
+                valid_buses = ["virtio", "scsi"]
+
+                if bus not in valid_buses:
+                    raise CloubedConfigurationException(
+                              "value {bus} of bus of disk {disk_id} of " \
+                              "domain {domain} is not valid" \
+                                  .format(bus=bus,
+                                          disk_id=disk_id,
+                                          domain=self.name))
+
+            else:
+
+                # default value
+                disk["bus"] = "virtio"
+
+            self.disks.append(disk)
 
             disk_id += 1
 

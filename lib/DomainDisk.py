@@ -25,10 +25,11 @@ class DomainDisk:
 
     """ DomainDisk class """
 
-    def __init__(self, tbd, device, storage_volume_name):
+    def __init__(self, tbd, disk_conf):
 
-        self.device = device
-        self.storage_volume = tbd.get_storage_volume_by_name(storage_volume_name)
+        self.device = disk_conf['device']
+        self.storage_volume = tbd.get_storage_volume_by_name(disk_conf['storage_volume'])
+        self.bus = disk_conf['bus']
 
     def get_storage_volume_name(self):
 

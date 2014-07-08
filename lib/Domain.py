@@ -70,9 +70,8 @@ class Domain:
             self.netifs.append(netif)
 
         self.disks = []
-        # ex: { 'sda': 'vol-admin', 'sdb': 'vol-array' ]
-        for device, storage_volume_name in domain_conf.disks.iteritems():
-            self.disks.append(DomainDisk(self.tbd, device, storage_volume_name))
+        for disk in domain_conf.disks:
+            self.disks.append(DomainDisk(self.tbd, disk))
 
         self.virtfs = [ DomainVirtfs(virtfs["source"], virtfs["target"]) \
                         for virtfs in domain_conf.virtfs ]
@@ -476,7 +475,7 @@ class Domain:
             # devices/disk/target
             element_target = self._doc.createElement("target")
             element_target.setAttribute("dev", disk.device)
-            element_target.setAttribute("bus", "virtio")
+            element_target.setAttribute("bus", disk.bus)
             element_disk.appendChild(element_target)
            
             # devices/disk/driver
