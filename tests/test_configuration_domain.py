@@ -17,7 +17,8 @@ valid_domain_item = { 'name': 'test_name',
                             'ip': '10.0.0.1' } ],
                       'disks': [
                           { 'device': 'test_device',
-                            'storage_volume': 'test_storage_volume' } ],
+                            'storage_volume': 'test_storage_volume',
+                            'bus': 'virtio' } ],
                       'virtfs': [
                           { 'source': '/test_source',
                             'target': 'test_target' } ] }
@@ -69,11 +70,13 @@ class TestConfigurationDomain(CloubedTestCase):
 
     def test_attr_disks(self):
         """
-            ConfigurationDomain.disks should be a dict with all disks of
+            ConfigurationDomain.disks should be a list with all disks of
             the domain
         """
         self.assertEqual(self.domain_conf.disks,
-                         { 'test_device': 'test_storage_volume' })
+                         [{ 'device': 'test_device',
+                            'storage_volume': 'test_storage_volume',
+                            'bus': 'virtio' }])
 
     def test_attr_virtfs(self):
         """
@@ -518,6 +521,68 @@ class TestConfigurationDomainDisks(CloubedTestCase):
                      "is not valid",
                      self.domain_conf._ConfigurationDomain__parse_disks,
                      invalid_config)
+
+    def test_parse_disks_bus_ok(self):
+        """
+            ConfigurationDomain.__parse_disks() should properly set disk bus
+            attribute
+        """
+
+        conf = { 'disks': [ { 'device': 'test_device',
+                              'storage_volume': 'test_storage_volume',
+                              'bus': 'scsi' } ] }
+
+        self.domain_conf._ConfigurationDomain__parse_disks(conf)
+        self.assertEqual(self.domain_conf.disks,
+                         conf['disks'])
+
+        # test default bus is virtio
+        conf['disks'][0].pop('bus', None)
+        self.domain_conf._ConfigurationDomain__parse_disks(conf)
+        conf['disks'][0]['bus'] = 'virtio'
+        self.assertEqual(self.domain_conf.disks,
+                         conf['disks'])
+
+    def test_parse_disks_bus_invalid_format(self):
+        """
+            ConfigurationDomain.__parse_disks() should raise
+            CloubedConfigurationException if the format of bus parameter of one
+            disk is not valid
+        """
+
+        invalid_configs = [ { 'disks': [ { 'device': 'test_device',
+                                           'storage_volume': 'test_storage_volume',
+                                           'bus': 42 } ] },
+                            { 'disks': [ { 'device': 'test_device',
+                                           'storage_volume': 'test_storage_volume',
+                                           'bus': None } ] } ]
+
+        for invalid_config in invalid_configs:
+
+            self.assertRaisesRegexp(
+                     CloubedConfigurationException,
+                     "format of bus of disk 0 of domain test_name " \
+                     "is not valid",
+                     self.domain_conf._ConfigurationDomain__parse_disks,
+                     invalid_config)
+
+    def test_parse_disks_bus_invalid_value(self):
+        """
+            ConfigurationDomain.__parse_disks() should raise
+            CloubedConfigurationException if the value of bus parameter of one
+            disk is not valid
+        """
+
+        invalid_config = { 'disks': [ { 'device': 'test_device',
+                                        'storage_volume': 'test_storage_volume',
+                                        'bus': 'fail' } ] }
+
+        self.assertRaisesRegexp(
+                 CloubedConfigurationException,
+                 "value fail of bus of disk 0 of domain test_name " \
+                 "is not valid",
+                 self.domain_conf._ConfigurationDomain__parse_disks,
+                 invalid_config)
 
 class TestConfigurationDomainVirtfs(CloubedTestCase):
 
