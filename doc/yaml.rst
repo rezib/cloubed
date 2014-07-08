@@ -274,6 +274,11 @@ domain. Each storage volume must have the following parameters:
 * ``device``: a valid string, the name of the device (not used yet).
 * ``storage_volume``: the name of the storage volume. This storage volume must
   be defined previously in the dedicated section.
+* ``bus`` *(optional)*: the type of bus through which the disk will be visible
+  for the guest OS inside the domain. Valid values are ``virtio`` and ``scsi``.
+  Default is ``virtio`` and is recommended for performance reasons. Alternative
+  value ``scsi`` could be useful for guests OS that do not support ``virtio`` or
+  for particular setup (ex: multipath, etc).
 
 The optional sub-section ``virtfs``, if declared, must contain a list of
 directory on the host to export to the domain. With this feature, the domain can
