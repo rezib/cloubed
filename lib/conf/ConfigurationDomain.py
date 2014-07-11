@@ -214,6 +214,25 @@ class ConfigurationDomain(ConfigurationItem):
                               .format(netif_id=netif_id,
                                       domain=self.name))
 
+            if netif.has_key("mac"):
+
+                if type(netif["mac"]) is not str:
+                    raise CloubedConfigurationException(
+                              "format of mac of netif {netif_id} of domain "\
+                              "{domain} is not valid" \
+                                  .format(netif_id=netif_id,
+                                          domain=self.name))
+
+                # check mac against this regexp
+                mac_regexp = r"^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$"
+
+                if re.match(mac_regexp, netif["mac"]) is None:
+                    raise CloubedConfigurationException(
+                              "value of mac parameter of netif {netif_id} of " \
+                              "domain {domain} is not a valid mac address" \
+                                  .format(netif_id=netif_id,
+                                          domain=self.name))
+
             self.netifs.append(netif)
 
             netif_id += 1
