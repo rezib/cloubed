@@ -22,18 +22,21 @@
 
 """ DomainNetif class of Cloubed """
 
+from Utils import gen_mac
+
 class DomainNetif:
 
     """ DomainNetif class """
 
-    def __init__(self, tbd, hostname, mac, ip, network):
+    def __init__(self, tbd, hostname, netif_conf):
 
-        self.hostname = hostname
-        self.mac = mac
-        self.ip = ip
-        self.network = tbd.get_network_by_name(network)
+        self.network = tbd.get_network_by_name(netif_conf["network"])
+        self.mac = gen_mac("{domain:s}-{network:s}" \
+                              .format(domain=hostname,
+                                      network=self.network.name))
+        self.ip = netif_conf.get('ip')
         if self.ip is not None:
-            self.network.register_host(hostname, mac, ip)
+            self.network.register_host(hostname, self.mac, self.ip)
 
     def get_network_name(self):
 

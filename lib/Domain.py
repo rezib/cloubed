@@ -32,7 +32,7 @@ from DomainSnapshot import DomainSnapshot
 from DomainNetif import DomainNetif
 from DomainDisk import DomainDisk
 from DomainVirtfs import DomainVirtfs
-from Utils import gen_mac,getuser
+from Utils import getuser
 
 class Domain:
 
@@ -61,12 +61,7 @@ class Domain:
         self.netifs = []
         # ex: [ 'admin', 'backbone' ]
         for netif in domain_conf.netifs:
-            network_name = netif["network"]
-            mac = gen_mac("{domain_name:s}-{network_name:s}" \
-                              .format(domain_name=self.name,
-                                      network_name=network_name))
-            ip = netif.get('ip')
-            netif = DomainNetif(self.tbd, self.name, mac, ip, network_name)
+            netif = DomainNetif(self.tbd, self.name, netif)
             self.netifs.append(netif)
 
         self.disks = []
