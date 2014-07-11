@@ -267,6 +267,9 @@ domain. Each network interface have the following parameters:
   network must be defined previously in the dedicated section.
 * ``ip`` *(optional)*: the IPv4 address that will be statically assigned to the
   interface (if the DHCP service is enable on the corresponding network).
+* ``mac`` *(optional)*: the MAC address that will be set on the network
+  interface. If not set, Cloubed will automatically generate a persistent MAC
+  address based on the domain and network names.
 
 The sub-section ``disks`` must contain a list of storage volumes for the
 domain. Each storage volume must have the following parameters:
