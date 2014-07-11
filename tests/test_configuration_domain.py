@@ -386,6 +386,41 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
                      self.domain_conf._ConfigurationDomain__parse_netifs,
                      invalid_config)
 
+    def test_parse_netifs_invalid_mac_format(self):
+        """
+            ConfigurationDomain.__parse_netifs() should raise
+            CloubedConfigurationException when netifs in parameter have invalid
+            MAC address format
+        """
+
+        invalid_configs = [ { 'netifs': [ { 'network': 'test', 'mac': None } ] },
+                            { 'netifs': [ { 'network': 'test', 'mac': 42   } ] } ]
+
+        for invalid_config in invalid_configs:
+
+            self.assertRaisesRegexp(
+                     CloubedConfigurationException,
+                     "format of mac of netif 0 of domain test_name is not " \
+                     "valid",
+                     self.domain_conf._ConfigurationDomain__parse_netifs,
+                     invalid_config)
+
+    def test_parse_netifs_invalid_mac_value(self):
+        """
+            ConfigurationDomain.__parse_netifs() should raise
+            CloubedConfigurationException when netifs in parameter have invalid
+            MAC address value
+        """
+
+        invalid_config = { 'netifs': [ { 'network': 'test', 'mac': 'fail' } ] }
+
+        self.assertRaisesRegexp(
+                 CloubedConfigurationException,
+                 "value of mac parameter of netif 0 of domain test_name is " \
+                 "not a valid mac address",
+                 self.domain_conf._ConfigurationDomain__parse_netifs,
+                 invalid_config)
+
 class TestConfigurationDomainDisks(CloubedTestCase):
 
     def setUp(self):
