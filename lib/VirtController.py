@@ -126,11 +126,17 @@ class VirtController(object):
                which the volume will be created
            :param string xml: the XML description of the storage volume to create
            :exceptions CloubedControllerException:
+               * the storage pool in parameter could not be found in libvirt
                * a problem is encountered in libvirt
         """
 
         # type(pool) is libvirt.virStoragePool
         pool = self.find_storage_pool(storage_pool.path)
+
+        if not pool:
+            raise CloubedControllerException("pool {path} not found by "\
+                                             "virtualization controller" \
+                                             .format(path=storage_pool.path))
 
         try:
             pool.createXML(xml, 0)
