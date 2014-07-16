@@ -3,6 +3,7 @@
 import copy
 
 from CloubedTests import *
+from Mock import MockConfigurationLoader
 
 from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
@@ -11,42 +12,28 @@ from lib.conf.ConfigurationNetwork import ConfigurationNetwork
 from lib.conf.ConfigurationDomain import ConfigurationDomain
 from lib.CloubedException import CloubedConfigurationException
 
-class MockConfigurationLoader:
-
-    def __init__(self):
-
-        self.content = {
-            'testbed': 'test_testbed',
-            'storagepools':
-                [ { 'name': 'test_storage_pool',
-                    'path': 'test_path '} ],
-            'storagevolumes':
-                [ { 'name': 'test_storage_volume',
-                    'storagepool': 'test_storage_pool',
-                    'size': 10,
-                    'format': 'qcow2' } ],
-            'networks':
-                [ { 'name': 'test_network' } ],
-            'domains':
-                [ { 'name': 'test_domain',
-                    'cpu' : 1,
-                    'memory': 1,
-                    'netifs': [],
-                    'disks': [] } ],
-        }
-
-    def get_content(self):
-
-        return self.content
-
-    def remove(self, key):
-
-        self.content.pop(key, None)
+conf = {'testbed': 'test_testbed',
+        'storagepools':
+            [ { 'name': 'test_storage_pool',
+                'path': 'test_path '} ],
+        'storagevolumes':
+            [ { 'name': 'test_storage_volume',
+                'storagepool': 'test_storage_pool',
+                'size': 10,
+                'format': 'qcow2' } ],
+        'networks':
+            [ { 'name': 'test_network' } ],
+        'domains':
+            [ { 'name': 'test_domain',
+                'cpu' : 1,
+                'memory': 1,
+                'netifs': [],
+                'disks': [] } ], }
 
 class TestConfiguration(CloubedTestCase):
 
     def setUp(self):
-        self._loader = MockConfigurationLoader() 
+        self._loader = MockConfigurationLoader(conf)
         self._configuration = Configuration(self._loader)
 
     def test_attr_storage_pools(self):
@@ -92,7 +79,7 @@ class TestConfiguration(CloubedTestCase):
 class TestConfigurationTestbed(CloubedTestCase):
  
     def setUp(self):
-        self._loader = MockConfigurationLoader() 
+        self._loader = MockConfigurationLoader(conf)
         self._configuration = Configuration(self._loader)
 
     def test_parse_testbed_ok(self):
@@ -136,7 +123,7 @@ class TestConfigurationTestbed(CloubedTestCase):
 class TestConfigurationItems(CloubedTestCase):
 
     def setUp(self):
-        self._loader = MockConfigurationLoader() 
+        self._loader = MockConfigurationLoader(conf)
         self._configuration = Configuration(self._loader)
 
     def test_parse_items_ok(self):
@@ -189,7 +176,7 @@ class TestConfigurationItems(CloubedTestCase):
 class TestConfigurationTemplates(CloubedTestCase):
 
     def setUp(self):
-        self._loader = MockConfigurationLoader() 
+        self._loader = MockConfigurationLoader(conf)
         self._configuration = Configuration(self._loader)
 
     def test_parse_templates_ok(self):

@@ -1,6 +1,20 @@
 from xml.dom.minidom import Document
 from libvirt import libvirtError
 
+class MockConfigurationLoader:
+
+    def __init__(self, content):
+
+        self.content = content
+
+    def get_content(self):
+
+        return self.content
+
+    def remove(self, key):
+
+        self.content.pop(key, None)
+
 class MockLibvirt():
 
     """Class with static methods to mock all used functions in libvirt module"""
