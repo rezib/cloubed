@@ -67,7 +67,7 @@ class Cloubed():
 
     __metaclass__ = Singleton
 
-    def __init__(self):
+    def __init__(self, conf_loader=None):
 
         #
         # connection to the hypervisor
@@ -87,8 +87,11 @@ class Cloubed():
         #
         # parse configuration file
         #
-        configuration_filename = os.path.join(os.getcwd(), "cloubed.yaml")
-        self._conf_loader = ConfigurationLoader(configuration_filename)
+        if conf_loader:
+            self._conf_loader = conf_loader
+        else:
+            configuration_filename = os.path.join(os.getcwd(), "cloubed.yaml")
+            self._conf_loader = ConfigurationLoader(configuration_filename)
         self._conf = Configuration(self._conf_loader)
         self._name = self._conf.testbed
     
