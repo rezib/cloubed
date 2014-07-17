@@ -64,7 +64,7 @@ class TestVirtControllerMethods(CloubedTestCase):
         # self.ctl.conn is a MockLibvirtConnect
         self.ctl.conn.pools = []
         self.ctl.conn.defined_pools = []
-        self.assertIs(self.ctl.find_storage_pool('test'), None)
+        self.assertIs(self.ctl.find_storage_pool('fail'), None)
 
         self.ctl.conn.pools = [ MockLibvirtStoragePool('test1'), ]
         self.ctl.conn.defined_pools = [ MockLibvirtStoragePool('test2'), ]
@@ -75,7 +75,8 @@ class TestVirtControllerMethods(CloubedTestCase):
            issue
         """
 
-        xml = object()
+        xml = "<pool type='dir'><name>pool_name</name>" \
+              "<target><path>/test_pool_path</path></target></pool>"
         self.ctl.create_storage_pool(xml)
 
     def test_find_storage_volume(self):
@@ -133,7 +134,7 @@ class TestVirtControllerMethods(CloubedTestCase):
 
         self.ctl.conn.networks = []
         self.ctl.conn.defined_networks = []
-        self.assertIs(self.ctl.find_network('net1'), None)
+        self.assertIs(self.ctl.find_network('fail'), None)
 
         self.ctl.conn.networks = [ MockLibvirtNetwork('net1'), ]
         self.ctl.conn.defined_networks = [ MockLibvirtNetwork('net2'), ]
@@ -145,7 +146,7 @@ class TestVirtControllerMethods(CloubedTestCase):
            issue
         """
 
-        xml = object()
+        xml = "<network><name>network_name</name></network>"
         self.ctl.create_network(xml)
 
     def test_find_domain(self):
@@ -168,7 +169,7 @@ class TestVirtControllerMethods(CloubedTestCase):
            issue
         """
 
-        xml = object()
+        xml = "<domain><name>domain_name</name></domain>"
         self.ctl.create_domain(xml)
 
     def test_setKeepAlive(self):

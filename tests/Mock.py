@@ -1,4 +1,4 @@
-from xml.dom.minidom import Document
+from xml.dom.minidom import Document, parseString
 from libvirt import libvirtError
 
 class MockConfigurationLoader:
@@ -72,12 +72,12 @@ class MockLibvirtConnect():
     def listStoragePools(self):
         """Mock of libvirt.virConnect.listStoragePools()"""
 
-        return [ pool.name for pool in self.pools ]
+        return [ pool._name for pool in self.pools ]
 
     def listDefinedStoragePools(self):
         """Mock of libvirt.virConnect.listDefinedStoragePools()"""
 
-        return [ pool.name for pool in self.defined_pools ]
+        return [ pool._name for pool in self.defined_pools ]
 
     def storagePoolLookupByName(self, path):
         """Mock of libvirt.virConnect.storagePoolLookupByName()"""
@@ -91,7 +91,10 @@ class MockLibvirtConnect():
     def storagePoolCreateXML(self, xml, flag):
         """Mock of libvirt.virConnect.storagePoolCreateXML()"""
 
-        pass
+        dom = parseString(xml)
+        path = dom.getElementsByTagName(u'path')[0].firstChild.data
+        pool = MockLibvirtStoragePool(path)
+        self.pools.append(pool)
 
     def listNetworks(self):
         """Mock of libvirt.virConnect.listNetworks()"""
@@ -116,7 +119,10 @@ class MockLibvirtConnect():
     def networkCreateXML(self, xml):
         """Mock of libvirt.virConnect.networkCreateXML()"""
 
-        pass
+        dom = parseString(xml)
+        name = dom.getElementsByTagName(u'name')[0].firstChild.data
+        net = MockLibvirtNetwork(name)
+        self.networks.append(net)
 
     def listDomainsID(self):
         """Mock of libvirt.virConnect.listDomainsID()"""
@@ -153,7 +159,10 @@ class MockLibvirtConnect():
     def createXML(self, xml, flags):
         """Mock of libvirt.virConnect.createXML()"""
 
-        pass
+        dom = parseString(xml)
+        name = dom.getElementsByTagName(u'name')[0].firstChild.data
+        domain = MockLibvirtDomain(len(self.domains), name)
+        self.domains.append(domain)
 
     def setKeepAlive(self, major, minor):
         """Mock of libvirt.virConnect.setKeepAlive()"""
@@ -173,9 +182,15 @@ class MockLibvirtStoragePool():
 
     def __init__(self, name):
 
-        self.name = name
+        self._name = name
         self.path = name
         self.volumes = []
+        self.active = True
+
+    def name(self):
+        """Mock of libvirt.virStoragePool.name()"""
+
+        return self._name
 
     def XMLDesc(self, flag):
         """Mock of libvirt.virStoragePool.XMLDesc()"""
@@ -207,6 +222,38 @@ class MockLibvirtStoragePool():
 
         pass
 
+    def isActive(self):
+        """Mock of libvirt.virStoragePool.isActive()
+
+           This method is used in StoragePool.destroy() and StoragePool.create()
+        """
+
+        return self.active
+
+    def numOfVolumes(self):
+        """Mock of libvirt.virStoragePool.numOfVolumes()
+
+           This method is used in StoragePool.destroy()
+        """
+
+        return len(self.volumes)
+
+    def info(self):
+        """Mock of libvirt.virStoragePool.info()
+
+           This method is used in StoragePool.get_infos()
+        """
+
+        return [0,]
+
+    def destroy(self):
+        """Mock of libvirt.virStoragePool.destroy()
+
+           This method is used in StoragePool.destroy()
+        """
+
+        pass
+
 class MockLibvirtNetwork():
 
     """Class to mock libvirt.virNetwork class and its methods used in
@@ -216,6 +263,35 @@ class MockLibvirtNetwork():
     def __init__(self, name):
 
         self.name = name
+        self.active = True
+
+    def isActive(self):
+        """Mock of libvirt.virNetwork.isActive()
+
+           This method is used in Network.get_infos(), Network.destroy() and Network.create()
+        """
+
+        return self.active
+
+    def destroy(self):
+        """Mock of libvirt.virNetwork.destroy()
+
+           This method is used in Network.destroy() and Network.create()
+        """
+
+        pass
+
+    def XMLDesc(self, flag):
+        """Mock of libvirt.virNetwork.XMLDesc()
+
+           This method is used in Network.get_infos()
+        """
+        doc = Document()
+        elt = doc.createElement("name")
+        txt = doc.createTextNode(self.name)
+        elt.appendChild(txt)
+        doc.appendChild(elt)
+        return doc.toxml()
 
 class MockLibvirtDomain():
 
@@ -227,8 +303,45 @@ class MockLibvirtDomain():
 
         self.id = id
         self._name = name
+        self.active = True
 
     def name(self):
         """Mock of libvirt.virDomain.name()"""
 
         return self._name
+
+    def isActive(self):
+        """Mock of libvirt.virDomain.isActive()
+
+           This method is used in Domain.destroy() and Domain.create()
+        """
+
+        return self.active
+
+    def destroy(self):
+        """Mock of libvirt.virDomain.destroy()
+
+           This method is used in Domain.destroy()
+        """
+
+        pass
+
+    def info(self):
+        """Mock of libvirt.virDomain.info()
+
+           This method is used in Domain.get_infos()
+        """
+
+        return [0,]
+
+    def XMLDesc(self, flag):
+        """Mock of libvirt.virDomain.XMLDesc()
+
+           This method is used in Domain.get_infos()
+        """
+        doc = Document()
+        elt = doc.createElement("name")
+        txt = doc.createTextNode(self._name)
+        elt.appendChild(txt)
+        doc.appendChild(elt)
+        return doc.toxml()
