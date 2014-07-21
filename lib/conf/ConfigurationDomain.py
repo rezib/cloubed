@@ -308,7 +308,7 @@ class ConfigurationDomain(ConfigurationItem):
                                   .format(disk_id=disk_id,
                                           domain=self.name))
 
-                valid_buses = ["virtio", "scsi"]
+                valid_buses = ["virtio", "scsi", "ide"]
 
                 if bus not in valid_buses:
                     raise CloubedConfigurationException(
