@@ -358,6 +358,12 @@ class Domain:
         #     </interface>
         #     <graphics type='sdl'/>
         #     <graphics type='spice' />
+        #     <serial type='pty'>
+        #       <target port='0'/>
+        #     </serial>
+        #     <console type='pty'>
+        #       <target type='serial' port='0'/>
+        #     </console>
         #   </devices>
         # </domain>
 
@@ -564,3 +570,25 @@ class Domain:
                 element_graphics.setAttribute("autoport", "yes")
             element_devices.appendChild(element_graphics)
 
+        # serial console
+
+        # devices/serial
+        element_serial = self._doc.createElement("serial")
+        element_serial.setAttribute("type", "pty")
+        element_devices.appendChild(element_serial)
+
+        # devices/serial/target
+        element_target = self._doc.createElement("target")
+        element_target.setAttribute("port", "0")
+        element_serial.appendChild(element_target)
+
+        # devices/console
+        element_console = self._doc.createElement("console")
+        element_console.setAttribute("type", "pty")
+        element_devices.appendChild(element_console)
+
+        # devices/console/target
+        element_target = self._doc.createElement("target")
+        element_target.setAttribute("type", "serial")
+        element_target.setAttribute("port", "0")
+        element_console.appendChild(element_target)
