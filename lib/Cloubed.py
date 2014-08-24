@@ -381,6 +381,13 @@ class Cloubed():
 
         domain.create(bootdev)
 
+        if domain.graphics in ["spice", "vnc"]:
+            infos = domain.get_infos()
+            logging.info("{type} console of domain {domain} available on port " \
+                         "{port}".format(type=infos['console'],
+                                         domain=domain.name,
+                                         port=infos['port']))
+
     def create_network(self, network_name, recreate):
 
         """ Create network in Cloubed """
