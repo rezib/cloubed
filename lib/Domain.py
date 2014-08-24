@@ -135,7 +135,9 @@ class Domain:
             try:
                 element = xml.getElementsByTagName('graphics').pop()
                 port = element.getAttribute('port')
-                infos['spice_port'] = str(port)
+                type = element.getAttribute('type')
+                infos['console'] = type
+                infos['port'] = str(port)
             except IndexError:
                 pass
 
