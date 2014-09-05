@@ -48,10 +48,26 @@ class DomainTemplate():
 
     def render(self, template_dict):
 
-        """ render: renders the template """
+        """Renders the output file based on the source template.
 
-        template_str = ExtTemplate(open(self._source_file, 'r').read()) \
+           :param dict template_dict: the dictionnary of variable value pairs
+               to substitute in the template file
+           :exceptions CloubedException:
+               * the source template could not be read
+               * the output file could not be written
+        """
+
+        try:
+            input_file = open(self._source_file, 'r')
+        except IOError, err:
+            raise CloubedException(
+                      "error while reading template file {filename}: {err}" \
+                          .format(filename=self._source_file,
+                                  err=err))
+
+        template_str = ExtTemplate(input_file.read()) \
                            .safe_substitute(template_dict)
+
         try:
             output_file = open(self._output_file, 'w')
             output_file.write(template_str)
@@ -59,5 +75,5 @@ class DomainTemplate():
         except IOError, err:
             raise CloubedException(
                       "error while writing to template file {filename}: {err}" \
-                          .format(filename = self._output_file,
-                                  err = err))
+                          .format(filename=self._output_file,
+                                  err=err))
