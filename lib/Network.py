@@ -23,7 +23,8 @@
 
 import logging
 from xml.dom.minidom import Document, parseString
-from Utils import getuser
+from Utils import getuser, net_conflict
+from CloubedException import CloubedException
 
 class Network:
 
@@ -93,51 +94,10 @@ class Network:
         return self.xml().toxml()
 
     def get_infos(self):
+        """Returns a dict full of key/value string pairs with information about
+           the Network.
         """
-            Returns a dict full of key/value string pairs with information about
-            the Network
-        """
-
-        infos = {}
-
-        network = self.ctl.find_network(self.libvirt_name)
-
-        if network is not None:
-
-            # status name of the Network from Libvirt standpoint
-            if network.isActive():
-                infos['status'] = 'active'
-            else:
-                infos['status'] = 'inactive'
-
-            # extract infos out of libvirt XML
-            xml = parseString(network.XMLDesc(0))
-
-            # IndexError exception is passed in order to continue silently
-            # if elements are not found in the XML tree
-
-            # bridge name
-            try:
-                element = xml.getElementsByTagName('bridge').pop()
-                bridge = element.getAttribute('name')
-                infos['bridge'] = bridge
-            except IndexError:
-                pass
-
-            # current ip/netmask
-            try:
-                element = xml.getElementsByTagName('ip').pop()
-                ip = element.getAttribute('address')
-                infos['ip'] = ip
-                netmask = element.getAttribute('netmask')
-                infos['netmask'] = netmask
-            except IndexError:
-                pass
-
-        else:
-            infos['status'] = 'undefined'
-
-        return infos
+        return self.ctl.info_network(self.libvirt_name)
 
     def register_host(self, hostname, mac, ip):
 
@@ -166,12 +126,39 @@ class Network:
             logging.warn("undefining network {name}".format(name=self.name))
             network.undefine()
 
-    def create(self, overwrite = False):
+    def __check_conflict(self):
+        """It looks over existing active networks in Libvirt in order to detect
+           potential conflicting IP settings. If yes, it returns a tuple with
+           True and the name of the first conflicting network. Else it returns
+           a tuple with False and None.
+        """
+        infos = self.ctl.info_networks()
+        for network_name, network_infos in infos.iteritems():
+            if network_name != self.libvirt_name and \
+               network_infos['status'] == 'active':
+               if net_conflict(self.ip_host, self._netmask,
+                               network_infos.get('ip'),
+                               network_infos.get('netmask')):
+                   return (True, network_name)
+        return (False, None)
 
-        """ create: Creates the Network in libvirt """
+    def create(self, overwrite=False):
+        """Creates the Network in libvirt. First, it searches if the network
+           has already been created previously, based on its name. If yes and
+           overwrite parameter is True, it will delete the previous Network and
+           creates this one instead. If yes and overwrite is False, it does not
+           do anything. Else, it creates the networks.
+           Before creating the network, it checks if another active Network has
+           conflicting IP settings. If yes, a CloubedException is raised.
+
+           :exceptions CloubedException:
+               * another active network with conflicting IP settings has been
+                 found in Libvirt.
+        """
 
         network = self.ctl.find_network(self.libvirt_name)
         found = network is not None
+        create = False
 
         if found and overwrite:
             if network.isActive():
@@ -180,9 +167,18 @@ class Network:
             else:
                 logging.info("undefining network {name}".format(name=self.name))
                 network.undefine()
-            self.ctl.create_network(self.toxml())
+            create = True
         elif not found:
-            self.ctl.create_network(self.toxml())
+            create = True
+
+        if create:
+            conflict, network_name = self.__check_conflict()
+            if conflict:
+                raise CloubedException("another network {network} is already " \
+                                       "active with conflicting IP settings" \
+                                           .format(network=network_name))
+            else:
+                self.ctl.create_network(self.toxml())
 
     def __init_xml(self):
 

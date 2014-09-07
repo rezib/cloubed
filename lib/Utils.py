@@ -24,6 +24,7 @@
 import hashlib
 import pwd
 import os
+import logging
 
 def gen_mac(salt):
 
@@ -36,6 +37,36 @@ def gen_mac(salt):
     mac = [ "00", "16", "3e" ]
     mac.extend((salted[:2], salted[2:4], salted[4:6]))
     return ':'.join(mac)
+
+def net_conflict(ip1, mask1, ip2, mask2):
+    """Returns true is the two IPv4 networks are in conflict.
+       If the netaddr module is not available, a debug message is printed and
+       False is returned.
+       If the format of one the parameter is not valid (could not lead to a
+       valid IPv4 IP set), a debug message is printed and False is returned.
+
+       :param string ip1: IP address of network 1
+       :param string mask1: netmask of network 1
+       :param string ip2: IP address of network 2
+       :param string mask2: netmask of network 2
+    """
+
+    try:
+        from netaddr import IPSet, AddrFormatError
+    except ImportError:
+        logging.debug("unable to check conflicting networks since netaddr " \
+                      "module is not available")
+        return False
+
+    try:
+        s1 = IPSet(['{ip}/{mask}'.format(ip=ip1,mask=mask1)])
+        s2 = IPSet(['{ip}/{mask}'.format(ip=ip2,mask=mask2)])
+    except AddrFormatError, err:
+        logging.debug("unable to check conflicting networks due to error in " \
+                      "address format: {error}".format(error=err))
+        return False
+
+    return not s1.isdisjoint(s2)
 
 def getuser():
 

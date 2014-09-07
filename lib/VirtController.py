@@ -181,6 +181,88 @@ class VirtController(object):
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
+    @staticmethod
+    def __info_network(network):
+        """Returns a dict with a bunch of infos about a Libvirt network.
+
+           :param libvirt.VirNetwork network: the network to inspect
+        """
+
+        infos = {}
+
+        # status name of the Network from Libvirt standpoint
+        if network.isActive():
+            infos['status'] = 'active'
+        else:
+            infos['status'] = 'inactive'
+
+        # extract infos out of libvirt XML
+        xml = parseString(network.XMLDesc(0))
+
+        # IndexError exception is passed in order to continue silently
+        # if elements are not found in the XML tree
+
+        # bridge name
+        try:
+            element = xml.getElementsByTagName('bridge').pop()
+            bridge = element.getAttribute('name')
+            infos['bridge'] = bridge
+        except IndexError:
+            pass
+
+        # current ip/netmask
+        try:
+            element = xml.getElementsByTagName('ip').pop()
+            ip = element.getAttribute('address')
+            infos['ip'] = ip
+            netmask = element.getAttribute('netmask')
+            infos['netmask'] = netmask
+        except IndexError:
+            pass
+
+        return infos
+
+    def info_network(self, name):
+        """Returns a dict with a bunch of infos about a network in Libvirt.
+
+           :param string name: the name of the network to inspect
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        infos = {}
+
+        try:
+            network = self.find_network(name)
+            if network is not None:
+                infos = VirtController.__info_network(network)
+            else:
+                infos['status'] = 'undefined'
+        except libvirt.libvirtError as err:
+            raise CloubedControllerException(err)
+
+        return infos
+
+    def info_networks(self):
+        """Returns a dict with a bunch of infos about all networks
+           in Libvirt.
+
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        infos = {}
+
+        try:
+            networks = self.conn.listNetworks() + self.conn.listDefinedNetworks()
+            for network_name in networks:
+                network = self.conn.networkLookupByName(network_name)
+                infos[network_name] = VirtController.__info_network(network)
+        except libvirt.libvirtError as err:
+            raise CloubedControllerException(err)
+
+        return infos
+
     #
     # domains
     #
