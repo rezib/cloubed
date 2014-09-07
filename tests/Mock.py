@@ -268,7 +268,8 @@ class MockLibvirtNetwork():
     def isActive(self):
         """Mock of libvirt.virNetwork.isActive()
 
-           This method is used in Network.get_infos(), Network.destroy() and Network.create()
+           This method is used in VirtController.__info_network(),
+           Network.destroy() and Network.create()
         """
 
         return self.active
@@ -284,7 +285,7 @@ class MockLibvirtNetwork():
     def XMLDesc(self, flag):
         """Mock of libvirt.virNetwork.XMLDesc()
 
-           This method is used in Network.get_infos()
+           This method is used in VirtController.__info_network()
         """
         doc = Document()
         elt = doc.createElement("name")
