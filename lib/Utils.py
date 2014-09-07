@@ -59,14 +59,14 @@ def net_conflict(ip1, mask1, ip2, mask2):
         return False
 
     try:
-        s1 = IPSet(['{ip}/{mask}'.format(ip=ip1,mask=mask1)])
-        s2 = IPSet(['{ip}/{mask}'.format(ip=ip2,mask=mask2)])
+        set1 = IPSet(['{ip}/{mask}'.format(ip=ip1, mask=mask1)])
+        set2 = IPSet(['{ip}/{mask}'.format(ip=ip2, mask=mask2)])
     except AddrFormatError, err:
         logging.debug("unable to check conflicting networks due to error in " \
                       "address format: {error}".format(error=err))
         return False
 
-    return not s1.isdisjoint(s2)
+    return not set1.isdisjoint(set2)
 
 def getuser():
 
