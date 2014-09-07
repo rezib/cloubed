@@ -21,6 +21,8 @@
 
 """ DomainTemplate class of Cloubed """
 
+import os
+import logging
 from string import Template
 from CloubedException import CloubedException
 
@@ -77,3 +79,16 @@ class DomainTemplate():
                       "error while writing to template file {filename}: {err}" \
                           .format(filename=self._output_file,
                                   err=err))
+
+    def delete(self):
+        """Delete the output file of the DomainTemplate if it exists."""
+        if os.path.exists(self._output_file) and \
+           os.path.isfile(self._output_file):
+            try:
+                logging.warning("removing template output file {file}" \
+                                    .format(file=self._output_file))
+                os.unlink(self._output_file)
+            except OSError, err:
+                logging.error("error while removing file {file}: {error}" \
+                                  .format(file=self._output_file,
+                                          error=err))
