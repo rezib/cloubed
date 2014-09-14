@@ -297,12 +297,16 @@ have the following parameters:
 * ``target`` *(optional)*: the name of the exported 9p share inside the domain.
   If not set, the default value is the absolute path of the ``source``.
 
-There is also an optional parameter for the domain:
+There are also optional parameters for the domain:
 
 * ``graphics`` *(optional)*: either ``spice`` or ``vnc``. The protocol to enable
   for remote access to the graphical console of the domain. If not specified,
   the default is ``spice`` if the installed version of libvirt supports it.
   Otherwise, it falls back to ``vnc``.
+* ``cdrom`` *(optional)*: path to an existing ISO file on the system to use as
+  a bootable cdrom. The path can be either absolute or relative to the directory
+  where the YAML file is located. If the value starts with ``/``, an absolute
+  path is expected.
 
 Optionally, the ``templates`` sub-section can also be defined to generate files
 based on templates. If defined, this sub-section can contain:
