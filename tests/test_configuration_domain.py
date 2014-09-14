@@ -619,6 +619,51 @@ class TestConfigurationDomainDisks(CloubedTestCase):
                  self.domain_conf._ConfigurationDomain__parse_disks,
                  invalid_config)
 
+class TestConfigurationDomainCdrom(CloubedTestCase):
+
+    def setUp(self):
+        self._domain_item = valid_domain_item
+        self.domain_conf = ConfigurationDomain(self._domain_item)
+
+    def test_parse_cdrom_ok(self):
+        """
+            ConfigurationDomain.__parse_cdrom() should properly set cdrom
+            attribute
+        """
+
+        conf = { 'cdrom': '/file.iso' } # absolute path
+        self.domain_conf._ConfigurationDomain__parse_cdrom(conf)
+        self.assertEqual(self.domain_conf.cdrom, '/file.iso')
+
+        conf = { 'cdrom': 'file.iso' } # relative path
+        self.domain_conf._ConfigurationDomain__parse_cdrom(conf)
+        self.assertEqual(self.domain_conf.cdrom,
+                         os.path.join(os.getcwd(), 'file.iso') )
+
+        conf = { } # default is None
+        self.domain_conf._ConfigurationDomain__parse_cdrom(conf)
+        self.assertEqual(self.domain_conf.cdrom, None)
+
+    def test_parse_cdrom_invalid_format(self):
+        """
+            ConfigurationDomain.__parse_cdrom() should raise
+            CloubedConfigurationException when invalid cdrom format is given
+            in parameter
+        """
+
+        invalid_cdroms = [ { 'cdrom': 4    },
+                           { 'cdrom': {}   },
+                           { 'cdrom': []   },
+                           { 'cdrom': None } ]
+
+        for cdrom in invalid_cdroms:
+            self.assertRaisesRegexp(
+                     CloubedConfigurationException,
+                     "format of cdrom parameter of domain test_name is not " \
+                     "valid",
+                     self.domain_conf._ConfigurationDomain__parse_cdrom,
+                     cdrom)
+
 class TestConfigurationDomainVirtfs(CloubedTestCase):
 
     def setUp(self):
@@ -870,5 +915,6 @@ loadtestcase(TestConfigurationDomainMemory)
 loadtestcase(TestConfigurationDomainGraphics)
 loadtestcase(TestConfigurationDomainNetifs)
 loadtestcase(TestConfigurationDomainDisks)
+loadtestcase(TestConfigurationDomainCdrom)
 loadtestcase(TestConfigurationDomainVirtfs)
 loadtestcase(TestConfigurationDomainTemplates)
