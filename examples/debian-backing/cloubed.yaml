@@ -3,10 +3,14 @@ storagepools:
     - name: pool
       path: pool
 storagevolumes:
-    - name: server
+    - name: base
       storagepool: pool
       size: 70
       format: qcow2
+    - name: test
+      size: 70
+      storagepool: pool
+      backing: base
 networks:
     - name: net
       forward: nat
@@ -19,7 +23,7 @@ networks:
         tftp_dir: http
         boot_file: debian.ipxe
 domains:
-    - name: vmtest
+    - name: base
       cpu: 2
       memory: 1
       netifs:
@@ -28,7 +32,7 @@ domains:
       graphics: spice
       disks:
           - device: sda
-            storage_volume: server
+            storage_volume: base
       templates:
           files:
               - name: preseed
@@ -37,3 +41,13 @@ domains:
               - name: ipxe
                 input: templates/debian.ipxe
                 output: http/debian.ipxe
+    - name: test
+      cpu: 2
+      memory: 1
+      netifs:
+          - network: net   # eth0
+            ip: 10.5.0.11
+      graphics: spice
+      disks:
+          - device: sda
+            storage_volume: test

@@ -4,7 +4,7 @@ Minimal Debian example
 ## Description
 
 This directory contains the minimal set of files for a simple testbed with
-Debian Wheezy amd64.
+Debian Wheezy amd64 and volume backing.
 
 It uses a preseed file for a fully automatic installation of Debian with PXE.
 
@@ -107,5 +107,5 @@ Finally, you can use and feel totally free to break your freshly installed VM
 as much you'd like :)
 
 ```sh
-ssh root@10.5.0.10
+ssh root@10.5.0.11
 ```
