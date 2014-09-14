@@ -48,6 +48,9 @@ class ConfigurationDomain(ConfigurationItem):
         self.disks = []
         self.__parse_disks(domain_item)
 
+        self.cdrom = None
+        self.__parse_cdrom(domain_item)
+
         self.virtfs = []
         self.__parse_virtfs(domain_item)
 
@@ -326,6 +329,30 @@ class ConfigurationDomain(ConfigurationItem):
             self.disks.append(disk)
 
             disk_id += 1
+
+    def __parse_cdrom(self, conf):
+        """
+            Parses the cdrom parameter over the conf dictionary given in
+            parameter and raises appropriate exception if a problem is found.
+        """
+
+        self.cdrom = None
+
+        if conf.has_key('cdrom'):
+
+            cdrom = conf['cdrom']
+
+            if type(cdrom) is not str:
+                raise CloubedConfigurationException(
+                          "format of cdrom parameter of domain {domain} " \
+                          "is not valid" \
+                              .format(domain=self.name))
+
+            # handle relative path
+            if cdrom[0] != '/':
+                cdrom = os.path.join(os.getcwd(), cdrom)
+
+            self.cdrom = cdrom
 
     def __parse_virtfs(self, conf):
         """

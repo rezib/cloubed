@@ -68,6 +68,8 @@ class Domain:
         for disk in domain_conf.disks:
             self.disks.append(DomainDisk(self.tbd, disk))
 
+        self.cdrom = domain_conf.cdrom
+
         self.virtfs = [ DomainVirtfs(virtfs["source"], virtfs["target"]) \
                         for virtfs in domain_conf.virtfs ]
 
@@ -348,6 +350,11 @@ class Domain:
         #       <target dev='hdc' bus='ide' tray='open' />
         #       <readonly />
         #     </disk>
+        #     <disk type='file' device='cdrom'>
+        #       <source file='/home/user/boot.iso'/>
+        #       <target dev='hdc' bus='ide'/>
+        #       <readonly/>
+        #     </disk>
         #     <filesystem type='mount' accessmode='passthrough'>
         #       <source dir='/export/to/guest'/>
         #       <target dir='/import/from/host'/>
@@ -491,21 +498,31 @@ class Domain:
 
         # devices/disk
         element_disk = self._doc.createElement("disk")
-        element_disk.setAttribute("type", "block")
+        if self.cdrom:
+            element_disk.setAttribute("type", "file")
+        else:
+            element_disk.setAttribute("type", "block")
         element_disk.setAttribute("device", "cdrom")
         element_devices.appendChild(element_disk)
 
-        # devices/disk/driver
-        element_driver = self._doc.createElement("driver")
-        element_driver.setAttribute("name", "qemu")
-        element_driver.setAttribute("type", "raw")
-        element_disk.appendChild(element_driver)
+        if self.cdrom:
+            # devices/disk/source
+            element_source = self._doc.createElement("source")
+            element_source.setAttribute("file", self.cdrom)
+            element_disk.appendChild(element_source)
+        else:
+            # devices/disk/driver
+            element_driver = self._doc.createElement("driver")
+            element_driver.setAttribute("name", "qemu")
+            element_driver.setAttribute("type", "raw")
+            element_disk.appendChild(element_driver)
 
         # devices/disk/target
         element_target = self._doc.createElement("target")
         element_target.setAttribute("dev", "hdc")
         element_target.setAttribute("bus", "ide")
-        element_target.setAttribute("tray", "open")
+        if not self.cdrom:
+            element_target.setAttribute("tray", "open")
         element_disk.appendChild(element_target)
 
         # devices/disk/readonly
