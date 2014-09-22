@@ -215,6 +215,65 @@ class VirtController(object):
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
+    @staticmethod
+    def __info_storage_volume(storage_volume):
+        """Returns a dict with a bunch of infos about a Libvirt storage volume.
+
+           :param libvirt.virStorageVolume storage_volume: the storage volume
+               to inspect.
+        """
+        infos = {}
+        infos['status'] = 'active'
+
+        # extract infos out of libvirt XML
+        xml = parseString(storage_volume.XMLDesc(0))
+
+        # IndexError exception is passed in order to continue silently
+        # if elements are not found in the XML tree
+
+        # path
+        try:
+            element = xml.getElementsByTagName('path').pop()
+            infos['path'] = element.childNodes[0].data
+        except IndexError:
+            pass
+
+        # capacity/allocation
+        try:
+            element = xml.getElementsByTagName('capacity').pop()
+            capacity = int(element.childNodes[0].data) / 1024**2
+            infos['capacity'] = capacity
+            element = xml.getElementsByTagName('allocation').pop()
+            allocation = int(element.childNodes[0].data) / 1024**2
+            infos['allocation'] = allocation
+        except IndexError:
+            pass
+        return infos
+
+    def info_storage_volume(self, storage_pool, name):
+        """Returns a dict full of key/value string pairs with information about
+           the StorageVolume.
+
+           :param StoragePool storage_pool: a reference to the storage pool in
+               which the volume should be found
+           :param string name: the name of the filename of the storage volume to
+               find
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        infos = {}
+        pool_info = self.info_storage_pool(storage_pool.path)
+        if pool_info['status'] == 'undefined':
+            infos['status'] = "-"
+        else:
+            storage_volume = self.find_storage_volume(storage_pool, name)
+            if storage_volume is not None:
+                infos = VirtController.__info_storage_volume(storage_volume)
+            else:
+                infos['status'] = 'undefined'
+        return infos
+
     #
     # networks
     #
