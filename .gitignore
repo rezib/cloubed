@@ -4,3 +4,4 @@ cloubed.egg-info*
 dist
 tests/.coverage
 doc/_*
+MANIFEST
