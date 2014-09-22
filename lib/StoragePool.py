@@ -66,77 +66,17 @@ class StoragePool:
         return self.xml().toxml()
 
     def get_infos(self):
+        """Returns a dict full of key/value string pairs with information about
+           the StoragePool.
         """
-            Returns a dict full of key/value string pairs with information about
-            the StoragePool
-        """
-
-        infos = {}
-
-        storage_pool = self.ctl.find_storage_pool(self.path)
-
-        if storage_pool is not None:
-
-            infos['status'] = StoragePool.__get_status(storage_pool.info()[0])
-
-            # extract infos out of libvirt XML
-            xml = parseString(storage_pool.XMLDesc(0))
-
-            # IndexError exception is passed in order to continue silently
-            # if elements are not found in the XML tree
-
-            # path
-            try:
-                element = xml.getElementsByTagName('path').pop()
-                infos['path'] = element.childNodes[0].data
-            except IndexError:
-                pass
-
-        else:
-
-            infos['status'] = StoragePool.__get_status(-1)
-
-        return infos
+        return self.ctl.info_storage_pool(self.path)
 
     def get_status(self):
+        """Returns the status name of the StoragePool from VirtController
+           standpoint extracted out of the dict returned by get_infos().
+           This method is called by StorageVolume class.
         """
-            Returns the status name of the StoragePool from Libvirt standpoint
-            extracted out of the dict returned by get_infos(). This method is
-            called internally by StorageVolume class.
-        """
-
         return self.get_infos()['status']
-
-    @staticmethod
-    def __get_status(state_code):
-        """
-            Returns the name of the status of the StoragePool in Libvirt
-            according to its state code
-        """
-
-        # Extracted from libvirt API documentation:
-        # enum virStoragePoolState {
-        #   VIR_STORAGE_POOL_INACTIVE     = 0 Not running
-        #   VIR_STORAGE_POOL_BUILDING     = 1 Initializing pool, not available
-        #   VIR_STORAGE_POOL_RUNNING      = 2 Running normally
-        #   VIR_STORAGE_POOL_DEGRADED     = 3 Running degraded
-        #   VIR_STORAGE_POOL_INACCESSIBLE = 4 Running, but not accessible
-        #   VIR_STORAGE_POOL_STATE_LAST   = 5
-        # }
-
-        states = [ "inactive",
-                   "initializing",
-                   "active", # voluntarily not 'running' to stay compliant with
-                             # 'virsh pool-list' output
-                   "degraded",
-                   "inaccessible" ]
-
-        if state_code == -1:
-            # special value introduced by get_infos() for own Cloubed use when
-            # storage pool is not yet defined in Libvirt
-            return 'undefined'
-
-        return states[state_code]
 
     def destroy(self):
 

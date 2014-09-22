@@ -88,6 +88,78 @@ class VirtController(object):
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
+    @staticmethod
+    def __status_storage_pool(state_code):
+        """Returns the name of the status of the StoragePool in Libvirt
+           according to its state code
+
+          :param integer xml: the status code
+        """
+
+        # Extracted from libvirt API documentation:
+        # enum virStoragePoolState {
+        #   VIR_STORAGE_POOL_INACTIVE     = 0 Not running
+        #   VIR_STORAGE_POOL_BUILDING     = 1 Initializing pool, not available
+        #   VIR_STORAGE_POOL_RUNNING      = 2 Running normally
+        #   VIR_STORAGE_POOL_DEGRADED     = 3 Running degraded
+        #   VIR_STORAGE_POOL_INACCESSIBLE = 4 Running, but not accessible
+        #   VIR_STORAGE_POOL_STATE_LAST   = 5
+        # }
+
+        states = [ "inactive",
+                   "initializing",
+                   "active", # voluntarily not 'running' to stay compliant with
+                             # 'virsh pool-list' output
+                   "degraded",
+                   "inaccessible" ]
+
+        if state_code == -1:
+            # special value introduced by get_infos() for own Cloubed use when
+            # storage pool is not yet defined in Libvirt
+            return 'undefined'
+
+        return states[state_code]
+
+    @staticmethod
+    def __info_storage_pool(storage_pool):
+        """Returns a dict full of key/value string pairs with information about
+           the Libvirt storage pool.
+
+           :param virStoragePool storage_pool: the storage pool to inspect
+        """
+
+        infos = {}
+        infos['status'] = VirtController.__status_storage_pool(storage_pool.info()[0])
+        xml = parseString(storage_pool.XMLDesc(0))
+        try:
+            element = xml.getElementsByTagName('path').pop()
+            infos['path'] = element.childNodes[0].data
+        # IndexError exception is passed in order to continue silently
+        # if elements are not found in the XML tree
+        except IndexError:
+            pass
+        return infos
+
+    def info_storage_pool(self, path):
+        """Returns a dict full of key/value string pairs with information about
+           the StoragePool.
+
+           :param string path: the path of the storage pool to look up
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        infos = {}
+        storage_pool = self.find_storage_pool(path)
+        try:
+            if storage_pool is not None:
+                infos = VirtController.__info_storage_pool(storage_pool)
+            else:
+                infos['status'] = VirtController.__status_storage_pool(-1)
+        except libvirt.libvirtError as err:
+            raise CloubedControllerException(err)
+        return infos
+
     #
     # storage volumes
     #

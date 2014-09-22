@@ -241,7 +241,7 @@ class MockLibvirtStoragePool():
     def info(self):
         """Mock of libvirt.virStoragePool.info()
 
-           This method is used in StoragePool.get_infos()
+           This method is used in VirtController.__info_storage_pool()
         """
 
         return [0,]
