@@ -125,7 +125,8 @@ class VirtController(object):
         """Returns a dict full of key/value string pairs with information about
            the Libvirt storage pool.
 
-           :param virStoragePool storage_pool: the storage pool to inspect
+           :param libvirt.virStoragePool storage_pool: the storage pool to
+               inspect
         """
 
         infos = {}
@@ -316,7 +317,7 @@ class VirtController(object):
     def __info_network(network):
         """Returns a dict with a bunch of infos about a Libvirt network.
 
-           :param libvirt.VirNetwork network: the network to inspect
+           :param libvirt.virNetwork network: the network to inspect
         """
 
         infos = {}
