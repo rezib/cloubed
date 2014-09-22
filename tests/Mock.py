@@ -330,7 +330,7 @@ class MockLibvirtDomain():
     def info(self):
         """Mock of libvirt.virDomain.info()
 
-           This method is used in Domain.get_infos()
+           This method is used in VirtController.__info_domain()
         """
 
         return [0,]
@@ -338,7 +338,7 @@ class MockLibvirtDomain():
     def XMLDesc(self, flag):
         """Mock of libvirt.virDomain.XMLDesc()
 
-           This method is used in Domain.get_infos()
+           This method is used in VirtController.__info_domain()
         """
         doc = Document()
         dom = doc.createElement("domain")

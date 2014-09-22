@@ -437,6 +437,88 @@ class VirtController(object):
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
+    @staticmethod
+    def __status_domain(state_code):
+        """Returns the name of the status of the Domain in Libvirt
+           according to its state code.
+
+          :param integer state_code: the status code
+        """
+
+        # Extracted from libvirt API documentation:
+        # enum virDomainState {
+        #   VIR_DOMAIN_NOSTATE     = 0 no state
+        #   VIR_DOMAIN_RUNNING     = 1 the domain is running
+        #   VIR_DOMAIN_BLOCKED     = 2 the domain is blocked on resource
+        #   VIR_DOMAIN_PAUSED      = 3 the domain is paused by user
+        #   VIR_DOMAIN_SHUTDOWN    = 4 the domain is being shut down
+        #   VIR_DOMAIN_SHUTOFF     = 5 the domain is shut off
+        #   VIR_DOMAIN_CRASHED     = 6 the domain is crashed
+        #   VIR_DOMAIN_PMSUSPENDED = 7 the domain is suspended by guest power
+        #                              management
+        #   VIR_DOMAIN_LAST        = 8 NB: this enum value will increase over
+        #                              time as new events are added to the
+        #                              libvirt API. It reflects the last state
+        #                              supported by this version of the libvirt
+        #                              API.
+        # }
+
+        states = [ "unknown",
+                   "running",
+                   "blocked",
+                   "paused",
+                   "shutdown",
+                   "shutoff",
+                   "crashed",
+                   "suspended" ]
+
+        if state_code == -1:
+            # special value introduced by get_infos() for own Cloubed use when
+            # domain is not yet defined in Libvirt
+            return 'undefined'
+        return states[state_code]
+
+    @staticmethod
+    def __info_domain(domain):
+        """Returns a dict with a bunch of infos about a Libvirt domain.
+
+           :param libvirt.virDomain domain: the domain to inspect
+        """
+        infos = {}
+        # get libvirt status
+        infos['status'] = VirtController.__status_domain(domain.info()[0])
+
+        # extract infos out of libvirt XML
+        xml = parseString(domain.XMLDesc(0))
+
+        # spice port
+        try:
+            element = xml.getElementsByTagName('graphics').pop()
+            port = element.getAttribute('port')
+            type = element.getAttribute('type')
+            infos['console'] = type
+            infos['port'] = str(port)
+        # IndexError exception is passed in order to continue silently
+        # if elements are not found in the XML tree
+        except IndexError:
+            pass
+        return infos
+
+    def info_domain(self, name):
+        """Returns a dict with a bunch of infos about a domain in Libvirt.
+
+           :param string name: the name of the domain to inspect
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+        infos = {}
+        domain = self.find_domain(name)
+        if domain is not None:
+            infos = VirtController.__info_domain(domain)
+        else:
+            infos['status'] = VirtController.__status_domain(-1)
+        return infos
+
     #
     # event management
     #

@@ -114,80 +114,10 @@ class Domain:
         return [ netif.get_network_name() for netif in self.netifs ]
 
     def get_infos(self):
+        """Returns a dict full of key/value string pairs with information about
+           the Domain.
         """
-            Returns a dict full of key/value string pairs with information about
-            the Domain
-        """
-
-        infos = {}
-
-        domain = self.ctl.find_domain(self.libvirt_name)
-        if domain is not None:
-
-            # get libvirt status
-            infos['status'] = Domain.__get_status(domain.info()[0])
-
-            # extract infos out of libvirt XML
-            xml = parseString(domain.XMLDesc(0))
-
-            # IndexError exception is passed in order to continue silently
-            # if elements are not found in the XML tree
-
-            # spice port
-            try:
-                element = xml.getElementsByTagName('graphics').pop()
-                port = element.getAttribute('port')
-                type = element.getAttribute('type')
-                infos['console'] = type
-                infos['port'] = str(port)
-            except IndexError:
-                pass
-
-        else:
-
-            infos['status'] =  Domain.__get_status(-1)
-
-        return infos
-
-    @staticmethod
-    def __get_status(state_code):
-        """
-            Returns the name of the status of the Domain in Libvirt according to
-            its state code
-        """
-
-        # Extracted from libvirt API documentation:
-        # enum virDomainState {
-        #   VIR_DOMAIN_NOSTATE     = 0 no state
-        #   VIR_DOMAIN_RUNNING     = 1 the domain is running
-        #   VIR_DOMAIN_BLOCKED     = 2 the domain is blocked on resource
-        #   VIR_DOMAIN_PAUSED      = 3 the domain is paused by user
-        #   VIR_DOMAIN_SHUTDOWN    = 4 the domain is being shut down
-        #   VIR_DOMAIN_SHUTOFF     = 5 the domain is shut off
-        #   VIR_DOMAIN_CRASHED     = 6 the domain is crashed
-        #   VIR_DOMAIN_PMSUSPENDED = 7 the domain is suspended by guest power
-        #                              management
-        #   VIR_DOMAIN_LAST        = 8 NB: this enum value will increase over
-        #                              time as new events are added to the
-        #                              libvirt API. It reflects the last state
-        #                              supported by this version of the libvirt
-        #                              API.
-        # }
-
-        states = [ "unknown",
-                   "running",
-                   "blocked",
-                   "paused",
-                   "shutdown",
-                   "shutoff",
-                   "crashed",
-                   "suspended" ]
-
-        if state_code == -1:
-            # special value introduced by get_infos() for own Cloubed use when
-            # domain is not yet defined in Libvirt
-            return 'undefined'
-        return states[state_code]
+        return self.ctl.info_domain(self.libvirt_name)
 
     def get_template_by_name(self, template_name):
 
