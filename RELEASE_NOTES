@@ -1,3 +1,25 @@
+cloubed 0.4
+-----------
+
+  * New action vars on script to print all template variables
+  * Support boot on directly from ISO (#11)
+  * Support snapshoting of domains with volumes backing (#9)
+  * Support of virtfs with 9p filesystem to mount directory from host (#23)
+  * New optional domain parameter for networks in YAML file
+  * Support explicit bus type for disks
+  * Support of static MAC address on netifs
+  * Automatically detect other networks with conflicting IP settings on
+    creation (#30)
+  * Enable serial console on domains
+  * Large code refactoring with new VirtController class (#22)
+  * Set VNC instead of Spice as default graphic console protocol with old
+    versions of Libvirt (#25)
+  * Print dynamically allocated spice/vnc port on domain boot (#27)
+  * Cleanup action also deletes files created from templates (#29)
+  * Code coverage of unit tests largely increased
+  * Several small bug fixes and various code cleanups, esp. issues:
+    - #28 fix bug on non-existing input template file
+
 cloubed 0.3
 -----------
 
