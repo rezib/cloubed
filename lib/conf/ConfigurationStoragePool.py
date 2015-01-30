@@ -36,6 +36,12 @@ class ConfigurationStoragePool(ConfigurationItem):
         self.path = None
         self.__parse_path(storage_pool_item)
 
+    @staticmethod
+    def default(testbed):
+        return { 'name': 'pool',
+                 'testbed': testbed,
+                 'path': 'pool' }
+
     def __parse_path(self, conf):
        """
             Parses the path parameter over the conf dictionary given in

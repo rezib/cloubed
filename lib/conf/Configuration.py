@@ -90,6 +90,7 @@ class Configuration:
                   'domains':
                       { 'class': ConfigurationDomain,
                         'list': self.domains } }
+        optional_items = [ 'storagepools' ]
 
         # Iterations over the dict. The variables are:
         #   item_section: the name of the section in YAML
@@ -99,22 +100,28 @@ class Configuration:
         #   item_list: the list to append with build ConfigurationItem objects
 
         for item_section, meta in items.iteritems():
-            if not conf.has_key(item_section):
-                raise CloubedConfigurationException(
-                          "{item_section} parameter is missing" \
-                              .format(item_section=item_section))
-            items = conf[item_section]
-            if type(items) is not list:
-                  raise CloubedConfigurationException(
-                          "format of {item_section} parameter is not valid" \
-                              .format(item_section=item_section))
 
             item_class = meta['class']
             item_list = meta['list']
 
-            for item in items:
-                item['testbed'] = self.testbed
-                item_list.append(item_class(item))
+            if not conf.has_key(item_section):
+                if item_section in optional_items:
+                    default_item = item_class.default(self.testbed)
+                    item_list.append(item_class(default_item))
+                else:
+                    raise CloubedConfigurationException(
+                          "{item_section} parameter is missing" \
+                              .format(item_section=item_section))
+            else:
+                items = conf[item_section]
+                if type(items) is not list:
+                      raise CloubedConfigurationException(
+                            "format of {item_section} parameter is not valid" \
+                              .format(item_section=item_section))
+
+                for item in items:
+                    item['testbed'] = self.testbed
+                    item_list.append(item_class(item))
 
     def __parse_templates(self, conf):
         """
