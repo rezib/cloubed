@@ -38,9 +38,17 @@ Here is an example of a minimal YAML file for Cloubed::
           - device: sda
             storage_volume: bar-vol
 
-It must contain these 5 required main sections: ``testbed``, ``storagepools``,
-``storagevolumes``, ``networks`` and ``domains``. It may also contain an
-optional ``templates`` section.
+It must contain these 4 required main sections:
+
+* ``testbed``
+* ``storagevolumes``
+* ``networks``
+* ``domains``
+
+It may also contain these optional main sections:
+
+* ``templates``
+* ``storagepools``,
 
 The ``testbed`` section only contains the name of the testbed. This name simply
 has to be a valid string.
@@ -50,9 +58,9 @@ All the other sections of YAML file are described in the following sub-parts.
 Storage pools
 -------------
 
-The ``storagepools`` section contains a list of storage pools or, in other
-words, a list of places where will be stored the storage volumes of the testbed.
-The parameters to define a storage pool are:
+The optional ``storagepools`` section contains a list of storage pools or, in
+other words, a list of places where will be stored the storage volumes of the
+testbed. The parameters to define a storage pool are:
 
 * ``name``: a valid string unique across all storage pools
 * ``path``: path to an existing directory on the system. The path can be either
@@ -64,6 +72,12 @@ The parameters to define a storage pool are:
 In the given minimal example, one storage pool is defined. Its name is
 ``foo-pool`` and its path is the ``pool/`` directory located in the same
 directory as the YAML file.
+
+If not present in YAML file, a default storage pool is automatically defined by
+default with the following values:
+
+* ``name``: ``pool``
+* ``path``: relative directory ``pool``
 
 Storage volumes
 ---------------
