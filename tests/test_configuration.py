@@ -145,15 +145,15 @@ class TestConfigurationItems(CloubedTestCase):
     def test_parse_items_missing_section(self):
         """
             Configuration.__parse_items() should raise
-            CloubedConfigurationException if one of the main items section is
+            CloubedConfigurationException if one required main items section is
             missing
         """
-        invalid_conf = { 'storagevolumes': [ ],
-                         'networks': [ ],
+        invalid_conf = { 'storagepools': [],
+                         'storagevolumes': [ ],
                          'domains': [ ] }
         
         self.assertRaisesRegexp(CloubedConfigurationException,
-                                "storagepools parameter is missing",
+                                "networks parameter is missing",
                                 self._configuration._Configuration__parse_items,
                                 invalid_conf)
 
