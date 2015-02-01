@@ -66,19 +66,23 @@ class ConfigurationStorageVolume(ConfigurationItem):
             parameter and raises appropriate exception if a problem is found.
         """
         if not conf.has_key('storagepool'):
-            raise CloubedConfigurationException(
+            # if only storage, pop it for this storage volume volume
+            if len(self.conf.storage_pools) == 1:
+                self.storage_pool = self.conf.storage_pools[0].name
+            else:
+                raise CloubedConfigurationException(
                       "storagepool parameter of storage volume {name} is " \
                       "missing".format(name=self.name))
 
+        else:
+            storage_pool = conf['storagepool']
 
-        storage_pool = conf['storagepool']
-
-        if type(storage_pool) is not str:
-            raise CloubedConfigurationException(
+            if type(storage_pool) is not str:
+                raise CloubedConfigurationException(
                       "format of storagepool parameter of storage volume " \
                       "{name} is not valid".format(name=self.name))
 
-        self.storage_pool = storage_pool
+            self.storage_pool = storage_pool
 
     def __parse_format(self, conf):
         """
