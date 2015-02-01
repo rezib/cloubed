@@ -4,16 +4,19 @@ import os
 
 from CloubedTests import *
 
+from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationItem import ConfigurationItem
 from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
 from lib.CloubedException import CloubedConfigurationException
+from Mock import MockConfigurationLoader, conf_minimal
 
 class TestConfigurationItem(CloubedTestCase):
 
     def setUp(self):
-        item = { "name": "test_name",
-                 "testbed": "test_testbed" }
-        self.item_conf = ConfigurationItem(item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        item = { 'name': 'test_name' }
+        self.item_conf = ConfigurationItem(self.conf, item)
 
     def test_attr_name(self):
         """
@@ -46,18 +49,18 @@ class TestConfigurationItemName(CloubedTestCase):
     # implementation of _get_type() method
 
     def setUp(self):
-        storage_pool_item = { "name": "test_name",
-                              "testbed": "test_testbed",
-                              "path": "test_path" }
-        self.storage_pool_conf = ConfigurationStoragePool(storage_pool_item)
+        storage_pool_item = { 'name': 'test_name',
+                              'path': 'test_path' }
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.storage_pool_conf = ConfigurationStoragePool(self.conf, storage_pool_item)
 
     def test_parse_name_missing(self):
         """
             ConfigurationItem.__parse_name() should raise
             CloubedConfigurationException if the name parameter is missing
         """
-        invalid_conf = { "testbed": "test_testbed",
-                         "path": "test_path" }
+        invalid_conf = { 'path': 'test_path' }
         
         self.assertRaisesRegexp(
                  CloubedConfigurationException,
@@ -72,7 +75,6 @@ class TestConfigurationItemName(CloubedTestCase):
             is invalid
         """
         invalid_conf = { "name": 42,
-                         "testbed": "test_testbed",
                          "path": "test_path" }
         
         self.assertRaisesRegexp(

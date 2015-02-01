@@ -4,16 +4,19 @@ import os
 
 from CloubedTests import *
 
+from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
 from lib.CloubedException import CloubedConfigurationException
+from Mock import MockConfigurationLoader, conf_minimal
 
 class TestConfigurationStoragePoolPath(CloubedTestCase):
 
     def setUp(self):
         storage_pool_item = { 'name': 'test_name',
-                              'testbed': 'test_testbed',
                               'path': 'test_path' }
-        self.storage_pool_conf = ConfigurationStoragePool(storage_pool_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.storage_pool_conf = ConfigurationStoragePool(self.conf, storage_pool_item)
 
     def test_parse_path_ok(self):
         """
@@ -68,9 +71,10 @@ class TestConfigurationStoragePoolTemplates(CloubedTestCase):
 
     def setUp(self):
         storage_pool_item = { 'name': 'test_name',
-                              'testbed': 'test_testbed',
                               'path': '/test_path' }
-        self.storage_pool_conf = ConfigurationStoragePool(storage_pool_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.storage_pool_conf = ConfigurationStoragePool(self.conf, storage_pool_item)
 
     def test_get_templates_dict(self):
         """

@@ -2,20 +2,23 @@
 
 from CloubedTests import *
 
+from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
 from lib.CloubedException import CloubedConfigurationException
+from Mock import MockConfigurationLoader, conf_minimal
 
 class TestConfigurationStorageVolume(CloubedTestCase):
 
     def setUp(self):
         storage_volume_item = { 'name': 'test_name',
-                                'testbed': 'test_testbed',
                                 'format': 'qcow2',
                                 'size': 30,
                                 'storagepool': 'test_storage_pool',
                                 'backing': 'test_backing' }
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
         self.storage_volume_conf = \
-            ConfigurationStorageVolume(storage_volume_item)
+            ConfigurationStorageVolume(self.conf, storage_volume_item)
 
     def test_get_type(self):
         """
@@ -60,12 +63,13 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
 
     def setUp(self):
         storage_volume_item = { 'name': 'test_name',
-                                'testbed': 'test_testbed',
                                 'format': 'qcow2',
                                 'size': 30,
                                 'storagepool': 'test_storage_pool' }
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
         self.storage_volume_conf = \
-            ConfigurationStorageVolume(storage_volume_item)
+            ConfigurationStorageVolume(self.conf, storage_volume_item)
 
     def test_parse_size_ok(self):
         """
@@ -113,12 +117,13 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
 
     def setUp(self):
         storage_volume_item = { 'name': 'test_name',
-                                'testbed': 'test_testbed',
                                 'format': 'qcow2',
                                 'size': 30,
                                 'storagepool': 'test_storage_pool' }
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
         self.storage_volume_conf = \
-            ConfigurationStorageVolume(storage_volume_item)
+            ConfigurationStorageVolume(self.conf, storage_volume_item)
 
     def test_parse_storage_pool_ok(self):
         """
@@ -168,12 +173,13 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
 
     def setUp(self):
         storage_volume_item = { 'name': 'test_name',
-                                'testbed': 'test_testbed',
                                 'format': 'qcow2',
                                 'size': 30,
                                 'storagepool': 'test_storage_pool' }
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
         self.storage_volume_conf = \
-            ConfigurationStorageVolume(storage_volume_item)
+            ConfigurationStorageVolume(self.conf, storage_volume_item)
 
     def test_parse_format_ok(self):
         """
@@ -228,12 +234,13 @@ class TestConfigurationStorageVolumeBacking(CloubedTestCase):
 
     def setUp(self):
         storage_volume_item = { 'name': 'test_name',
-                                'testbed': 'test_testbed',
                                 'format': 'qcow2',
                                 'size': 30,
                                 'storagepool': 'test_storage_pool' }
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
         self.storage_volume_conf = \
-            ConfigurationStorageVolume(storage_volume_item)
+            ConfigurationStorageVolume(self.conf, storage_volume_item)
 
     def test_parse_backing_ok(self):
         """

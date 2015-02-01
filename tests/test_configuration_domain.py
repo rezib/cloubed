@@ -4,12 +4,13 @@ import os
 
 from CloubedTests import *
 
+from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationDomain import ConfigurationDomain
 from lib.CloubedException import CloubedConfigurationException
 from lib.VirtController import VirtController
+from Mock import MockConfigurationLoader, conf_minimal
 
 valid_domain_item = { 'name': 'test_name',
-                      'testbed': 'test_testbed',
                       'cpu': 2,
                       'memory': 1,
                       'netifs': [
@@ -29,7 +30,9 @@ class TestConfigurationDomain(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_get_type(self):
         """
@@ -90,7 +93,9 @@ class TestConfigurationDomainCpu(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_cpu_missing(self):
         """
@@ -127,7 +132,9 @@ class TestConfigurationDomainMemory(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_memory_ok(self):
         """
@@ -216,7 +223,9 @@ class TestConfigurationDomainGraphics(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_graphics_ok(self):
         """
@@ -275,7 +284,9 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_netifs_missing(self):
         """
@@ -425,7 +436,9 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_disks_missing(self):
         """
@@ -623,7 +636,9 @@ class TestConfigurationDomainCdrom(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_cdrom_ok(self):
         """
@@ -668,7 +683,9 @@ class TestConfigurationDomainVirtfs(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_virtfs_missing(self):
         """
@@ -798,7 +815,9 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
 
     def setUp(self):
         self._domain_item = valid_domain_item
-        self.domain_conf = ConfigurationDomain(self._domain_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
     def test_parse_templates_ok(self):
         """

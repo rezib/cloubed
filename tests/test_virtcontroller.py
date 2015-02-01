@@ -4,9 +4,10 @@ import mock
 from CloubedTests import *
 from lib.VirtController import VirtController
 from lib.StoragePool import StoragePool
+from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
 from lib.CloubedException import CloubedControllerException
-from Mock import MockLibvirt, MockLibvirtConnect, MockLibvirtStoragePool, MockLibvirtNetwork, MockLibvirtDomain
+from Mock import MockLibvirt, MockLibvirtConnect, MockLibvirtStoragePool, MockLibvirtNetwork, MockLibvirtDomain, MockConfigurationLoader, conf_minimal
 
 class FakeCloubed():
     """Fake class to avoid usage of full Cloubed class in these tests"""
@@ -56,6 +57,9 @@ class TestVirtControllerMethods(CloubedTestCase):
         self.ctl = VirtController()
         self.tbd = FakeCloubed(self.ctl)
 
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+
     def test_find_storage_pool(self):
         """Checks that VirtController.find_storage_pool() finds the storage pool
            if existing else None
@@ -85,9 +89,8 @@ class TestVirtControllerMethods(CloubedTestCase):
         """
 
         pool_item = { 'name': 'test_name',
-                      'testbed': 'test_testbed',
                       'path': '/test_path' }
-        pool_conf = ConfigurationStoragePool(pool_item)
+        pool_conf = ConfigurationStoragePool(self.conf, pool_item)
         storage_pool = StoragePool(self.tbd, pool_conf)
 
         self.assertIs(self.ctl.find_storage_volume(storage_pool,'fail'), None)
@@ -104,9 +107,8 @@ class TestVirtControllerMethods(CloubedTestCase):
         """
 
         pool_item = { 'name': 'test_name',
-                      'testbed': 'test_testbed',
                       'path': '/test_path' }
-        pool_conf = ConfigurationStoragePool(pool_item)
+        pool_conf = ConfigurationStoragePool(self.conf, pool_item)
         pool1 = StoragePool(self.tbd, pool_conf)
 
         xml = object()
@@ -116,9 +118,8 @@ class TestVirtControllerMethods(CloubedTestCase):
         self.ctl.create_storage_volume(pool1, xml)
 
         pool_item = { 'name': 'test_name',
-                      'testbed': 'test_testbed',
                       'path': '/test_path2' }
-        pool_conf = ConfigurationStoragePool(pool_item)
+        pool_conf = ConfigurationStoragePool(self.conf, pool_item)
         pool2 = StoragePool(self.tbd, pool_conf)
 
         self.assertRaisesRegexp(CloubedControllerException,

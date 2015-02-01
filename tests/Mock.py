@@ -1,6 +1,11 @@
 from xml.dom.minidom import Document, parseString
 from libvirt import libvirtError
 
+conf_minimal = { 'testbed': 'test_testbed',
+                 'storagevolumes': [],
+                 'networks': [],
+                 'domains': [] }
+
 class MockConfigurationLoader:
 
     def __init__(self, content):

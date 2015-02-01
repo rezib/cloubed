@@ -4,17 +4,20 @@ import os
 
 from CloubedTests import *
 
+from lib.conf.Configuration import Configuration
 from lib.conf.ConfigurationNetwork import ConfigurationNetwork
 from lib.CloubedException import CloubedConfigurationException
+from Mock import MockConfigurationLoader, conf_minimal
 
-valid_network_item = { 'testbed': 'test_testbed_name',
-                       'name': 'test_network_name' }
+valid_network_item = { 'name': 'test_network_name' }
 
 class TestConfigurationNetwork(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_get_type(self):
         """
@@ -35,7 +38,9 @@ class TestConfigurationNetworkForwardMode(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_parse_forward_mode_ok(self):
         """
@@ -93,7 +98,9 @@ class TestConfigurationNetworkBridgeName(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_parse_bridge_name_ok(self):
         """
@@ -176,7 +183,9 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_parse_ip_host_netmask_ok(self):
         """
@@ -313,7 +322,9 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_parse_dhcp_ok(self):
         """
@@ -430,7 +441,9 @@ class TestConfigurationNetworkDomain(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_parse_domain_ok(self):
         """
@@ -500,7 +513,9 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
 
     def setUp(self):
         self._network_item = valid_network_item
-        self.network_conf = ConfigurationNetwork(self._network_item)
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.network_conf = ConfigurationNetwork(self.conf, self._network_item)
 
     def test_parse_pxe_ok(self):
         """
