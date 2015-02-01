@@ -37,6 +37,7 @@ class ConfigurationItem(object):
         # dictionary by the Configuration class which has already checked its
         # format and value previously.
         self.testbed = conf.testbed
+        self.conf = conf
 
     def __parse_name(self, conf):
         """
