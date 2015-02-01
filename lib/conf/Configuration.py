@@ -106,6 +106,8 @@ class Configuration:
 
             if not conf.has_key(item_section):
                 if item_section in optional_items:
+                    logging.debug("loading defaut {item_section}" \
+                                  .format(item_section=item_section))
                     default_item = item_class.default()
                     item_list.append(item_class(self, default_item))
                 else:
