@@ -87,10 +87,13 @@ storage block devices used in the testbed. The parameters to define a storage
 volume are:
 
 * ``name``: a valid string unique across all storage volumes
-* ``storagepool``: the name of the storage pool in which the volume will be
-  created and stored. The storage pool must be defined in the dedicated section.
 * ``size``: an integer representing the total size of the storage volume in
   gigabytes.
+* ``storagepool`` *(optional)*: the name of the storage pool in which the volume
+  will be created and stored. This parameter is required if more than one
+  storage pool is defined. Else, the unique storage is assumed. If set, the
+  referred storage pool must either be defined in the dedicated section or be
+  the default storage pool.
 * ``format`` *(optional)*: the format of the storage volume file. It must be one
   of the formats supported by QEMU (see the output of command
   ``qemu-img --help`` for the complete list). The default value is ``qcow2`` and
