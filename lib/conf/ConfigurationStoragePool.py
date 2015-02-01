@@ -29,17 +29,16 @@ class ConfigurationStoragePool(ConfigurationItem):
 
     """ Configuration of Storage Pool class """
 
-    def __init__(self, storage_pool_item):
+    def __init__(self, conf, storage_pool_item):
 
-        super(ConfigurationStoragePool, self).__init__(storage_pool_item)
+        super(ConfigurationStoragePool, self).__init__(conf, storage_pool_item)
 
         self.path = None
         self.__parse_path(storage_pool_item)
 
     @staticmethod
-    def default(testbed):
+    def default():
         return { 'name': 'pool',
-                 'testbed': testbed,
                  'path': 'pool' }
 
     def __parse_path(self, conf):

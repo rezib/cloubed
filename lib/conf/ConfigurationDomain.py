@@ -31,9 +31,9 @@ class ConfigurationDomain(ConfigurationItem):
 
     """ Domain Configuration class """
 
-    def __init__(self, domain_item):
+    def __init__(self, conf, domain_item):
 
-        super(ConfigurationDomain, self).__init__(domain_item)
+        super(ConfigurationDomain, self).__init__(conf, domain_item)
 
         self.cpu = None
         self.__parse_cpu(domain_item)

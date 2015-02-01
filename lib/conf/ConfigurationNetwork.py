@@ -30,9 +30,9 @@ class ConfigurationNetwork(ConfigurationItem):
 
     """ Network Configuration class """
 
-    def __init__(self, network_item):
+    def __init__(self, conf, network_item):
 
-        super(ConfigurationNetwork, self).__init__(network_item)
+        super(ConfigurationNetwork, self).__init__(conf, network_item)
 
         # forward
         self.forward_mode = None

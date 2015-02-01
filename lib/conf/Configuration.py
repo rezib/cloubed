@@ -106,8 +106,8 @@ class Configuration:
 
             if not conf.has_key(item_section):
                 if item_section in optional_items:
-                    default_item = item_class.default(self.testbed)
-                    item_list.append(item_class(default_item))
+                    default_item = item_class.default()
+                    item_list.append(item_class(self, default_item))
                 else:
                     raise CloubedConfigurationException(
                           "{item_section} parameter is missing" \
@@ -121,7 +121,7 @@ class Configuration:
 
                 for item in items:
                     item['testbed'] = self.testbed
-                    item_list.append(item_class(item))
+                    item_list.append(item_class(self, item))
 
     def __parse_templates(self, conf):
         """

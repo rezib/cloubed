@@ -28,9 +28,9 @@ class ConfigurationStorageVolume(ConfigurationItem):
 
     """ Storage Volume Configuration class """
 
-    def __init__(self, storage_volume_item):
+    def __init__(self, conf, storage_volume_item):
 
-        super(ConfigurationStorageVolume, self).__init__(storage_volume_item)
+        super(ConfigurationStorageVolume, self).__init__(conf, storage_volume_item)
 
         self.size = None
         self.__parse_size(storage_volume_item)
@@ -69,6 +69,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
             raise CloubedConfigurationException(
                       "storagepool parameter of storage volume {name} is " \
                       "missing".format(name=self.name))
+
 
         storage_pool = conf['storagepool']
 

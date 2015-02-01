@@ -27,16 +27,16 @@ class ConfigurationItem(object):
 
     """ Abstract ConfigurationItem class """
 
-    def __init__(self, conf):
+    def __init__(self, conf, item):
 
         self.name = None
-        self.__parse_name(conf)
+        self.__parse_name(item)
 
         # There is no real need for a dedicated __parse_testbed() method here
         # since this item is not a user input. It has been set in the conf
         # dictionary by the Configuration class which has already checked its
         # format and value previously.
-        self.testbed = conf['testbed']
+        self.testbed = conf.testbed
 
     def __parse_name(self, conf):
         """
