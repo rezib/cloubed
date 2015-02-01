@@ -116,14 +116,18 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
 class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
 
     def setUp(self):
-        storage_volume_item = { 'name': 'test_name',
-                                'format': 'qcow2',
-                                'size': 30,
-                                'storagepool': 'test_storage_pool' }
-        self._loader = MockConfigurationLoader(conf_minimal)
-        self.conf = Configuration(self._loader)
+        self.item_conf = { 'name': 'test_name',
+                           'format': 'qcow2',
+                           'size': 30,
+                           'storagepool': 'test_storage_pool' }
+
+    def create_item(self, conf):
+        """Create Configuration object with conf dict in parameter and then
+           ConfigurationStorageVolume object with self.conf_item"""
+        loader = MockConfigurationLoader(conf)
+        configuration = Configuration(loader)
         self.storage_volume_conf = \
-            ConfigurationStorageVolume(self.conf, storage_volume_item)
+            ConfigurationStorageVolume(configuration, self.item_conf)
 
     def test_parse_storage_pool_ok(self):
         """
@@ -131,24 +135,53 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
             valid without error and properly set _storage_pool instance
             attribute
         """
-        conf = { 'storagepool': 'test_storage_pool_bis' }
-        self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool(conf)
-        self.assertEqual(self.storage_volume_conf.storage_pool, 
+        vol_pool_conf_ok = { 'storagepool': 'test_storage_pool_bis' }
+        conf = conf_minimal
+        conf['storagepools'] = [ { 'name': 'pool1',
+                                   'path': 'path1' },
+                                 { 'name': 'pool2',
+                                   'path': 'path2' }, ]
+        self.create_item(conf)
+        self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool(vol_pool_conf_ok)
+        self.assertEqual(self.storage_volume_conf.storage_pool,
                          'test_storage_pool_bis')
 
     def test_parse_storage_pool_missing(self):
         """
-            ConfigurationStorageVolume.__parse_storage_pool() should raise
-            CloubedConfigurationException when storagepool parameter is missing
+            ConfigurationStorageVolume.__parse_storage_pool() should accept
+            empty storagepool parameter if only one pool available or raise
+            CloubedConfigurationException when several pools
         """
-        invalid_conf = { }
+        vol_pool_conf_empty = { }
 
+        conf = conf_minimal
+        conf['storagepools'] = [ { 'name': 'pool1',
+                                   'path': 'path1' } ]
+
+        self.create_item(conf)
+        self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool(vol_pool_conf_empty)
+        self.assertEqual(self.storage_volume_conf.storage_pool,
+                         'pool1')
+
+        del conf['storagepools']
+
+        self.create_item(conf)
+        self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool(vol_pool_conf_empty)
+        self.assertEqual(self.storage_volume_conf.storage_pool,
+                         'pool')
+
+        conf['storagepools'] = [ { 'name': 'pool1',
+                                   'path': 'path1' },
+                                 { 'name': 'pool2',
+                                   'path': 'path2' }, ]
+
+        self.create_item(conf)
         self.assertRaisesRegexp(
                  CloubedConfigurationException,
                  "storagepool parameter of storage volume {name} is missing" \
                      .format(name=self.storage_volume_conf.name),
                  self.storage_volume_conf._ConfigurationStorageVolume__parse_storage_pool,
-                 invalid_conf)
+                 vol_pool_conf_empty)
 
     def test_parse_storage_pool_invalid_format(self):
         """
@@ -159,6 +192,11 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
         invalid_confs = [ { 'storagepool': 42   },
                           { 'storagepool': []   },
                           { 'storagepool': None } ]
+
+        self._loader = MockConfigurationLoader(conf_minimal)
+        self.conf = Configuration(self._loader)
+        self.storage_volume_conf = \
+            ConfigurationStorageVolume(self.conf, self.item_conf)
 
         for invalid_conf in invalid_confs:
             self.assertRaisesRegexp(
