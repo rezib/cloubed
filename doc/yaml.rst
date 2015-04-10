@@ -41,7 +41,6 @@ Here is an example of a minimal YAML file for Cloubed::
 It must contain these 4 required main sections:
 
 * ``testbed``
-* ``storagevolumes``
 * ``networks``
 * ``domains``
 
@@ -49,6 +48,7 @@ It may also contain these optional main sections:
 
 * ``templates``
 * ``storagepools``,
+* ``storagevolumes``
 
 The ``testbed`` section only contains the name of the testbed. This name simply
 has to be a valid string.
@@ -79,12 +79,17 @@ default with the following values:
 * ``name``: ``pool``
 * ``path``: relative directory ``pool``
 
+.. _yaml-storagevolumes:
+
 Storage volumes
 ---------------
 
-The ``storagevolumes`` section contains a list of storage volumes, *aka.* the
-storage block devices used in the testbed. The parameters to define a storage
-volume are:
+The optional ``storagevolumes`` section contains a list of storage volumes,
+*aka.* the storage block devices used in the testbed. The storage volumes can
+either be defined in this dedicated section or directly in the
+:ref:`domains <yaml-domains>` disks sub-section.
+
+The parameters to define a storage volume are:
 
 * ``name``: a valid string unique across all storage volumes
 * ``size``: an integer representing the total size of the storage volume in
@@ -262,6 +267,8 @@ DHCP server will attribute IPv4 address in the range from ``10.1.0.100`` to
 boot. Then, TFTP server will serve this file as soon as it is present in
 ``tftp/`` directory.
 
+.. _yaml-domains:
+
 Domains
 -------
 
@@ -292,13 +299,18 @@ The sub-section ``disks`` must contain a list of storage volumes for the
 domain. Each storage volume must have the following parameters:
 
 * ``device``: a valid string, the name of the device (not used yet).
-* ``storage_volume``: the name of the storage volume. This storage volume must
-  be defined previously in the dedicated section.
 * ``bus`` *(optional)*: the type of bus through which the disk will be visible
   for the guest OS inside the domain. Valid values are ``virtio``, ``scsi`` and
   ``ide``. Default is ``virtio`` and is recommended for performance reasons.
   Alternative values ``scsi`` and ``ide`` could be useful for guests OS that do
   not support ``virtio`` or for particular setup (ex: multipath, etc).
+
+Then, a domain storage volume must either have all storage volumes parameters
+as specified in :ref:`storage volumes <yaml-storagevolumes>` section (*ex:*
+``name``, ``size`` and so on) or a storage volume reference like this:
+
+* ``storage_volume`` the name of the storage volume. This storage volume must
+  be defined previously in the dedicated section.
 
 The optional sub-section ``virtfs``, if declared, must contain a list of
 directory on the host to export to the domain. With this feature, the domain can
