@@ -90,7 +90,8 @@ class Configuration:
                   'domains':
                       { 'class': ConfigurationDomain,
                         'list': self.domains } }
-        optional_items = [ 'storagepools' ]
+
+        optional_items = [ 'storagepools', 'storagevolumes' ]
 
         # Iterations over the dict. The variables are:
         #   item_section: the name of the section in YAML
@@ -109,7 +110,8 @@ class Configuration:
                     logging.debug("loading defaut {item_section}" \
                                   .format(item_section=item_section))
                     default_item = item_class.default()
-                    item_list.append(item_class(self, default_item))
+                    if default_item is not None:
+                        item_list.append(item_class(self, default_item))
                 else:
                     raise CloubedConfigurationException(
                           "{item_section} parameter is missing" \

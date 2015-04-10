@@ -64,6 +64,10 @@ class ConfigurationItem(object):
         raise NotImplementedError
 
     @staticmethod
+    def default():
+        return None
+
+    @staticmethod
     def clean_string_for_template(string):
 
         return string.replace('-','')

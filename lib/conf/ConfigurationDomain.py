@@ -24,6 +24,7 @@
 import re
 import os
 from ConfigurationItem import ConfigurationItem
+from ConfigurationStorageVolume import ConfigurationStorageVolume
 from ..VirtController import VirtController
 from ..CloubedException import CloubedConfigurationException
 
@@ -280,25 +281,10 @@ class ConfigurationDomain(ConfigurationItem):
                               .format(disk_id=disk_id,
                                       domain=self.name))
 
-            if not disk.has_key("storage_volume"):
-                raise CloubedConfigurationException(
-                          "storage volume of disk {disk_id} of domain " \
-                          "{domain} is missing" \
-                              .format(disk_id=disk_id,
-                                      domain=self.name))
-
-
             if type(disk["device"]) is not str:
                 raise CloubedConfigurationException(
                           "format of device of disk {disk_id} of domain " \
                           "{domain} is not valid" \
-                              .format(disk_id=disk_id,
-                                      domain=self.name))
-
-            if type(disk["storage_volume"]) is not str:
-                raise CloubedConfigurationException(
-                          "format of storage volume of disk {disk_id} of " \
-                          "domain {domain} is not valid" \
                               .format(disk_id=disk_id,
                                       domain=self.name))
 
@@ -325,6 +311,44 @@ class ConfigurationDomain(ConfigurationItem):
 
                 # default value
                 disk["bus"] = "virtio"
+
+            if disk.has_key("storage_volume") and disk.has_key("name"):
+                raise CloubedConfigurationException(
+                          "storage_volume and name parameters of disk " \
+                          "{disk_id} of domain {domain} are conflicting" \
+                              .format(disk_id=disk_id,
+                                      domain=self.name))
+
+            if disk.has_key("storage_volume"):
+
+                if type(disk["storage_volume"]) is not str:
+                    raise CloubedConfigurationException(
+                              "format of storage_volume parameter of disk " \
+                              "{disk_id} of domain {domain} is not valid" \
+                                  .format(disk_id=disk_id,
+                                          domain=self.name))
+
+
+            elif disk.has_key("name"):
+
+                sp_item = disk.copy()
+                sp_params = [ 'name', 'storagepool', 'size', 'format', 'backing' ]
+                for key in sp_item.keys():
+                    if key not in sp_params:
+                        del sp_item[key]
+
+                sp = ConfigurationStorageVolume(self.conf, sp_item)
+                self.conf.storage_volumes.append(sp)
+
+                disk['storage_volume'] = sp.name
+
+            else:
+                raise CloubedConfigurationException(
+                          "storage_volume or name parameters of disk " \
+                          "{disk_id} of domain {domain} are missing" \
+                              .format(disk_id=disk_id,
+                                      domain=self.name))
+
 
             self.disks.append(disk)
 
