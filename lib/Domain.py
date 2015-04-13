@@ -133,6 +133,19 @@ class Domain:
                       .format(template = template_name,
                               domain = self.name))
 
+    def get_first_host_ip(self):
+        """Returns the first host ip addresses found in on all networks
+           connected to the domain or None if not found.
+        """
+
+        list_ip_hosts = [ dom_netif.network.ip_host \
+                          for dom_netif in self.netifs \
+                          if dom_netif.network.ip_host \
+                             is not None ]
+        if len(list_ip_hosts) > 0:
+            return list_ip_hosts[0]
+        return None
+
     def xml(self):
 
         """ Returns the libvirt XML representation of the Domain """

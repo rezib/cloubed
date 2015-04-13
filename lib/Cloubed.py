@@ -407,15 +407,8 @@ class Cloubed():
         self.launch_event_manager()
 
         if enable_http:
-            # build the list of host ip addresses on all networks connected to
-            # the domain
-            list_ip_hosts = [ dom_netif.network.ip_host \
-                              for dom_netif in domain.netifs \
-                              if dom_netif.network.ip_host \
-                                 is not None ]
-            if len(list_ip_hosts) > 0:
-                # arbitrary take the first ip address
-                address = list_ip_hosts[0]
+            address = domain.get_first_host_ip()
+            if address is not None:
                 self.serve_http(address)
             else:
                 logging.debug("HTTP server not launched because no host IP " \
