@@ -381,6 +381,9 @@ class ConfigurationNetwork(ConfigurationItem):
 
         clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
+        # port is hard-coded in HTTPServer class
+        http_server = "http://" + self.ip_host + ":5432"
+
         return { "network.{name}.forward_mode" \
                      .format(name=clean_name) : str(self.forward_mode),
                  "network.{name}.bridge_name" \
@@ -396,4 +399,6 @@ class ConfigurationNetwork(ConfigurationItem):
                  "network.{name}.pxe_tftp_dir" \
                      .format(name=clean_name) : str(self.pxe_tftp_dir),
                  "network.{name}.pxe_boot_file" \
-                     .format(name=clean_name) : str(self.pxe_boot_file) }
+                     .format(name=clean_name) : str(self.pxe_boot_file),
+                 "network.{name}.http_server" \
+                     .format(name=clean_name) : http_server }
