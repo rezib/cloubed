@@ -24,6 +24,7 @@
 import logging
 import time
 import threading
+import socket
 from xml.dom.minidom import Document, parseString
 
 from CloubedException import CloubedException
@@ -253,6 +254,40 @@ class Domain:
             #logging.debug("domain {domain}: lock released by waitForEvent" \
             #                  .format(domain=self.name))
             time.sleep(1)
+
+    def wait_tcp_socket(self, port):
+        """Wait infinitely until TCP socket is open on port in parameter on the
+           first static IP address of the domain. This method raises a
+           CloubedException if the domain has not any static IP address in
+           configuration. The port in parameter must be an integer and a valid
+           TCP port number (in range 0-65535).
+        """
+
+        ips = [ netif.ip for netif in self.netifs \
+                         if netif.ip is not None ]
+        if len(ips) == 0:
+            raise CloubedException("unable to wait for TCP socket since " \
+                                   "domain {name} does not have any static " \
+                                   "IP address".format(name=self.name))
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # set socket timeout to 1 second to avoid endless blocking
+        # socket.connect() call
+        sock.settimeout(1)
+        firstip = ips[0]
+        while True:
+            logging.debug("trying to connect to TCP socket {ip}:{port}" \
+                          .format(ip=firstip, port=port))
+            try:
+                sock.connect((firstip, port))
+            except socket.error, msg:
+                logging.debug("TCP error: {error}".format(error=msg))
+                time.sleep(1)
+                continue
+            except socket.timeout, msg:
+                logging.debug("TCP timeout: {error}".format(error=msg))
+                continue
+            break
 
     def __init_xml(self):
 

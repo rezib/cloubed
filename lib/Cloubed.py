@@ -403,9 +403,6 @@ class Cloubed():
         # search the domain
         domain = self.get_domain_by_name(domain_name)
 
-        # launch event manager tread
-        self.launch_event_manager()
-
         if enable_http:
             address = domain.get_first_host_ip()
             if address is not None:
@@ -415,12 +412,24 @@ class Cloubed():
                               "address on networks connected to domain " \
                               "{domain}".format(domain=domain_name))
 
-        domain_event = DomainEvent("{event_type}" \
-                                   .format(event_type=event_type.upper()),
-                                   "{event_type}_{event_detail}" \
-                                   .format(event_type=event_type.upper(),
-                                           event_detail=event_detail.upper()))
-        domain.wait_for_event(domain_event)
+        if event_type != 'tcp':
+
+            # launch event manager tread
+            self.launch_event_manager()
+
+            domain_event = DomainEvent("{event_type}" \
+                                       .format(event_type=event_type.upper()),
+                                       "{event_type}_{event_detail}" \
+                                       .format(event_type=event_type.upper(),
+                                               event_detail=event_detail.upper()))
+            domain.wait_for_event(domain_event)
+
+        else:
+            if type(event_detail) is str:
+                port = int(event_detail)
+            else:
+                port = event_detail
+            domain.wait_tcp_socket(port)
 
     def get_infos(self):
         """
