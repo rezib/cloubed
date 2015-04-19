@@ -23,11 +23,11 @@
 import logging
 import atexit
 
-from Cloubed import Cloubed
+from cloubed.Cloubed import Cloubed
 
 # It is not actually used in this module but it has to be exported in
 # cloubed external API
-from CloubedException import *
+from cloubed.CloubedException import *
 
 def gen_file(domain_name, template_name):
 

@@ -26,7 +26,7 @@
 import libvirt
 import logging
 from xml.dom.minidom import parseString
-from CloubedException import CloubedControllerException
+from cloubed.CloubedException import CloubedControllerException
 
 class VirtController(object):
 

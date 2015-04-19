@@ -24,8 +24,8 @@
 import threading
 import logging
 
-from VirtController import VirtController
-from DomainEvent import DomainEvent
+from cloubed.VirtController import VirtController
+from cloubed.DomainEvent import DomainEvent
 
 class EventManager:
 

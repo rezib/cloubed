@@ -22,8 +22,8 @@
 """ ConfigurationStoragePool class """
 
 import os
-from ConfigurationItem import ConfigurationItem
-from ..CloubedException import CloubedConfigurationException
+from cloubed.conf.ConfigurationItem import ConfigurationItem
+from cloubed.CloubedException import CloubedConfigurationException
 
 class ConfigurationStoragePool(ConfigurationItem):
 

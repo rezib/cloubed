@@ -27,13 +27,13 @@ import threading
 import socket
 from xml.dom.minidom import Document, parseString
 
-from CloubedException import CloubedException
-from DomainTemplate import DomainTemplate
-from DomainSnapshot import DomainSnapshot
-from DomainNetif import DomainNetif
-from DomainDisk import DomainDisk
-from DomainVirtfs import DomainVirtfs
-from Utils import getuser
+from cloubed.CloubedException import CloubedException
+from cloubed.DomainTemplate import DomainTemplate
+from cloubed.DomainSnapshot import DomainSnapshot
+from cloubed.DomainNetif import DomainNetif
+from cloubed.DomainDisk import DomainDisk
+from cloubed.DomainVirtfs import DomainVirtfs
+from cloubed.Utils import getuser
 
 class Domain:
 

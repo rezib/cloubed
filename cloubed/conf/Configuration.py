@@ -22,11 +22,11 @@
 """ Configuration class """
 
 import logging
-from ..CloubedException import CloubedConfigurationException
-from ConfigurationStoragePool import ConfigurationStoragePool
-from ConfigurationStorageVolume import ConfigurationStorageVolume
-from ConfigurationNetwork import ConfigurationNetwork
-from ConfigurationDomain import ConfigurationDomain
+from cloubed.CloubedException import CloubedConfigurationException
+from cloubed.conf.ConfigurationStoragePool import ConfigurationStoragePool
+from cloubed.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
+from cloubed.conf.ConfigurationNetwork import ConfigurationNetwork
+from cloubed.conf.ConfigurationDomain import ConfigurationDomain
 
 class Configuration:
 

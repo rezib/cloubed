@@ -23,8 +23,8 @@
 
 import logging
 from xml.dom.minidom import Document, parseString
-from Utils import getuser, net_conflict
-from CloubedException import CloubedException
+from cloubed.Utils import getuser, net_conflict
+from cloubed.CloubedException import CloubedException
 
 class Network:
 

@@ -26,17 +26,17 @@ import os
 import logging
 import thread
 
-from VirtController import VirtController
-from StoragePool import StoragePool
-from StorageVolume import StorageVolume
-from Domain import Domain
-from Network import Network
-from EventManager import EventManager
-from conf.Configuration import Configuration
-from conf.ConfigurationLoader import ConfigurationLoader
-from HTTPServer import HTTPServer
-from DomainEvent import DomainEvent
-from CloubedException import CloubedException
+from cloubed.VirtController import VirtController
+from cloubed.StoragePool import StoragePool
+from cloubed.StorageVolume import StorageVolume
+from cloubed.Domain import Domain
+from cloubed.Network import Network
+from cloubed.EventManager import EventManager
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationLoader import ConfigurationLoader
+from cloubed.HTTPServer import HTTPServer
+from cloubed.DomainEvent import DomainEvent
+from cloubed.CloubedException import CloubedException
 
 class Singleton(type):
 

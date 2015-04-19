@@ -23,7 +23,7 @@
 
 import yaml
 import logging
-from ..CloubedException import CloubedConfigurationException
+from cloubed.CloubedException import CloubedConfigurationException
 
 class ConfigurationLoader:
 

@@ -23,10 +23,10 @@
 
 import re
 import os
-from ConfigurationItem import ConfigurationItem
-from ConfigurationStorageVolume import ConfigurationStorageVolume
-from ..VirtController import VirtController
-from ..CloubedException import CloubedConfigurationException
+from cloubed.conf.ConfigurationItem import ConfigurationItem
+from cloubed.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
+from cloubed.VirtController import VirtController
+from cloubed.CloubedException import CloubedConfigurationException
 
 class ConfigurationDomain(ConfigurationItem):
 

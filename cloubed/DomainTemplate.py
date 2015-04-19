@@ -24,7 +24,7 @@
 import os
 import logging
 from string import Template
-from CloubedException import CloubedException
+from cloubed.CloubedException import CloubedException
 
 class ExtTemplate(Template):
 

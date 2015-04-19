@@ -23,7 +23,7 @@
 
 import logging
 from xml.dom.minidom import Document, parseString
-from Utils import getuser
+from cloubed.Utils import getuser
 
 class StoragePool:
 

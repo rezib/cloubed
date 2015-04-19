@@ -21,7 +21,7 @@
 
 """ ConfigurationItem class """
 
-from ..CloubedException import CloubedConfigurationException
+from cloubed.CloubedException import CloubedConfigurationException
 
 class ConfigurationItem(object):
 

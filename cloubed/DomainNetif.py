@@ -23,7 +23,7 @@
 """ DomainNetif class of Cloubed """
 
 import logging
-from Utils import gen_mac
+from cloubed.Utils import gen_mac
 
 class DomainNetif:
 
