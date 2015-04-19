@@ -22,7 +22,7 @@
 """ Network class of Cloubed """
 
 import logging
-from xml.dom.minidom import Document, parseString
+from xml.dom.minidom import Document
 from cloubed.Utils import getuser, net_conflict
 from cloubed.CloubedException import CloubedException
 

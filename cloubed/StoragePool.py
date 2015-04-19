@@ -22,7 +22,7 @@
 """ StoragePool class of Cloubed """
 
 import logging
-from xml.dom.minidom import Document, parseString
+from xml.dom.minidom import Document
 from cloubed.Utils import getuser
 
 class StoragePool:
