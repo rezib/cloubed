@@ -83,6 +83,7 @@ Required arguments for `wait` action:
     --event=EVENT    The event to wait for. The event should be supported by
                      Libvirt and it should be specified in the form
                      `type`:`detail`.
+    --enable-http    Enable internal HTTP server. It is disabled by default.
 
 Gen options
 -----------

@@ -132,13 +132,15 @@ Cloubed API
    :exception CloubedConfigurationException:
        * ``cloubed.yaml`` file could not be found or read in current directory
 
-.. py:function:: wait_event(domain_name, event_type, event_detail)
+.. py:function:: wait_event(domain_name, event_type, event_detail, enable_http)
 
    Waits for the event `type`:`detail` to happen on the domain `domain_name`.
 
    :param string domain_name: domain name in the YAML file
    :param string event_type: the type of the waited event
    :param string event_detail: the detail of the waited event
+   :param bool enable_http: weither internal HTTP server should be enable or
+        not. Default value is False, the HTTP server is disabled.
 
    :exception CloubedConfigurationException:
        * ``cloubed.yaml`` file could not be found or read in current directory
