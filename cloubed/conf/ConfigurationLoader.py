@@ -22,7 +22,6 @@
 """ ConfigurationLoader class """
 
 import yaml
-import logging
 from cloubed.CloubedException import CloubedConfigurationException
 
 class ConfigurationLoader:
