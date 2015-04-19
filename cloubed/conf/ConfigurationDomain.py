@@ -92,7 +92,6 @@ class ConfigurationDomain(ConfigurationItem):
 
         multiplier = 1024 # default unit in YAML is GiB
                           # but Cloubed internally stores memory size in MiB
-        memory_qty = -1
 
         memory = conf['memory']
 
