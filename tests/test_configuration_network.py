@@ -4,9 +4,9 @@ import os
 
 from CloubedTests import *
 
-from lib.conf.Configuration import Configuration
-from lib.conf.ConfigurationNetwork import ConfigurationNetwork
-from lib.CloubedException import CloubedConfigurationException
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationNetwork import ConfigurationNetwork
+from cloubed.CloubedException import CloubedConfigurationException
 from Mock import MockConfigurationLoader, conf_minimal
 
 valid_network_item = { 'name': 'test_network_name' }

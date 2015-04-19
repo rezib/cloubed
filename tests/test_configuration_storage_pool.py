@@ -4,9 +4,9 @@ import os
 
 from CloubedTests import *
 
-from lib.conf.Configuration import Configuration
-from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
-from lib.CloubedException import CloubedConfigurationException
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationStoragePool import ConfigurationStoragePool
+from cloubed.CloubedException import CloubedConfigurationException
 from Mock import MockConfigurationLoader, conf_minimal
 
 class TestConfigurationStoragePoolPath(CloubedTestCase):

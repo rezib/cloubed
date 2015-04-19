@@ -5,12 +5,12 @@ import copy
 from CloubedTests import *
 from Mock import MockConfigurationLoader
 
-from lib.conf.Configuration import Configuration
-from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
-from lib.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
-from lib.conf.ConfigurationNetwork import ConfigurationNetwork
-from lib.conf.ConfigurationDomain import ConfigurationDomain
-from lib.CloubedException import CloubedConfigurationException
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationStoragePool import ConfigurationStoragePool
+from cloubed.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
+from cloubed.conf.ConfigurationNetwork import ConfigurationNetwork
+from cloubed.conf.ConfigurationDomain import ConfigurationDomain
+from cloubed.CloubedException import CloubedConfigurationException
 
 conf = {'testbed': 'test_testbed',
         'storagepools':

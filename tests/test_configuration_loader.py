@@ -4,8 +4,8 @@ import os
 
 from CloubedTests import *
 
-from lib.conf.ConfigurationLoader import ConfigurationLoader
-from lib.CloubedException import CloubedConfigurationException
+from cloubed.conf.ConfigurationLoader import ConfigurationLoader
+from cloubed.CloubedException import CloubedConfigurationException
 
 class TestConfigurationLoader(CloubedTestCase):
 

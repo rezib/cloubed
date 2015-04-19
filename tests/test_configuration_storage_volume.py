@@ -2,9 +2,9 @@
 
 from CloubedTests import *
 
-from lib.conf.Configuration import Configuration
-from lib.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
-from lib.CloubedException import CloubedConfigurationException
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationStorageVolume import ConfigurationStorageVolume
+from cloubed.CloubedException import CloubedConfigurationException
 from Mock import MockConfigurationLoader, conf_minimal
 
 class TestConfigurationStorageVolume(CloubedTestCase):

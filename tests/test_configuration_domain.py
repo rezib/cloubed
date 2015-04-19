@@ -4,10 +4,10 @@ import os
 
 from CloubedTests import *
 
-from lib.conf.Configuration import Configuration
-from lib.conf.ConfigurationDomain import ConfigurationDomain
-from lib.CloubedException import CloubedConfigurationException
-from lib.VirtController import VirtController
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationDomain import ConfigurationDomain
+from cloubed.CloubedException import CloubedConfigurationException
+from cloubed.VirtController import VirtController
 from Mock import MockConfigurationLoader, conf_minimal
 
 valid_domain_item = { 'name': 'test_name',

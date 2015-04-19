@@ -2,11 +2,11 @@
 
 import mock
 from CloubedTests import *
-from lib.VirtController import VirtController
-from lib.StoragePool import StoragePool
-from lib.conf.Configuration import Configuration
-from lib.conf.ConfigurationStoragePool import ConfigurationStoragePool
-from lib.CloubedException import CloubedControllerException
+from cloubed.VirtController import VirtController
+from cloubed.StoragePool import StoragePool
+from cloubed.conf.Configuration import Configuration
+from cloubed.conf.ConfigurationStoragePool import ConfigurationStoragePool
+from cloubed.CloubedException import CloubedControllerException
 from Mock import MockLibvirt, MockLibvirtConnect, MockLibvirtStoragePool, MockLibvirtNetwork, MockLibvirtDomain, MockConfigurationLoader, conf_minimal
 
 class FakeCloubed():

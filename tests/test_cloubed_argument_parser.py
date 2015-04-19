@@ -3,8 +3,8 @@
 import sys
 
 from CloubedTests import *
-from lib.cli.CloubedArgumentParser import CloubedArgumentParser
-from lib.CloubedException import CloubedArgumentException
+from cloubed.cli.CloubedArgumentParser import CloubedArgumentParser
+from cloubed.CloubedException import CloubedArgumentException
 
 class TestCloubedArgumentParser(CloubedTestCase):
 

@@ -5,13 +5,13 @@ import mock
 from CloubedTests import *
 from Mock import MockConfigurationLoader, MockLibvirt, MockLibvirtConnect, MockLibvirtStoragePool, MockLibvirtNetwork, MockLibvirtDomain
 
-from lib.Cloubed import Cloubed
-from lib.CloubedException import CloubedException
-from lib.StoragePool import StoragePool
-from lib.StorageVolume import StorageVolume
-from lib.Network import Network
-from lib.Domain import Domain
-from lib.Utils import getuser
+from cloubed.Cloubed import Cloubed
+from cloubed.CloubedException import CloubedException
+from cloubed.StoragePool import StoragePool
+from cloubed.StorageVolume import StorageVolume
+from cloubed.Network import Network
+from cloubed.Domain import Domain
+from cloubed.Utils import getuser
 
 #import logging
 #logging.basicConfig(format='%(levelname)-7s: %(message)s',
