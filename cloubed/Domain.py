@@ -29,7 +29,6 @@ from xml.dom.minidom import Document
 
 from cloubed.CloubedException import CloubedException
 from cloubed.DomainTemplate import DomainTemplate
-from cloubed.DomainSnapshot import DomainSnapshot
 from cloubed.DomainNetif import DomainNetif
 from cloubed.DomainDisk import DomainDisk
 from cloubed.DomainVirtfs import DomainVirtfs
