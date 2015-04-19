@@ -57,12 +57,12 @@ def cleanup():
     cloubed = Cloubed()
     cloubed.cleanup()
 
-def wait_event(domain_name, event_type, event_detail):
+def wait_event(domain_name, event_type, event_detail, enable_http=False):
 
     """ wait_event: """
 
     cloubed = Cloubed()
-    cloubed.wait_event(domain_name, event_type, event_detail)
+    cloubed.wait_event(domain_name, event_type, event_detail, enable_http)
 
 def storage_pools():
 

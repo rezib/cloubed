@@ -396,7 +396,7 @@ class Cloubed():
 
     def wait_event(self, domain_name,
                    event_type, event_detail,
-                   enable_http=True):
+                   enable_http=False):
 
         """ wait_event: """
 

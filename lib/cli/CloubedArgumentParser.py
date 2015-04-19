@@ -106,6 +106,11 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                             nargs=1,
                             help="Event to wait")
 
+        parser_wait_grp.add_argument("--enable-http",
+                            dest='enable_http',
+                            help="Enable internal HTTP server",
+                            action="store_true")
+
         parser_xml_grp.add_argument("--resource",
                             dest='resource',
                             nargs=1,
@@ -175,7 +180,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                       'overwrite_disks',
                       'recreate_networks' ],
             'gen' : [ 'domain', 'filename' ],
-            'wait': [ 'domain', 'event' ],
+            'wait': [ 'domain', 'event', 'enable_http' ],
             'status': [],
             'cleanup': [],
             'vars': [ 'domain' ],
@@ -190,6 +195,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             'recreate_networks': '--recreate-networks',
             'filename': '--filename',
             'event': '--event',
+            'enable_http': '--enable-http',
             'resource': '--resource'
         }
 
@@ -201,7 +207,8 @@ class CloubedArgumentParser(argparse.ArgumentParser):
         for arg, value in self._args.__dict__.iteritems():
             if arg not in default_args \
                and value is not None \
-               and arg not in compatible_args:
+               and arg not in compatible_args \
+               and type(self._args.__dict__[arg]) is not bool:
                 raise CloubedArgumentException(
                           error_str.format(attribute=options[arg],
                                            action=action))

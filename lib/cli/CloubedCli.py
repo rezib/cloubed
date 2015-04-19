@@ -195,7 +195,8 @@ def main():
                                    event_type=event_type,
                                    event_detail=event_detail))
 
-            cloubed.wait_event(domain_name, event_type, event_detail)
+            cloubed.wait_event(domain_name, event_type, event_detail,
+                               args.enable_http)
 
         elif action_name == u"status":
 
