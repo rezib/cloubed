@@ -25,7 +25,6 @@ import logging
 import os
 from xml.dom.minidom import Document
 
-from cloubed.CloubedException import CloubedException
 from cloubed.Utils import getuser
 
 class StorageVolume:
