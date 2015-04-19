@@ -119,9 +119,9 @@ class Configuration:
             else:
                 items = conf[item_section]
                 if type(items) is not list:
-                      raise CloubedConfigurationException(
-                            "format of {item_section} parameter is not valid" \
-                              .format(item_section=item_section))
+                    raise CloubedConfigurationException(
+                          "format of {item_section} parameter is not valid" \
+                             .format(item_section=item_section))
 
                 for item in items:
                     item['testbed'] = self.testbed

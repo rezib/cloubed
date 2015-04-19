@@ -59,7 +59,7 @@ class Singleton(type):
 
     def initialized(mcs):
 
-         return mcs in mcs.__instances
+        return mcs in mcs.__instances
 
 class Cloubed():
 
