@@ -42,27 +42,27 @@ class ConfigurationStoragePool(ConfigurationItem):
                  'path': 'pool' }
 
     def __parse_path(self, conf):
-       """
+        """
             Parses the path parameter over the conf dictionary given in
             parameter and raises appropriate exception if a problem is found
-       """
+        """
 
-       if not conf.has_key('path'):
-           raise CloubedConfigurationException(
-               "path parameter is missing on storage pool {name}" \
-                   .format(name=self.name))
+        if not conf.has_key('path'):
+            raise CloubedConfigurationException(
+                      "path parameter is missing on storage pool {name}" \
+                      .format(name=self.name))
 
-       path = conf['path']
+        path = conf['path']
 
-       if type(path) is not str:
-           raise CloubedConfigurationException(
-               "format of the path parameter on storage pool {name} is not " \
-               "valid".format(name=self.name))
+        if type(path) is not str:
+            raise CloubedConfigurationException(
+                     "format of the path parameter on storage pool {name} is " \
+                     "not valid".format(name=self.name))
 
-       self.path = conf['path']
+        self.path = conf['path']
 
-       # handle relative path
-       if self.path[0] != '/':
+        # handle relative path
+        if self.path[0] != '/':
             self.path = os.path.join(os.getcwd(), self.path)
 
     def _get_type(self):
