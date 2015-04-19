@@ -381,24 +381,27 @@ class ConfigurationNetwork(ConfigurationItem):
 
         clean_name = ConfigurationItem.clean_string_for_template(self.name)
 
-        # port is hard-coded in HTTPServer class
-        http_server = "http://" + self.ip_host + ":5432"
+        tpl_dict = { "network.{name}.forward_mode" \
+                         .format(name=clean_name) : str(self.forward_mode),
+                     "network.{name}.bridge_name" \
+                         .format(name=clean_name) : str(self.bridge_name),
+                     "network.{name}.ip_host" \
+                         .format(name=clean_name) : str(self.ip_host),
+                     "network.{name}.netmask" \
+                         .format(name=clean_name) : str(self.netmask),
+                     "network.{name}.dhcp_start" \
+                         .format(name=clean_name) : str(self.dhcp_start),
+                     "network.{name}.dhcp_end" \
+                         .format(name=clean_name) : str(self.dhcp_end),
+                     "network.{name}.pxe_tftp_dir" \
+                         .format(name=clean_name) : str(self.pxe_tftp_dir),
+                     "network.{name}.pxe_boot_file" \
+                         .format(name=clean_name) : str(self.pxe_boot_file) }
 
-        return { "network.{name}.forward_mode" \
-                     .format(name=clean_name) : str(self.forward_mode),
-                 "network.{name}.bridge_name" \
-                     .format(name=clean_name) : str(self.bridge_name),
-                 "network.{name}.ip_host" \
-                     .format(name=clean_name) : str(self.ip_host),
-                 "network.{name}.netmask" \
-                     .format(name=clean_name) : str(self.netmask),
-                 "network.{name}.dhcp_start" \
-                     .format(name=clean_name) : str(self.dhcp_start),
-                 "network.{name}.dhcp_end" \
-                     .format(name=clean_name) : str(self.dhcp_end),
-                 "network.{name}.pxe_tftp_dir" \
-                     .format(name=clean_name) : str(self.pxe_tftp_dir),
-                 "network.{name}.pxe_boot_file" \
-                     .format(name=clean_name) : str(self.pxe_boot_file),
-                 "network.{name}.http_server" \
-                     .format(name=clean_name) : http_server }
+        # port is hard-coded in HTTPServer class
+        if self.ip_host is not None:
+            http_server = "http://" + self.ip_host + ":5432"
+            tpl_dict["network.{name}.http_server" \
+                     .format(name=clean_name)] = http_server
+
+        return tpl_dict
