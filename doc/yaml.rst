@@ -202,17 +202,11 @@ network. It is then used by DHCP and DNS services:
   ``exemple.net``).
 
 Finally, when DHCP service is properly enable, the PXE service can also be
-defined. This service is controled within a dedicated ``pxe`` sub-section. When
-present, this sub-section must contain the following parameters:
+defined. This service is controled within a dedicated ``pxe`` parameter.
+When present, this parameter must specify a path to boot file, either
+relative or absolute.
 
-* ``tftp_dir`` *(optional)*: the path to the directory that contains your
-  ``boot_file``. This path must be relative to the Cloubed YAML file.
-* ``boot_file`` *(optional)*: the name of the boot file within the ``tftp_dir``.
-
-These two parameters are globally optionals but they cannot be defined
-separately. They must be either both defined or both undefined within the
-``pxe`` sub-section. You may need to be familiar with `PXE concepts`_ to use
-these advanced features.
+You may need to be familiar with `PXE concepts`_ to use these advanced features.
 
 .. _PXE concepts: http://en.wikipedia.org/wiki/Preboot_Execution_Environment
 
