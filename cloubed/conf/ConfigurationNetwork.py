@@ -23,6 +23,7 @@
 
 import os
 import re
+import logging
 from cloubed.conf.ConfigurationItem import ConfigurationItem
 from cloubed.CloubedException import CloubedConfigurationException
 
@@ -305,31 +306,53 @@ class ConfigurationNetwork(ConfigurationItem):
         if conf.has_key('pxe'):
 
             pxe_conf = conf['pxe']
-            pxe_parameters = ['tftp_dir', 'boot_file']
 
-            # check that all parameters are present and valid strings
-            for parameter in pxe_parameters:
+            if type(pxe_conf) is str:
+                (self.pxe_tftp_dir, self.pxe_boot_file) = os.path.split(pxe_conf)
 
-                if not pxe_conf.has_key(parameter):
+                if self.pxe_tftp_dir == '':
+                    self.pxe_tftp_dir = os.getcwd()
+                if self.pxe_boot_file == '':
                     raise CloubedConfigurationException(
-                        "{parameter} parameter must be defined in pxe " \
-                        "section of network {network}" \
-                            .format(parameter = parameter,
-                                    network = self.name))
+                        "pxe parameter of network {network} must specify " \
+                        "a boot file".format(network=self.name))
 
-                if type(pxe_conf[parameter]) is not str:
-                    raise CloubedConfigurationException(
-                        "{parameter} parameter format in pxe section of " \
-                        "network {network} is not valid" \
-                            .format(parameter = parameter,
-                                    network = self.name))
+            elif type(pxe_conf) is dict:
 
-            # everything is clear at this point
-            self.pxe_tftp_dir = pxe_conf['tftp_dir']
+                logging.warning("pxe parameter format with tftp_dir and " \
+                                "boot_file parameters is deprecated")
+
+                pxe_parameters = ['tftp_dir', 'boot_file']
+
+                # check that all parameters are present and valid strings
+                for parameter in pxe_parameters:
+
+                    if not pxe_conf.has_key(parameter):
+                        raise CloubedConfigurationException(
+                            "{parameter} parameter must be defined in pxe " \
+                            "section of network {network}" \
+                                .format(parameter=parameter,
+                                        network=self.name))
+
+                    if type(pxe_conf[parameter]) is not str:
+                        raise CloubedConfigurationException(
+                            "{parameter} parameter format in pxe section of " \
+                            "network {network} is not valid" \
+                                .format(parameter=parameter,
+                                        network=self.name))
+
+                # everything is clear at this point
+                self.pxe_tftp_dir = pxe_conf['tftp_dir']
+                self.pxe_boot_file = pxe_conf['boot_file']
+
+            else:
+                raise CloubedConfigurationException(
+                    "format of pxe parameter of network {network} is not " \
+                    "valid".format(network=self.name))
+
             if self.pxe_tftp_dir[0] != '/': # relative path
                 self.pxe_tftp_dir = os.path.join(os.getcwd(),
                                                  self.pxe_tftp_dir)
-            self.pxe_boot_file = pxe_conf['boot_file']
 
         else:
             # default to None if not defined
