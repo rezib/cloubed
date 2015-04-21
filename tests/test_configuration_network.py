@@ -533,6 +533,22 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(conf)
 
+        conf = { 'pxe': '/test_tftp_dir/test_boot_file' }
+        self.network_conf._ConfigurationNetwork__parse_pxe(conf)
+        self.assertEqual(self.network_conf.pxe_tftp_dir, '/test_tftp_dir')
+        self.assertEqual(self.network_conf.pxe_boot_file, 'test_boot_file')
+
+        conf = { 'pxe': 'test_tftp_dir/test_boot_file' }
+        self.network_conf._ConfigurationNetwork__parse_pxe(conf)
+        self.assertEqual(self.network_conf.pxe_tftp_dir,
+                         os.path.join(os.getcwd(),"test_tftp_dir"))
+        self.assertEqual(self.network_conf.pxe_boot_file, 'test_boot_file')
+
+        conf = { 'pxe': 'test_boot_file' }
+        self.network_conf._ConfigurationNetwork__parse_pxe(conf)
+        self.assertEqual(self.network_conf.pxe_tftp_dir, os.getcwd())
+        self.assertEqual(self.network_conf.pxe_boot_file, 'test_boot_file')
+
         conf = { 'pxe':
                      { 'tftp_dir': '/test_tftp_dir', # absolute path
                        'boot_file': 'test_boot_file' } }
@@ -567,9 +583,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         """
         invalid_conf = { 'ip_host': '10.0.0.1',
                          'netmask': '255.255.255.0',
-                         'pxe':
-                             { 'tftp_dir': 'test_tftp_dir',
-                               'boot_file': 'test_boot_file' } }
+                         'pxe': 'test_tftp_dir/test_boot_file' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
@@ -580,11 +594,54 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
              self.network_conf._ConfigurationNetwork__parse_pxe,
              invalid_conf)
 
+    def test_parse_pxe_invalid_format(self):
+        """
+            ConfigurationNetwork.__parse_pxe() should raise
+            CloubedConfigurationException if pxe parameter has an invalid format
+        """
+        invalid_conf = { 'ip_host': '10.0.0.1',
+                         'netmask': '255.255.255.0',
+                         'dhcp':
+                             { 'start': '10.0.0.100',
+                               'end'  : '10.0.0.200' },
+                         'pxe': 42 }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
+        self.assertRaisesRegexp(
+             CloubedConfigurationException,
+             "format of pxe parameter of network {network} is not valid" \
+                 .format(network=self.network_conf.name),
+             self.network_conf._ConfigurationNetwork__parse_pxe,
+             invalid_conf)
+
+    def test_parse_pxe_missing_boot_file(self):
+        """
+            ConfigurationNetwork.__parse_pxe() should raise
+            CloubedConfigurationException if pxe parameter has a missing boot
+            file
+        """
+        invalid_conf = { 'ip_host': '10.0.0.1',
+                         'netmask': '255.255.255.0',
+                         'dhcp':
+                             { 'start': '10.0.0.100',
+                               'end'  : '10.0.0.200' },
+                         'pxe': 'test_tftp_dir/' }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
+        self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
+        self.assertRaisesRegexp(
+             CloubedConfigurationException,
+             "pxe parameter of network {network} must specify a boot file" \
+                 .format(network=self.network_conf.name),
+             self.network_conf._ConfigurationNetwork__parse_pxe,
+             invalid_conf)
+
     def test_parse_pxe_missing_parameter(self):
         """
             ConfigurationNetwork.__parse_pxe() should raise 
             CloubedConfigurationException if one parameter is missing in the pxe
-            section of a network
+            dict of a network
         """
         invalid_conf = { 'ip_host': '10.0.0.1',
                          'netmask': '255.255.255.0',
