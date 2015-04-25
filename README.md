@@ -73,8 +73,9 @@ Requirements
 It only works on GNU/Linux systems with KVM.
 
 * Python >= 2.6
-* libvirt with its python binding >= 0.9.12 (not tested with previous versions)
-* PyYAML >= 3.10 (not tested with previous versions)
+* libvirt with its python binding >= 0.9.12
+* PyYAML >= 3.10
+* netaddr >= 0.7.7 (optional but highly recommanded)
 
 Installation
 ------------
