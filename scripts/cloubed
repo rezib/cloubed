@@ -21,19 +21,7 @@
 
 """ Main executable script of Cloubed"""
 
-try:
-    # import directly from ../lib
-    import sys
-    import os
-    sys.path.append(
-        os.path.abspath(
-            os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                os.pardir)))
-    from lib.cli.CloubedCli import main
-except ImportError:
-    # else import system wide
-    from cloubed.cli.CloubedCli import main
+from cloubed.cli.CloubedCli import main
 
 if __name__ == "__main__":
 
