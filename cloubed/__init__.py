@@ -29,19 +29,21 @@ from cloubed.Cloubed import Cloubed
 # cloubed external API
 from cloubed.CloubedException import *
 
-def gen_file(domain_name, template_name):
+def gen(domain, template):
 
-    """ gen_file: """
-
-    cloubed = Cloubed()
-    cloubed.gen_file(domain_name, template_name)
-
-def boot_vm(domain_name, bootdev = "hd", overwrite_disks = [], recreate_networks = []):
-
-    """ boot_vm: """
+    """Generates a file for a domain based on template"""
 
     cloubed = Cloubed()
-    cloubed.boot_vm(domain_name, bootdev, overwrite_disks, recreate_networks)
+    cloubed.gen_file(domain, template)
+
+def boot(domain, bootdev="hd",
+         overwrite_disks=[],
+         recreate_networks=[]):
+
+    """Boot a domain"""
+
+    cloubed = Cloubed()
+    cloubed.boot_vm(domain, bootdev, overwrite_disks, recreate_networks)
 
 def create_network(network_name, recreate):
 
@@ -57,12 +59,12 @@ def cleanup():
     cloubed = Cloubed()
     cloubed.cleanup()
 
-def wait_event(domain_name, event_type, event_detail, enable_http=False):
+def wait(domain, event, detail, enable_http=False):
 
-    """ wait_event: """
+    """Wait for an event on a domain"""
 
     cloubed = Cloubed()
-    cloubed.wait_event(domain_name, event_type, event_detail, enable_http)
+    cloubed.wait_event(domain, event, detail, enable_http)
 
 def storage_pools():
 
@@ -100,3 +102,28 @@ def _clean_exit():
         cloubed.clean_exit()
 
 atexit.register(_clean_exit)
+
+#
+# Deprecated API functions
+#
+
+def gen_file(domain_name, template_name):
+    """Deprecated function to generate file for a domain base on template"""
+
+    logging.warning("gen_file() function is deprecated, please use gen() " \
+                    "function instead")
+    gen(domain_name, template_name)
+
+def boot_vm(domain_name, bootdev="hd",
+            overwrite_disks=[],
+            recreate_networks=[]):
+    """Deprecated functions to boot a domain."""
+
+    logging.warning("boot_vm() function is deprecated, please use boot() " \
+                    "function instead")
+    boot(domain_name, bootdev, overwrite_disks, recreate_networks)
+
+def wait_event(domain_name, event_type, event_detail, enable_http=False):
+    """Deprecated function to wait for an event on a domain"""
+
+    wait(domain_name, event_type, event_detail, enable_http)
