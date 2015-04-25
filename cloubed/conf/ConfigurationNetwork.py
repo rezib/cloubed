@@ -136,13 +136,18 @@ class ConfigurationNetwork(ConfigurationItem):
 
     def __parse_ip_host_netmask(self, conf):
         """
-            Parses the ip_host and netmask parameters over the conf dictionary
-            given in parameter and raises appropriate exception if a problem is
-            found. This method must be called *after* __parse_forward_mode()
-            since it relies on the attribute set by this method.
+            Parses the address or deprecated (ip_host and netmask) parameters
+            over the conf dictionary given in parameter and raises appropriate
+            exception if a problem is found. This method must be called *after*
+            __parse_forward_mode() since it relies on the attribute set by this
+           method.
         """
 
-        # NOTE: maybe use cidr notation here in the future?
+        # forward is bridge -> address has no sense
+        if self.forward_mode == 'bridge' and conf.has_key('address') :
+            raise CloubedConfigurationException(
+                "address parameter has no sense on network {network} with " \
+                "bridge forwarding mode".format(network=self.name))
 
         # forward is bridge -> ip_host and netmask have no sense
         if self.forward_mode == 'bridge' and \
@@ -150,21 +155,50 @@ class ConfigurationNetwork(ConfigurationItem):
             raise CloubedConfigurationException(
                 "ip_host and netmask parameters have no sense on network " \
                 "{network} with bridge forwarding mode" \
-                    .format(network = self.name))
+                    .format(network=self.name))
+
+        if conf.has_key('address'):
+
+            address = conf['address']
+
+            if type(address) is not str:
+                raise CloubedConfigurationException(
+                        "address parameter format on network {network} is " \
+                        "not valid".format(network=self.name))
+
+            try:
+                from netaddr import IPNetwork, AddrFormatError
+            except ImportError:
+                raise CloubedConfigurationException(
+                        "unable to parse address parameter on network " \
+                        "{network} because netaddr module is not available" \
+                        .format(network=self.name))
+            try:
+                network = IPNetwork(address)
+            except AddrFormatError:
+                raise CloubedConfigurationException(
+                        "address parameter on network {network} is not a " \
+                        "valid network address".format(network=self.name))
+
+            self.ip_host = str(network.ip)
+            self.netmask = str(network.netmask)
 
         # ip_host needs netmask
-        if conf.has_key('ip_host') and not conf.has_key('netmask'):
+        elif conf.has_key('ip_host') and not conf.has_key('netmask'):
             raise CloubedConfigurationException(
                 "ip_host cannot be set without netmask parameter on network " \
-                "{network}".format(network = self.name))
+                "{network}".format(network=self.name))
 
         # netmask needs ip_host
-        if conf.has_key('netmask') and not conf.has_key('ip_host'):
+        elif conf.has_key('netmask') and not conf.has_key('ip_host'):
             raise CloubedConfigurationException(
                 "netmask cannot be set without ip_host parameter on network " \
-                "{network}".format(network = self.name))
+                "{network}".format(network=self.name))
 
-        if conf.has_key('ip_host') and conf.has_key('netmask'):
+        elif conf.has_key('ip_host') and conf.has_key('netmask'):
+
+            logging.warning("ip_host/netmask network parameters are " \
+                            "deprecated, please use address parameter instead")
 
             ip_host = conf['ip_host']
             netmask = conf['netmask']
@@ -173,11 +207,11 @@ class ConfigurationNetwork(ConfigurationItem):
             if type(ip_host) is not str:
                 raise CloubedConfigurationException(
                     "ip_host parameter format on network {network} is not " \
-                    "valid".format(network = self.name))
+                    "valid".format(network=self.name))
             if type(netmask) is not str:
                 raise CloubedConfigurationException(
                     "netmask parameter format on network {network} is not " \
-                    "valid".format(network = self.name))
+                    "valid".format(network=self.name))
 
             # check parameters against this regexp
             ip_address_regexp = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
@@ -185,12 +219,12 @@ class ConfigurationNetwork(ConfigurationItem):
             if re.match(ip_address_regexp, ip_host) is None:
                 raise CloubedConfigurationException(
                     "ip_host parameter on network {network} is not a valid " \
-                    "IPv4 address".format(network = self.name))
+                    "IPv4 address".format(network=self.name))
 
             if re.match(ip_address_regexp, netmask) is None:
                 raise CloubedConfigurationException(
                     "netmask parameter on network {network} is not a valid " \
-                    "IPv4 netmask".format(network = self.name))
+                    "IPv4 netmask".format(network=self.name))
 
             # at this point, everything is clear
             self.ip_host = ip_host
