@@ -194,6 +194,13 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
             attributes properly
         """
 
+        conf = { 'address': '10.0.0.1/24' }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
+        self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(conf)
+        self.assertEqual(self.network_conf.ip_host, '10.0.0.1')
+        self.assertEqual(self.network_conf.netmask, '255.255.255.0')
+
+        # old deprecated parameters
         conf = { 'ip_host': '10.0.0.1',
                  'netmask': '255.255.255.0' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(conf)
@@ -215,6 +222,23 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
         # return False
         self.assertEqual(self.network_conf.has_local_settings(), False)
 
+    def test_parse_address_bridge_mode(self):
+        """
+            ConfigurationNetwork.__parse_ip_host_netmask() should raise
+            CloubedConfigurationException if address is set on network in
+            bridge forwarding mode
+        """
+
+        invalid_conf = { 'forward': 'bridge',
+                         'address': '10.0.0.1/24' }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+        self.assertRaisesRegexp(
+             CloubedConfigurationException,
+             "address parameter has no sense on network {network} with " \
+             "bridge forwarding mode" \
+                 .format(network=self.network_conf.name),
+             self.network_conf._ConfigurationNetwork__parse_ip_host_netmask,
+             invalid_conf)
     def test_parse_ip_host_netmask_bridge_mode(self):
         """
             ConfigurationNetwork.__parse_ip_host_netmask() should raise
@@ -266,6 +290,22 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
              self.network_conf._ConfigurationNetwork__parse_ip_host_netmask,
              invalid_conf)
 
+    def test_parse_ip_host_address_invalid_format(self):
+        """
+            ConfigurationNetwork.__parse_ip_host_netmask() should raise
+            CloubedConfigurationException if the format of the address
+            parameter is not valid
+        """
+
+        invalid_conf = { 'address': [] }
+        self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+        self.assertRaisesRegexp(
+             CloubedConfigurationException,
+             "address parameter format on network {network} is not valid" \
+                 .format(network=self.network_conf.name),
+             self.network_conf._ConfigurationNetwork__parse_ip_host_netmask,
+             invalid_conf)
+
     def test_parse_ip_host_netmask_invalid_format(self):
         """
             ConfigurationNetwork.__parse_ip_host_netmask() should raise
@@ -290,6 +330,27 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
                  .format(network=self.network_conf.name),
              self.network_conf._ConfigurationNetwork__parse_ip_host_netmask,
              invalid_conf)
+
+    def test_parse_ip_host_address_invalid_value(self):
+        """
+            ConfigurationNetwork.__parse_ip_host_netmask() should raise
+            CloubedConfigurationException if the value of address parameter
+            is not a valid network address in CIDR syntax
+        """
+
+        invalid_confs = [ { 'address': 'fail'           },
+                          { 'address': '192.168.0.1/35' },
+                          { 'address': '260.0.0.0/24'   } ]
+
+        for invalid_conf in invalid_confs:
+
+            self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
+            self.assertRaisesRegexp(
+                 CloubedConfigurationException,
+                 "address parameter on network {network} is not a valid " \
+                 "network address".format(network=self.network_conf.name),
+                 self.network_conf._ConfigurationNetwork__parse_ip_host_netmask,
+                 invalid_conf)
 
     def test_parse_ip_host_netmask_invalid_addresss(self):
         """
