@@ -1,23 +1,12 @@
 testbed: debian
-storagepools:
-    - name: pool
-      path: pool
-storagevolumes:
-    - name: server
-      storagepool: pool
-      size: 70
-      format: qcow2
 networks:
     - name: net
       forward: nat
-      ip_host: 10.5.0.1
-      netmask: 255.255.255.0
+      address: 10.5.0.1/24
       dhcp:
         start: 10.5.0.10
         end: 10.5.0.100
-      pxe:
-        tftp_dir: http
-        boot_file: debian.ipxe
+      pxe: http/debian.ipxe
 domains:
     - name: vmtest
       cpu: 2
@@ -28,7 +17,9 @@ domains:
       graphics: spice
       disks:
           - device: sda
-            storage_volume: server
+            name: server
+            size: 70
+            format: qcow2
       templates:
           files:
               - name: preseed
