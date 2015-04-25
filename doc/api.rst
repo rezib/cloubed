@@ -29,13 +29,12 @@ Cloubed API
    :exception CloubedConfigurationException:
        * ``cloubed.yaml`` file could not be found or read in current directory
 
-.. py:function:: gen_file(domain_name, template_name)
+.. py:function:: gen(domain, template)
 
-   Generates the file `template_name` of the domain `domain_name` based on its
-   template.
+   Generates the file `template` of the domain `domain` based on its template.
 
-   :param string domain_name: domain name in the YAML file
-   :param string template_name: template name for this domain in the YAML file
+   :param string domain: domain name in the YAML file
+   :param string template: template name for this domain in the YAML file
    :exception CloubedConfigurationException:
        * ``cloubed.yaml`` file could not be found or read in current directory
    :exception CloubedException:
@@ -44,13 +43,13 @@ Cloubed API
        * the template input file could not be read or does not exist
        * the output file could not we written
 
-.. py:function:: boot_vm(domain_name, bootdev = "hd", overwrite_disks = [], recreate_networks = [])
+.. py:function:: boot(domain, bootdev="hd", overwrite_disks=[], recreate_networks=[])
 
-   Boot the domain `domain_name`. It also automatically checks that all its
+   Boot the domain `domain`. It also automatically checks that all its
    dependencies (networks, storage volumes and so on) already exist and create
    them if necessary.
 
-   :param string domain_name: domain name in the YAML file
+   :param string domain: domain name in the YAML file
    :param string bootdev: Set the first boot device of the domain. See details
        below.
    :param overwrite_disks: disks of the domain to overwrite before booting it.
@@ -132,13 +131,15 @@ Cloubed API
    :exception CloubedConfigurationException:
        * ``cloubed.yaml`` file could not be found or read in current directory
 
-.. py:function:: wait_event(domain_name, event_type, event_detail, enable_http)
+.. py:function:: wait(domain, event, detail, enable_http)
 
-   Waits for the event `type`:`detail` to happen on the domain `domain_name`.
+   Waits for the event `event`:`detail` to happen on the domain `domain`.
 
-   :param string domain_name: domain name in the YAML file
-   :param string event_type: the type of the waited event
-   :param string event_detail: the detail of the waited event
+   :param string domain: domain name in the YAML file
+   :param string event: the type of the waited event. This is either an event
+       type as known by Libvirt or `tcp` to wait for a TCP socket to open.
+   :param string detail: detail about the waited event. This is either an event
+       detail as known by Libvirt or a TCP port number.
    :param bool enable_http: weither internal HTTP server should be enable or
         not. Default value is False, the HTTP server is disabled.
 
