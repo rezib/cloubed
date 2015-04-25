@@ -1,3 +1,25 @@
+cloubed 0.5
+-----------
+
+  * Internal HTTP server is now disable by default in wait action. Added flag
+    --enable-http to CLI and enable_http parameter in API (#34)
+  * Ability to wait for a TCP socket to open (ex: tcp:22) additionally to
+    Libvirt events (#35)
+  * storagepools section is now optional in YAML, default storage pool
+    implicitely created (#38)
+  * pool parameter for storage volumes is now optional when only one storage
+    pool is declared (#39)
+  * Storage volumes can now be directly defined within disk domains sub-section
+    instead of dedicated storagevolumes section. This makes storagevolumes
+    section optional (#40)
+  * TFTP file name and directory can now be defined using dir/file syntax in
+    pxe param (#41)
+  * Network address can now be defined using CIDR syntax instead of
+    ip_host/netmask deprecated params (#42)
+  * Add new template variable with full URL to internal HTTP server (#43)
+  * Rename all API functions to be conform with CLI (#44)
+  * Back to a more standard python package layout (#36)
+
 cloubed 0.4
 -----------
 
