@@ -170,7 +170,13 @@ Others forwarding modes
 
 In both ``none`` and ``nat`` forwarding modes, the node virtual network
 interface connected to dedicated bridge can be optionally configured with the
-following parameters:
+following parameter:
+
+* ``address`` *(optional)*: the network address in CIDR notation of the node
+  virtual network interface (eg. ``10.0.0.1/24``)
+
+In old versions of cloubed, there were two similar deprecated parameters for
+the same purpose:
 
 * ``ip_host`` *(optional)*: the IPv4 address of the node virtual network
   interface (eg. ``10.0.0.1``)
@@ -178,7 +184,9 @@ following parameters:
   interface (eg. ``255.255.255.0``)
 
 These two parameters are globally optionals but they cannot be defined
-separately. They must be either both defined or both undefined.
+separately. They must be either both defined or both undefined. You should
+avoid using these deprecated parameters and definitely prefer ``address``
+parameter instead.
 
 If the node virtual network interface is well configured, the DHCP service can
 then be defined. This service is controled within a dedicated ``dhcp``
