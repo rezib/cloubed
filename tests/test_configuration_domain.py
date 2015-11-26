@@ -42,10 +42,11 @@ class TestConfigurationDomain(CloubedTestCase):
 
     def test_attr_cpu(self):
         """
-            ConfigurationDomain.cpu should be the cpu of the domain
+            ConfigurationDomain.cores should be the cpu of the domain
         """
-        self.assertEqual(self.domain_conf.cpu,
-                         2)
+        self.assertEqual(self.domain_conf.sockets, 1)
+        self.assertEqual(self.domain_conf.cores, 2)
+        self.assertEqual(self.domain_conf.threads, 1)
 
     def test_attr_memory(self):
         """
@@ -97,6 +98,17 @@ class TestConfigurationDomainCpu(CloubedTestCase):
         self.conf = Configuration(self._loader)
         self.domain_conf = ConfigurationDomain(self.conf, self._domain_item)
 
+    def test_parse_cpu_topology(self):
+        """
+            ConfigurationDomain.__parse_cpu() should properly parse topology
+        """
+
+        config = { 'cpu': '2x3x4' }
+        self.domain_conf._ConfigurationDomain__parse_cpu(config)
+        self.assertEquals(self.domain_conf.sockets, 2)
+        self.assertEquals(self.domain_conf.cores, 3)
+        self.assertEquals(self.domain_conf.threads, 4)
+
     def test_parse_cpu_missing(self):
         """
             ConfigurationDomain.__parse_cpu() should raise
@@ -117,7 +129,7 @@ class TestConfigurationDomainCpu(CloubedTestCase):
             parameter
         """
 
-        invalid_configs = [ { 'cpu': 'x'  },
+        invalid_configs = [ { 'cpu': []  },
                             { 'cpu': {}   },
                             { 'cpu': None } ]
 
@@ -125,6 +137,25 @@ class TestConfigurationDomainCpu(CloubedTestCase):
             self.assertRaisesRegexp(
                      CloubedConfigurationException,
                      "format of cpu parameter of domain test_name is not valid",
+                     self.domain_conf._ConfigurationDomain__parse_cpu,
+                     invalid_config)
+
+    def test_parse_cpu_invalid_topology(self):
+        """
+            ConfigurationDomain.__parse_cpu() should raise
+            CloubedConfigurationException when invalid cpu topology
+            is given
+        """
+
+        invalid_configs = [ { 'cpu': 'fail'  },
+                            { 'cpu': '2x3'   },
+                            { 'cpu': '1xfailx3' },
+                            { 'cpu': '2x5x3x4' } ]
+
+        for invalid_config in invalid_configs:
+            self.assertRaisesRegexp(
+                     CloubedConfigurationException,
+                     "format of cpu topology of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_cpu,
                      invalid_config)
 
