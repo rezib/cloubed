@@ -55,7 +55,11 @@ class Domain:
         else:
             self.libvirt_name = self.name
 
-        self.vcpu = domain_conf.cpu
+        self.vcpu = domain_conf.sockets * domain_conf.cores * domain_conf.threads
+        self.sockets = domain_conf.sockets
+        self.cores = domain_conf.cores
+        self.threads = domain_conf.threads
+
         self.memory = domain_conf.memory
 
         self.netifs = []
@@ -303,6 +307,7 @@ class Domain:
         #   <cpu mode='host-model'>
         #     <model fallback='allow'/>
         #     <feature policy='optional' name='vmx'/>
+        #     <topology sockets='1' cores='2' threads='1'/>
         #   </cpu>
         #   <os>
         #     <type>hvm</type>
@@ -386,6 +391,13 @@ class Domain:
         element_model = self._doc.createElement("model")
         element_model.setAttribute("fallback", "allow")
         element_cpu.appendChild(element_model)
+
+        # cpu/topology
+        element_topology = self._doc.createElement("topology")
+        element_topology.setAttribute("sockets", self.sockets)
+        element_topology.setAttribute("cores", self.cores)
+        element_topology.setAttribute("threads", self.threads)
+        element_cpu.appendChild(element_topology)
 
         # os
         element_os = self._doc.createElement("os")

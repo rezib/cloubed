@@ -36,7 +36,10 @@ class ConfigurationDomain(ConfigurationItem):
 
         super(ConfigurationDomain, self).__init__(conf, domain_item)
 
-        self.cpu = None
+        self.sockets = None
+        self.cores = None
+        self.threads = None
+
         self.__parse_cpu(domain_item)
         self.memory = None
         self.__parse_memory(domain_item)
@@ -72,12 +75,29 @@ class ConfigurationDomain(ConfigurationItem):
 
         cpu = conf['cpu']
 
-        if type(cpu) is not int:
+        if type(cpu) is int:
+            self.sockets = 1
+            self.cores = cpu
+            self.threads = 1
+        elif type(cpu) is str:
+            cpu_topo = cpu.split('x')
+            if len(cpu_topo) != 3:
+                raise CloubedConfigurationException(
+                           "format of cpu topology of domain {domain} is " \
+                           "not valid".format(domain=self.name))
+            for elem in cpu_topo:
+                if not elem.isdigit():
+                    raise CloubedConfigurationException(
+                           "format of cpu topology of domain {domain} is " \
+                           "not valid".format(domain=self.name))
+
+            self.sockets = int(cpu_topo[0])
+            self.cores = int(cpu_topo[1])
+            self.threads = int(cpu_topo[2])
+        else:
             raise CloubedConfigurationException(
                        "format of cpu parameter of domain {domain} is not " \
                        "valid".format(domain=self.name))
-
-        self.cpu = cpu
 
     def __parse_memory(self, conf):
         """
@@ -552,7 +572,13 @@ class ConfigurationDomain(ConfigurationItem):
         domain_dict = { "{prefix}.name" \
                             .format(prefix=prefix) : str(clean_name),
                         "{prefix}.cpu" \
-                            .format(prefix=prefix) : str(self.cpu),
+                            .format(prefix=prefix) : str(self.sockets * self.cores * self.threads),
+                        "{prefix}.sockets" \
+                            .format(prefix=prefix) : str(self.sockets),
+                        "{prefix}.cores" \
+                            .format(prefix=prefix) : str(self.cores),
+                        "{prefix}.threads" \
+                            .format(prefix=prefix) : str(self.threads),
                         "{prefix}.memory" \
                             .format(prefix=prefix) : str(self.memory),
                         "{prefix}.graphics" \
