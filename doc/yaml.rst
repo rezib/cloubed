@@ -278,7 +278,11 @@ The ``domains`` section contains the list of domains.
 be connected to. Here is the list of basic mandatory parameters:
 
 * ``name``: a valid string unique accross all domains
-* ``cpu``: an integer representing the number of CPU for the domain
+* ``cpu``: either an integer representing the number of CPU for the domain,
+  or a string representing a topology in the format
+  ``<sockets>:<cores>:<threads>`` where ``sockets`` is total number of CPU
+  sockets, ``cores`` is the number of cores per socket, and ``threads`` is the
+  number of threads per core.
 * ``memory``: either an integer representing the number of GiB of main memory
   for the domain or a string with an integer and a unit. Valid units are M, MB,
   MiB, G, GB and GIB.
