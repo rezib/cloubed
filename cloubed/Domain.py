@@ -394,9 +394,9 @@ class Domain:
 
         # cpu/topology
         element_topology = self._doc.createElement("topology")
-        element_topology.setAttribute("sockets", self.sockets)
-        element_topology.setAttribute("cores", self.cores)
-        element_topology.setAttribute("threads", self.threads)
+        element_topology.setAttribute("sockets", str(self.sockets))
+        element_topology.setAttribute("cores", str(self.cores))
+        element_topology.setAttribute("threads", str(self.threads))
         element_cpu.appendChild(element_topology)
 
         # os
