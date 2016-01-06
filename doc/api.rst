@@ -108,6 +108,70 @@ Cloubed API
        * at least one of the network to recreate is not found in the YAML file
          for this domain
 
+.. py:function:: shutdown(domain)
+
+   Shutdown gracefully the domain `domain` by sending the corresponding ACPI
+   instruction to the guest OS.
+
+   :param string domain: domain name in the YAML file
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+   :exception CloubedException:
+       * the domain is not found in the YAML file
+
+.. py:function:: destroy(domain)
+
+   Destroy immediatelly the domain `domain` without telling anything to the
+   guest OS. This may cause data loss and corrupt the system.
+
+   :param string domain: domain name in the YAML file
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+   :exception CloubedException:
+       * the domain is not found in the YAML file
+
+.. py:function:: reboot(domain)
+
+   Reboot gracefully the domain `domain` by sending the corresponding ACPI
+   instruction to the guest OS.
+
+   :param string domain: domain name in the YAML file
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+   :exception CloubedException:
+       * the domain is not found in the YAML file
+
+.. py:function:: reset(domain)
+
+   Cold-reset immediatelly the domain `domain` without telling anything to the
+   guest OS. This may cause data loss and corrupt the system.
+
+   :param string domain: domain name in the YAML file
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+   :exception CloubedException:
+       * the domain is not found in the YAML file
+
+.. py:function:: suspend(domain)
+
+   Suspend to RAM the domain `domain` within ACPI S3 mode.
+
+   :param string domain: domain name in the YAML file
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+   :exception CloubedException:
+       * the domain is not found in the YAML file
+
+.. py:function:: resume(domain)
+
+   Resume a previously suspended domain `domain`.
+
+   :param string domain: domain name in the YAML file
+   :exception CloubedConfigurationException:
+       * ``cloubed.yaml`` file could not be found or read in current directory
+   :exception CloubedException:
+       * the domain is not found in the YAML file
+
 .. py:function:: create_network(network_name, recreate)
 
    Creates the network `network_name`.
