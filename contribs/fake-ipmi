@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2015 Rémi Palancher
+#
+# This file is part of Cloubed.
+#
+# Cloubed is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# Cloubed is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with Cloubed.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+""" This script emulates fake IPMI commands to send them to the provided
+    power control gateway. It basically accept the same arguments as ipmitool
+    command. It simply considers the power commands and ignores all others.
+
+    This way, it can be used to emulate fake IPMI commands from one domain
+    to another like if there were BMC to control the power status of the nodes
+    in the virtual cluster.
+"""
+
+import socket
+import sys
+import argparse
+import ConfigParser
+
+class Conf(object)
+
+    def __init__(self):
+
+        self.host = None
+        self.port = None
+
+conf = Conf()
+
+def parse_conf():
+
+    global conf
+
+    CONF = '/etc/ipmitool/conf.ini'
+    config = ConfigParser.ConfigParser()
+    config.read(CONF)
+
+    conf.host = config.get('global', 'host') 
+    conf.port = config.getint('global', 'port') 
+    
+def parse_args():
+
+    parser = argparse.ArgumentParser(description='Fake ipmitool for cloubed')
+    parser.add_argument('-I', '--interface',
+                        help='IPMI channel')
+    parser.add_argument('-H', '--host',
+                        help='host')
+    parser.add_argument('-U', '--user',
+                        help='user')
+    parser.add_argument('commands', nargs='+', help='commands to send')
+
+    args = parser.parse_args()
+    return "{host} {command}".format(host=args.host, command=' '.join(args.commands))
+
+def main():
+
+    global conf
+    parse_conf()
+    data = parse_args()
+
+    print "send data: '{data}'".format(data=data)
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    try:
+        # Connect to server and send data
+        sock.connect((conf.host, conf.port))
+        sock.sendall(data + "\n")
+    except socket.error, e:
+        print "failed to connect to {host}:{port}: {err}" \
+                .format(host=conf.host, port=conf.port, err=str(e))
+    finally:
+        sock.close()
+
+if __name__ == "__main__":
+
+    main()

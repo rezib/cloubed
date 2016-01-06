@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2015 Rémi Palancher
+#
+# This file is part of Cloubed.
+#
+# Cloubed is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# Cloubed is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with Cloubed.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+""" The script receives commands on a socket to control domains power status.
+    This way, it can be used as a BMC gateway to emulate IPMI commands using
+    the provided fake-ipmi script.
+
+    The script directly relies upon cloubed public API to send boot, shutdown,
+    reboot, suspend (and so on) commands to the domains.
+
+    You should notice that nothing is secure here. There no fancy thing such as
+    encryption, authentication or so. Therefore, you should not really use this
+    script when security is a concern, or you should really know what you are
+    doing.
+"""
+
+import cloubed
+import SocketServer
+
+def send_command(domain, command):
+
+    if (command == 'power off')
+        cloubed.shutdown(domain)
+    if (command == 'power on')
+        cloubed.boot(domain)
+    if (command == 'chassis power reset')
+        cloubed.reboot(domain)
+
+class TCPControlPowerHandler(SocketServer.BaseRequestHandler):
+
+    def handle(self):
+
+        # self.request is the TCP socket connected to the client
+        data = self.request.recv(1024).strip()
+
+        data_l = data.split(' ')
+        host = data_l[0]
+        command = ' '.join(data_l[1:])
+        # remove 3 chars 'imm' prefix ahead hostname to get domain name
+        domain = host[3:]
+        print "command '{command}' for domain '{domain}'" \
+                 .format(command=command, domain=domain)
+
+        send_command(domain, command)
+
+def main():
+
+    HOST, PORT = "0.0.0.0", 5431
+    server = SocketServer.TCPServer((HOST, PORT), TCPControlPowerHandler)
+    server.serve_forever()
+
+if __name__ == "__main__":
+
+    main()
