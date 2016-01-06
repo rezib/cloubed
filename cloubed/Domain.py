@@ -169,24 +169,6 @@ class Domain:
 
         return self._virtobj is not None
 
-    def destroy(self):
-
-        """
-            Destroys the Domain in libvirt
-        """
-
-        domain = self.ctl.find_domain(self.libvirt_name)
-        if domain is None:
-            logging.debug("unable to destroy domain {name} since not found " \
-                          "in libvirt".format(name=self.name))
-            return # do nothing and leave
-        if domain.isActive():
-            logging.warn("destroying domain {name}".format(name=self.name))
-            domain.destroy()
-        else:
-            logging.warn("undefining domain {name}".format(name=self.name))
-            domain.undefine()
-
     def create(self,
                bootdev='hd'):
 
@@ -208,6 +190,79 @@ class Domain:
         # create the domain
         self.ctl.create_domain(self.toxml())
         logging.info("domain {domain}: created".format(domain=self.name))
+
+    def shutdown(self):
+
+        """ Shutdown the domain """
+
+        domain = self.ctl.find_domain(self.libvirt_name)
+        if domain is None:
+            logging.warning("unable to shutdown domain {name} since not " \
+                            "found in libvirt".format(name=self.name))
+            return
+        self.ctl.shutdown_domain(domain)
+
+    def destroy(self):
+
+        """
+            Destroys the Domain in libvirt
+        """
+
+        domain = self.ctl.find_domain(self.libvirt_name)
+        if domain is None:
+            logging.debug("unable to destroy domain {name} since not found " \
+                          "in libvirt".format(name=self.name))
+            return # do nothing and leave
+        if domain.isActive():
+            logging.warn("destroying domain {name}".format(name=self.name))
+            domain.destroy()
+        else:
+            logging.warn("undefining domain {name}".format(name=self.name))
+            domain.undefine()
+
+    def reboot(self):
+
+        """ Gracefully reboot the domain """
+
+        domain = self.ctl.find_domain(self.libvirt_name)
+        if domain is None:
+            logging.warning("unable to reboot domain {name} since not " \
+                            "found in libvirt".format(name=self.name))
+            return
+        self.ctl.reboot_domain(domain)
+
+    def reset(self):
+
+        """ Cold-reset the domain """
+
+        domain = self.ctl.find_domain(self.libvirt_name)
+        if domain is None:
+            logging.warning("unable to reset domain {name} since not " \
+                            "found in libvirt".format(name=self.name))
+            return
+        self.ctl.reset_domain(domain)
+
+    def suspend(self):
+
+        """ Suspend-to-RAM (ACPI S3 state) the domain """
+
+        domain = self.ctl.find_domain(self.libvirt_name)
+        if domain is None:
+            logging.warning("unable to suspend domain {name} since not " \
+                            "found in libvirt".format(name=self.name))
+            return
+        self.ctl.suspend_domain(domain)
+
+    def resume(self):
+
+        """ Resume the domain from suspended state """
+
+        domain = self.ctl.find_domain(self.libvirt_name)
+        if domain is None:
+            logging.warning("unable to resume domain {name} since not " \
+                            "found in libvirt".format(name=self.name))
+            return
+        self.ctl.resume_domain(domain)
 
     def notify_event(self, event):
 

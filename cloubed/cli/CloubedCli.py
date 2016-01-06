@@ -182,6 +182,60 @@ def main():
                             disks_to_overwrite,
                             networks_to_recreate)
 
+        elif action_name == u"shutdown":
+
+            domain_name = args.domain[0]
+
+            logging.debug(u"Action shutdown on {domain}" \
+                              .format(domain=domain_name))
+
+            cloubed.shutdown(domain_name)
+
+        elif action_name == u"destroy":
+
+            domain_name = args.domain[0]
+
+            logging.debug(u"Action destroy on {domain}" \
+                              .format(domain=domain_name))
+
+            cloubed.destroy(domain_name)
+
+        elif action_name == u"reboot":
+
+            domain_name = args.domain[0]
+
+            logging.debug(u"Action reboot on {domain}" \
+                              .format(domain=domain_name))
+
+            cloubed.reboot(domain_name)
+
+        elif action_name == u"reset":
+
+            domain_name = args.domain[0]
+
+            logging.debug(u"Action reset on {domain}" \
+                              .format(domain=domain_name))
+
+            cloubed.reset(domain_name)
+
+        elif action_name == u"suspend":
+
+            domain_name = args.domain[0]
+
+            logging.debug(u"Action suspend on {domain}" \
+                              .format(domain=domain_name))
+
+            cloubed.suspend(domain_name)
+
+        elif action_name == u"resume":
+
+            domain_name = args.domain[0]
+
+            logging.debug(u"Action resume on {domain}" \
+                              .format(domain=domain_name))
+
+            cloubed.resume(domain_name)
+
         elif action_name == u"wait":
 
             domain_name = args.domain[0]

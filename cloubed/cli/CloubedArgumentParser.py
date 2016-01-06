@@ -47,8 +47,19 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         self.add_argument("actions",
                             nargs=1,
-                            choices=['gen', 'boot', 'wait', 'status', 'cleanup',
-                                     'vars', 'xml'],
+                            choices=['gen',
+                                     'boot',
+                                     'shutdown',
+                                     'destroy',
+                                     'reboot',
+                                     'reset',
+                                     'suspend',
+                                     'resume',
+                                     'wait',
+                                     'status',
+                                     'cleanup',
+                                     'vars',
+                                     'xml'],
                             help="name of the action to perform")
 
         # TODO: actually still to be implemented
@@ -128,6 +139,24 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 "boot": {
                     "domain": "--domain"
                 },
+                "shutdown": {
+                    "domain": "--domain"
+                },
+                "destroy": {
+                    "domain": "--domain"
+                },
+                "reboot": {
+                    "domain": "--domain"
+                },
+                "reset": {
+                    "domain": "--domain"
+                },
+                "suspend": {
+                    "domain": "--domain"
+                },
+                "resume": {
+                    "domain": "--domain"
+                },
                 "gen" : {
                     "domain": "--domain",
                     "filename": "--filename"
@@ -179,6 +208,12 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                       'bootdev',
                       'overwrite_disks',
                       'recreate_networks' ],
+            'shutdown' : [ 'domain' ],
+            'destroy' : [ 'domain' ],
+            'reboot' : [ 'domain' ],
+            'reset' : [ 'domain' ],
+            'suspend' : [ 'domain' ],
+            'resume' : [ 'domain' ],
             'gen' : [ 'domain', 'filename' ],
             'wait': [ 'domain', 'event', 'enable_http' ],
             'status': [],

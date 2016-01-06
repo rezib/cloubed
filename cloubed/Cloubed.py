@@ -388,6 +388,48 @@ class Cloubed():
                                          domain=domain.name,
                                          port=infos['port']))
 
+    def shutdown(self, domain_name):
+
+        """ Shutdown a specific domain """
+
+        domain = self.get_domain_by_name(domain_name)
+        domain.shutdown()
+
+    def destroy(self, domain_name):
+
+        """ Destroy a specific domain """
+
+        domain = self.get_domain_by_name(domain_name)
+        domain.destroy()
+
+    def reboot(self, domain_name):
+
+        """ Reboot a specific domain """
+
+        domain = self.get_domain_by_name(domain_name)
+        domain.reboot()
+
+    def reset(self, domain_name):
+
+        """ Reset a specific domain """
+
+        domain = self.get_domain_by_name(domain_name)
+        domain.reset()
+
+    def suspend(self, domain_name):
+
+        """ Suspend-to-RAM (ACPI S3 state) a specific domain """
+
+        domain = self.get_domain_by_name(domain_name)
+        domain.suspend()
+
+    def resume(self, domain_name):
+
+        """ Resume a previously suspended specific domain """
+
+        domain = self.get_domain_by_name(domain_name)
+        domain.resume()
+
     def create_network(self, network_name, recreate):
 
         """ Create network in Cloubed """

@@ -45,6 +45,48 @@ def boot(domain, bootdev="hd",
     cloubed = Cloubed()
     cloubed.boot_vm(domain, bootdev, overwrite_disks, recreate_networks)
 
+def shutdown(domain_name):
+
+    """ Shutdown a domain using ACPI """
+
+    cloubed = Cloubed()
+    cloubed.shutdown(domain_name)
+
+def destroy(domain_name):
+
+    """ Destroy a domain telling nothing to the OS """
+
+    cloubed = Cloubed()
+    cloubed.destroy(domain_name)
+
+def reboot(domain_name):
+
+    """ Reboot gracefully a domain using ACPI """
+
+    cloubed = Cloubed()
+    cloubed.reboot(domain_name)
+
+def reset(domain_name):
+
+    """ Cold-reset a domain telling nothing to the OS """
+
+    cloubed = Cloubed()
+    cloubed.reset(domain_name)
+
+def suspend(domain_name):
+
+    """ Suspend-to-RAM (into ACPI S3 state) a domain """
+
+    cloubed = Cloubed()
+    cloubed.suspend(domain_name)
+
+def resume(domain_name):
+
+    """ Resume a previously suspended domain """
+
+    cloubed = Cloubed()
+    cloubed.resume(domain_name)
+
 def create_network(network_name, recreate):
 
     """ Creates network in libvirt """

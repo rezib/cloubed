@@ -438,6 +438,83 @@ class VirtController(object):
         except libvirt.libvirtError as err:
             raise CloubedControllerException(err)
 
+    def shutdown_domain(self, domain_name):
+        """Shutdown the domain in libvirt whose name is in parameter.
+
+           :param string domain_name: the name of the domain to shutdown
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        domain = self.find_domain(domain_name)
+        if domain is not None:
+            try:
+                domain.shutdown()
+            except libvirt.libvirtError as err:
+                raise CloubedControllerException(err)
+
+    def reboot_domain(self, domain_name):
+        """Gracefully reboot the domain in libvirt whose name is in parameter.
+
+           :param string domain_name: the name of the domain to reboot
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        domain = self.find_domain(domain_name)
+        if domain is not None:
+            try:
+                domain.reboot(0)
+            except libvirt.libvirtError as err:
+                raise CloubedControllerException(err)
+
+    def reset_domain(self, domain_name):
+        """Cold-reset the domain in libvirt whose name is in parameter.
+
+           :param string domain_name: the name of the domain to reset
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        domain = self.find_domain(domain_name)
+        if domain is not None:
+            try:
+                domain.reset(0)
+            except libvirt.libvirtError as err:
+                raise CloubedControllerException(err)
+
+    def suspend_domain(self, domain_name):
+        """Suspend-to-RAM (ACPI S3 state) the domain in libvirt whose name is
+           in parameter.
+
+           :param string domain_name: the name of the domain to suspend
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        domain = self.find_domain(domain_name)
+        if domain is not None:
+            try:
+                domain.pMSuspendForDuration('mem', 0, 0)
+            except libvirt.libvirtError as err:
+                raise CloubedControllerException(err)
+
+    def resume_domain(self, domain_name):
+        """Resume a previously suspended domain in libvirt whose name is in
+           parameter.
+
+           :param string domain_name: the name of the domain to resume
+           :exceptions CloubedControllerException:
+               * a problem is encountered in libvirt
+        """
+
+        domain = self.find_domain(domain_name)
+        if domain is not None:
+            try:
+                domain.pMWakeup(0)
+            except libvirt.libvirtError as err:
+                raise CloubedControllerException(err)
+
     @staticmethod
     def __status_domain(state_code):
         """Returns the name of the status of the Domain in Libvirt
