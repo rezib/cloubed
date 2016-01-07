@@ -229,6 +229,54 @@ class TestCloubed(CloubedTestCase):
                          recreate_networks=True)
         self.tbd.boot_vm('test_domain2')
 
+    def test_shutdown(self):
+        """Cloubed.shutdown() shoud run without trouble
+        """
+
+        domain = 'test_domain1'
+        self.tbd.boot_vm(domain)
+        self.tbd.shutdown(domain)
+
+    def test_destroy(self):
+        """Cloubed.destroy() shoud run without trouble
+        """
+
+        domain = 'test_domain1'
+        self.tbd.boot_vm(domain)
+        self.tbd.destroy(domain)
+
+    def test_reboot(self):
+        """Cloubed.reboot() shoud run without trouble
+        """
+
+        domain = 'test_domain1'
+        self.tbd.boot_vm(domain)
+        self.tbd.reboot(domain)
+
+    def test_reset(self):
+        """Cloubed.reset() shoud run without trouble
+        """
+
+        domain = 'test_domain1'
+        self.tbd.boot_vm(domain)
+        self.tbd.destroy(domain)
+
+    def test_suspend(self):
+        """Cloubed.suspend() shoud run without trouble
+        """
+
+        domain = 'test_domain1'
+        self.tbd.boot_vm(domain)
+        self.tbd.suspend(domain)
+
+    def test_resume(self):
+        """Cloubed.resume() shoud run without trouble
+        """
+
+        domain = 'test_domain1'
+        self.tbd.boot_vm(domain)
+        self.tbd.resume(domain)
+
     def test_get_infos(self):
         """Cloubed.get_infos() shoud run without trouble
         """
