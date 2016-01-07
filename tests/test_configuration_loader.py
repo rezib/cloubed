@@ -11,7 +11,7 @@ class TestConfigurationLoader(CloubedTestCase):
 
     def setUp(self):
         filename = "cloubed_valid.yaml"
-        self.abs_filename = os.path.join(os.getcwd(), "config", filename)
+        self.abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
         self.configuration_loader = ConfigurationLoader(self.abs_filename)
 
     def test_attr_file_path(self):
@@ -42,7 +42,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
             if YAML file does not exist
         """
         filename = "cloubed_nonexisting_file.yaml"
-        abs_filename = os.path.join(os.getcwd(), "config", filename)
+        abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
         self.assertRaisesRegexp(CloubedConfigurationException,
                                 "Not able to open file .*/config/{0}" \
                                     .format(filename),
@@ -57,7 +57,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
             if YAML file is empty
         """
         filename = "cloubed_empty.yaml"
-        abs_filename = os.path.join(os.getcwd(), "config", filename)
+        abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
         self.assertRaisesRegexp(CloubedConfigurationException,
                                 "File .*/config/{0} is not a valid YAML file " \
                                 "for Cloubed" \
@@ -71,7 +71,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
             if YAML file is not valid
         """
         filename = "cloubed_invalid_yaml.txt"
-        abs_filename = os.path.join(os.getcwd(), "config", filename)
+        abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
         self.assertRaisesRegexp(CloubedConfigurationException,
                                 "File .*/config/{0} is not a valid YAML file " \
                                 "for Cloubed" \
@@ -85,7 +85,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
             if YAML file is not valid
         """
         filename = "yaml.png"
-        abs_filename = os.path.join(os.getcwd(), "config", filename)
+        abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
         self.assertRaisesRegexp(CloubedConfigurationException,
                                 "Error while loading .*/config/{0} file \(may " \
                                 "not be valid YAML content\):" \
