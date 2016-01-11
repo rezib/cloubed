@@ -495,7 +495,8 @@ class VirtController(object):
         domain = self.find_domain(domain_name)
         if domain is not None:
             try:
-                domain.pMSuspendForDuration('mem', 0, 0)
+                domain.pMSuspendForDuration( \
+                         libvirt.VIR_NODE_SUSPEND_TARGET_MEM, 0, 0)
             except libvirt.libvirtError as err:
                 raise CloubedControllerException(err)
 
