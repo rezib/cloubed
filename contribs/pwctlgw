@@ -68,8 +68,10 @@ class TCPControlPowerHandler(SocketServer.BaseRequestHandler):
         domain = host[3:]
         print "command '{command}' for domain '{domain}'" \
                  .format(command=command, domain=domain)
-
-        send_command(domain, command)
+        try:
+            send_command(domain, command)
+        except cloubed.CloubedException, e:
+            print "error while running command: {err}".format(err=e)
 
 def main():
 
