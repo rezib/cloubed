@@ -200,7 +200,8 @@ class Domain:
             logging.warning("unable to shutdown domain {name} since not " \
                             "found in libvirt".format(name=self.name))
             return
-        self.ctl.shutdown_domain(domain)
+        self.ctl.shutdown_domain(self.libvirt_name)
+        logging.info("domain {domain}: shutdown".format(domain=self.name))
 
     def destroy(self):
 
@@ -229,7 +230,8 @@ class Domain:
             logging.warning("unable to reboot domain {name} since not " \
                             "found in libvirt".format(name=self.name))
             return
-        self.ctl.reboot_domain(domain)
+        self.ctl.reboot_domain(self.libvirt_name)
+        logging.info("domain {domain}: reboot".format(domain=self.name))
 
     def reset(self):
 
@@ -240,7 +242,8 @@ class Domain:
             logging.warning("unable to reset domain {name} since not " \
                             "found in libvirt".format(name=self.name))
             return
-        self.ctl.reset_domain(domain)
+        self.ctl.reset_domain(self.libvirt_name)
+        logging.info("domain {domain}: reset".format(domain=self.name))
 
     def suspend(self):
 
@@ -251,7 +254,8 @@ class Domain:
             logging.warning("unable to suspend domain {name} since not " \
                             "found in libvirt".format(name=self.name))
             return
-        self.ctl.suspend_domain(domain)
+        self.ctl.suspend_domain(self.libvirt_name)
+        logging.info("domain {domain}: suspend".format(domain=self.name))
 
     def resume(self):
 
@@ -262,7 +266,8 @@ class Domain:
             logging.warning("unable to resume domain {name} since not " \
                             "found in libvirt".format(name=self.name))
             return
-        self.ctl.resume_domain(domain)
+        self.ctl.resume_domain(self.libvirt_name)
+        logging.info("domain {domain}: resume".format(domain=self.name))
 
     def notify_event(self, event):
 
