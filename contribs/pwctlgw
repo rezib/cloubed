@@ -47,6 +47,10 @@ def send_command(domain, command):
         cloubed.boot(domain)
     elif command == 'chassis power reset':
         cloubed.reboot(domain)
+    elif command == 'chassis power s3suspend':
+        cloubed.suspend(domain)
+    elif command == 'chassis power s3wake':
+        cloubed.resume(domain)
     else:
         print "unknown command: '{command}'".format(command=command)
 
