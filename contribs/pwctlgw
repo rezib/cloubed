@@ -34,15 +34,21 @@
 
 import cloubed
 import SocketServer
+import logging
+
+logging.basicConfig(format='%(levelname)-7s: %(message)s',
+                            level=logging.INFO)
 
 def send_command(domain, command):
 
-    if (command == 'power off')
+    if command == 'power off':
         cloubed.shutdown(domain)
-    if (command == 'power on')
+    elif command == 'power on':
         cloubed.boot(domain)
-    if (command == 'chassis power reset')
+    elif command == 'chassis power reset':
         cloubed.reboot(domain)
+    else:
+        print "unknown command: '{command}'".format(command=command)
 
 class TCPControlPowerHandler(SocketServer.BaseRequestHandler):
 

@@ -33,7 +33,7 @@ import sys
 import argparse
 import ConfigParser
 
-class Conf(object)
+class Conf(object):
 
     def __init__(self):
 
@@ -46,7 +46,7 @@ def parse_conf():
 
     global conf
 
-    CONF = '/etc/ipmitool/conf.ini'
+    CONF = '/etc/ipmi/ipmi.conf'
     config = ConfigParser.ConfigParser()
     config.read(CONF)
 
