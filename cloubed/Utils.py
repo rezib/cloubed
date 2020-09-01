@@ -33,7 +33,7 @@ def gen_mac(salt):
        parameter
     """
 
-    salted = hashlib.sha1(salt).hexdigest()[:6]
+    salted = hashlib.sha1(salt.encode('utf-8')).hexdigest()[:6]
     mac = [ "00", "16", "3e" ]
     mac.extend((salted[:2], salted[2:4], salted[4:6]))
     return ':'.join(mac)
