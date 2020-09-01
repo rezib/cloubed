@@ -40,7 +40,7 @@ class ConfigurationLoader:
                           .format(file_path = self.file_path))
 
         try:
-            self.content = yaml.load(yaml_file)
+            self.content = yaml.load(yaml_file, Loader=yaml.FullLoader)
         except yaml.YAMLError as err:
             raise CloubedConfigurationException(
                       "Error while loading {file_path} file (may" \
