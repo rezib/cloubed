@@ -61,7 +61,7 @@ def net_conflict(ip1, mask1, ip2, mask2):
     try:
         set1 = IPSet(['{ip}/{mask}'.format(ip=ip1, mask=mask1)])
         set2 = IPSet(['{ip}/{mask}'.format(ip=ip2, mask=mask2)])
-    except AddrFormatError, err:
+    except AddrFormatError as err:
         logging.debug("unable to check conflicting networks due to error in " \
                       "address format: {error}".format(error=err))
         return False

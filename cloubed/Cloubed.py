@@ -24,7 +24,7 @@
 import sys
 import os
 import logging
-import thread
+import _thread
 
 from cloubed.VirtController import VirtController
 from cloubed.StoragePool import StoragePool
@@ -43,7 +43,7 @@ class Singleton(type):
     """ Singleton metaclass """
 
     __instances = {}
-    __lockObj = thread.allocate_lock()  # lock object
+    __lockObj = _thread.allocate_lock()  # lock object
 
     def __call__(mcs, *args, **kwargs):
         mcs.__lockObj.acquire()
@@ -61,11 +61,9 @@ class Singleton(type):
 
         return mcs in mcs.__instances
 
-class Cloubed():
+class Cloubed(metaclass=Singleton):
 
     """ Cloubed main class """
-
-    __metaclass__ = Singleton
 
     def __init__(self, conf_loader=None):
 

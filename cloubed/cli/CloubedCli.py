@@ -33,20 +33,20 @@ def print_testbed_infos(testbed):
         resources, including their status in Libvirt.
     """
 
-    print "storage pools:"
-    for name, infos in testbed['storagepools'].iteritems():
+    print("storage pools:")
+    for name, infos in list(testbed['storagepools'].items()):
         print_storage_pool_infos(name, infos)
 
-    print "storage volumes:"
-    for name, infos in testbed['storagevolumes'].iteritems():
+    print("storage volumes:")
+    for name, infos in list(testbed['storagevolumes'].items()):
         print_storage_volume_infos(name, infos)
 
-    print "networks:"
-    for name, infos in testbed['networks'].iteritems():
+    print("networks:")
+    for name, infos in list(testbed['networks'].items()):
         print_network_infos(name, infos)
 
-    print "domains:"
-    for name, infos in testbed['domains'].iteritems():
+    print("domains:")
+    for name, infos in list(testbed['domains'].items()):
         print_domain_infos(name, infos)
 
 def print_storage_pool_infos(name, infos):
@@ -54,46 +54,46 @@ def print_storage_pool_infos(name, infos):
         Prints nicely a dict full of informations about a storage pool.
     """
 
-    print "  - {name}".format(name=name)
-    for key, value in infos.iteritems():
-        print "    - {key:10s}: {value:10s}".format(key=key, value=value)
+    print(("  - {name}".format(name=name)))
+    for key, value in list(infos.items()):
+        print(("    - {key:10s}: {value:10s}".format(key=key, value=value)))
 
 def print_storage_volume_infos(name, infos):
     """
         Prints nicely a dict full of informations about a storage volume.
     """
 
-    print "  - {name}".format(name=name)
-    print "    - status    : {status}".format(status=infos['status'])
-    if infos.has_key('path'):
-        print "    - path      : {path}".format(path=infos['path'])
-    if infos.has_key('allocation') and infos.has_key('capacity'):
-        print "    - size      : {allocation:.2f}/{capacity:.2f}GB" \
+    print(("  - {name}".format(name=name)))
+    print(("    - status    : {status}".format(status=infos['status'])))
+    if 'path' in infos:
+        print(("    - path      : {path}".format(path=infos['path'])))
+    if 'allocation' in infos and 'capacity' in infos:
+        print(("    - size      : {allocation:.2f}/{capacity:.2f}GB" \
                   .format(allocation = infos['allocation']/1024,
-                          capacity = infos['capacity']/1024)
+                          capacity = infos['capacity']/1024)))
 
 def print_network_infos(name, infos):
     """
         Prints nicely a dict full of informations about a network.
     """
 
-    print "  - {name}".format(name=name)
-    print "    - status    : {status}".format(status=infos['status'])
-    if infos.has_key('bridge'):
-        print "    - bridge    : {bridge}".format(bridge=infos['bridge'])
-    if infos.has_key('ip') and infos.has_key('netmask'):
-        print "    - ip        : {ip}/{netmask}" \
+    print(("  - {name}".format(name=name)))
+    print(("    - status    : {status}".format(status=infos['status'])))
+    if 'bridge' in infos:
+        print(("    - bridge    : {bridge}".format(bridge=infos['bridge'])))
+    if 'ip' in infos and 'netmask' in infos:
+        print(("    - ip        : {ip}/{netmask}" \
                   .format(ip = infos['ip'],
-                          netmask = infos['netmask'])
+                          netmask = infos['netmask'])))
 
 def print_domain_infos(name, infos):
     """
         Prints nicely a dict full of informations about a domain.
     """
 
-    print "  - {name}".format(name=name)
-    for key, value in infos.iteritems():
-        print "    - {key:10s}: {value:10s}".format(key=key, value=value)
+    print(("  - {name}".format(name=name)))
+    for key, value in list(infos.items()):
+        print(("    - {key:10s}: {value:10s}".format(key=key, value=value)))
 
 def print_template_vars(domain_vars):
     """Prints the dict of variables that could be used in the templates for a
@@ -109,7 +109,7 @@ def print_template_vars(domain_vars):
     nt_keys = []
     dm_keys = []
 
-    for key in domain_vars.iterkeys():
+    for key in list(domain_vars.keys()):
         if key.startswith('testbed'): tb_keys.append(key)
         elif key.startswith('storagepool'): sp_keys.append(key)
         elif key.startswith('storagevolume'): sv_keys.append(key)
@@ -118,21 +118,21 @@ def print_template_vars(domain_vars):
         elif key.startswith('self'): dm_keys.append(key)
 
     for key in sorted(tb_keys):
-        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+        print(("{key}: {var}".format(key=key, var=domain_vars[key])))
     for key in sorted(sp_keys):
-        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+        print(("{key}: {var}".format(key=key, var=domain_vars[key])))
     for key in sorted(sv_keys):
-        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+        print(("{key}: {var}".format(key=key, var=domain_vars[key])))
     for key in sorted(nt_keys):
-        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+        print(("{key}: {var}".format(key=key, var=domain_vars[key])))
     for key in sorted(dm_keys):
-        print("{key}: {var}".format(key=key, var=domain_vars[key]))
+        print(("{key}: {var}".format(key=key, var=domain_vars[key])))
 
 def main():
 
     """ run_cloubed: function launched by main() """
 
-    parser = CloubedArgumentParser(u"cloubed")
+    parser = CloubedArgumentParser("cloubed")
     parser.add_args()
 
     try:
@@ -151,7 +151,7 @@ def main():
         except CloubedException as cdb_error:
             # in most cases because yaml file not found
             # TODO: manage this case specifically for a better error message
-            logging.error(u"Error while initializing cloubed: {error}" \
+            logging.error("Error while initializing cloubed: {error}" \
                               .format(error=str(cdb_error)))
             sys.exit(1)
 
@@ -162,88 +162,88 @@ def main():
             domain_name = args.domain[0]
             filename = args.filename[0]
 
-            logging.debug(u"Action gen on {domain} with template {template}" \
+            logging.debug("Action gen on {domain} with template {template}" \
                               .format(domain=domain_name,
                                       template=filename))
 
             cloubed.gen_file(domain_name, filename)
 
-        elif action_name == u"boot":
+        elif action_name == "boot":
 
             domain_name = args.domain[0]
             disks_to_overwrite = parser.parse_disks()
             networks_to_recreate = parser.parse_networks()
             bootdev = parser.parse_bootdev()
 
-            logging.debug(u"Action boot on {domain}" \
+            logging.debug("Action boot on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.boot_vm(domain_name, bootdev,
                             disks_to_overwrite,
                             networks_to_recreate)
 
-        elif action_name == u"shutdown":
+        elif action_name == "shutdown":
 
             domain_name = args.domain[0]
 
-            logging.debug(u"Action shutdown on {domain}" \
+            logging.debug("Action shutdown on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.shutdown(domain_name)
 
-        elif action_name == u"destroy":
+        elif action_name == "destroy":
 
             domain_name = args.domain[0]
 
-            logging.debug(u"Action destroy on {domain}" \
+            logging.debug("Action destroy on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.destroy(domain_name)
 
-        elif action_name == u"reboot":
+        elif action_name == "reboot":
 
             domain_name = args.domain[0]
 
-            logging.debug(u"Action reboot on {domain}" \
+            logging.debug("Action reboot on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.reboot(domain_name)
 
-        elif action_name == u"reset":
+        elif action_name == "reset":
 
             domain_name = args.domain[0]
 
-            logging.debug(u"Action reset on {domain}" \
+            logging.debug("Action reset on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.reset(domain_name)
 
-        elif action_name == u"suspend":
+        elif action_name == "suspend":
 
             domain_name = args.domain[0]
 
-            logging.debug(u"Action suspend on {domain}" \
+            logging.debug("Action suspend on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.suspend(domain_name)
 
-        elif action_name == u"resume":
+        elif action_name == "resume":
 
             domain_name = args.domain[0]
 
-            logging.debug(u"Action resume on {domain}" \
+            logging.debug("Action resume on {domain}" \
                               .format(domain=domain_name))
 
             cloubed.resume(domain_name)
 
-        elif action_name == u"wait":
+        elif action_name == "wait":
 
             domain_name = args.domain[0]
             waited_event = parser.parse_event()
             event_type = waited_event[0]
             event_detail = waited_event[1]
 
-            logging.debug(u"Action wait on {domain} with " \
+            logging.debug("Action wait on {domain} with " \
                            "{event_type}/{event_detail}" \
                            .format(domain=domain_name,
                                    event_type=event_type,
@@ -252,33 +252,33 @@ def main():
             cloubed.wait_event(domain_name, event_type, event_detail,
                                args.enable_http)
 
-        elif action_name == u"status":
+        elif action_name == "status":
 
             testbed = cloubed.get_infos()
 
             print_testbed_infos(testbed)
 
-        elif action_name == u"vars":
+        elif action_name == "vars":
 
             domain_name = args.domain[0]
             domain_vars = cloubed.get_templates_dict(domain_name)
             print_template_vars(domain_vars)
 
-        elif action_name == u"cleanup":
+        elif action_name == "cleanup":
 
-            logging.debug(u"Action cleanup")
+            logging.debug("Action cleanup")
             cloubed.cleanup()
 
-        elif action_name == u"xml":
+        elif action_name == "xml":
 
-            logging.debug(u"Action xml")
+            logging.debug("Action xml")
             resource_type, resource_name = parser.parse_resource()
             xml = cloubed.xml(resource_type, resource_name)
-            print xml.toprettyxml(indent="  ")
+            print((xml.toprettyxml(indent="  ")))
 
         else:
             raise CloubedArgumentException(
-                      u"Unknown action '{action}'".format(action=action_name))
+                      "Unknown action '{action}'".format(action=action_name))
 
     except CloubedArgumentException as cdb_error:
         logging.error(cdb_error)
@@ -287,4 +287,4 @@ def main():
         logging.error(cdb_error)
         sys.exit(1)
     except KeyboardInterrupt:
-        logging.info(u"Cloubed stopped.")
+        logging.info("Cloubed stopped.")

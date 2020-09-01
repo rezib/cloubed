@@ -62,7 +62,7 @@ class TestConfigurationItemName(CloubedTestCase):
         """
         invalid_conf = { 'path': 'test_path' }
         
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "one storage pool object does not have a name",
                  self.storage_pool_conf._ConfigurationItem__parse_name,
@@ -77,7 +77,7 @@ class TestConfigurationItemName(CloubedTestCase):
         invalid_conf = { "name": 42,
                          "path": "test_path" }
         
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "the format of one storage pool object is not valid",
                  self.storage_pool_conf._ConfigurationItem__parse_name,

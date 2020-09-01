@@ -123,26 +123,26 @@ class TestCloubed(CloubedTestCase):
            pools
         """
 
-        self.assertEquals(self.tbd.storage_pools(), ['test_storage_pool',])
+        self.assertEqual(self.tbd.storage_pools(), ['test_storage_pool',])
 
     def test_storage_volumes(self):
         """Cloubed.storage_volumes() should return the list of names of storage
            volumes
         """
 
-        self.assertEquals(self.tbd.storage_volumes(),
+        self.assertEqual(self.tbd.storage_volumes(),
                           ['test_storage_volume1', 'test_storage_volume2'])
 
     def test_networks(self):
         """Cloubed.networks() should return the list of names of networks"""
 
-        self.assertEquals(self.tbd.networks(),
+        self.assertEqual(self.tbd.networks(),
                           ['test_network1', 'test_network2'])
 
     def test_domains(self):
         """Cloubed.domains() should return of names of domains"""
 
-        self.assertEquals(self.tbd.domains(), ['test_domain1', 'test_domain2'])
+        self.assertEqual(self.tbd.domains(), ['test_domain1', 'test_domain2'])
 
     def test_get_domain_by_name(self):
         """Cloubed.get_domain_by_name() shoud find the Domain with name in
@@ -150,7 +150,7 @@ class TestCloubed(CloubedTestCase):
         """
 
         self.assertIsInstance(self.tbd.get_domain_by_name('test_domain1'), Domain)
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 'domain fail not found in configuration',
                                 self.tbd.get_domain_by_name,
                                 'fail')
@@ -164,7 +164,7 @@ class TestCloubed(CloubedTestCase):
             self.tbd.get_domain_by_libvirt_name("{user}:test_testbed:test_domain1" \
                                                   .format(user=getuser())),
             Domain)
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 'domain fail not found in configuration',
                                 self.tbd.get_domain_by_libvirt_name,
                                 'fail')
@@ -175,7 +175,7 @@ class TestCloubed(CloubedTestCase):
         """
 
         self.assertIsInstance(self.tbd.get_network_by_name('test_network1'), Network)
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 'network fail not found in configuration',
                                 self.tbd.get_network_by_name,
                                 'fail')
@@ -186,7 +186,7 @@ class TestCloubed(CloubedTestCase):
         """
 
         self.assertIsInstance(self.tbd.get_storage_volume_by_name('test_storage_volume1'), StorageVolume)
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 'storage volume fail not found in configuration',
                                 self.tbd.get_storage_volume_by_name,
                                 'fail')
@@ -197,7 +197,7 @@ class TestCloubed(CloubedTestCase):
         """
 
         self.assertIsInstance(self.tbd.get_storage_pool_by_name('test_storage_pool'), StoragePool)
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 'storage pool fail not found in configuration',
                                 self.tbd.get_storage_pool_by_name,
                                 'fail')
@@ -214,7 +214,7 @@ class TestCloubed(CloubedTestCase):
               'testbed': 'test_testbed' }
         self.assertTrue(set(d2.items()).issubset(set(d1.items())))
 
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 'domain fail not found in configuration',
                                 self.tbd.get_templates_dict,
                                 'fail')
@@ -301,7 +301,7 @@ class TestCloubed(CloubedTestCase):
         self.tbd.xml('network','test_network2')
         self.tbd.xml('storagevolume','test_storage_volume2')
         self.tbd.xml('storagepool','test_storage_pool')
-        self.assertRaisesRegexp(CloubedException,
+        self.assertRaisesRegex(CloubedException,
                                 "cannot dump XML of invalid resource type fail",
                                 self.tbd.xml,
                                 'fail', 'test_fail')

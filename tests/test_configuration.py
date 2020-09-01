@@ -99,7 +99,7 @@ class TestConfigurationTestbed(CloubedTestCase):
         """
         invalid_conf = { }
 
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "testbed parameter is missing",
                                 self._configuration._Configuration__parse_testbed,
                                 invalid_conf)
@@ -115,7 +115,7 @@ class TestConfigurationTestbed(CloubedTestCase):
                           { 'testbed': None } ]
 
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(CloubedConfigurationException,
+            self.assertRaisesRegex(CloubedConfigurationException,
                                     "format of the testbed parameter is not valid",
                                     self._configuration._Configuration__parse_testbed,
                                     invalid_conf)
@@ -152,7 +152,7 @@ class TestConfigurationItems(CloubedTestCase):
                          'storagevolumes': [ ],
                          'domains': [ ] }
         
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "networks parameter is missing",
                                 self._configuration._Configuration__parse_items,
                                 invalid_conf)
@@ -168,7 +168,7 @@ class TestConfigurationItems(CloubedTestCase):
                          'networks': 'fail',
                          'domains': [ ] }
         
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "format of networks parameter is not valid",
                                 self._configuration._Configuration__parse_items,
                                 invalid_conf)
@@ -186,16 +186,16 @@ class TestConfigurationTemplates(CloubedTestCase):
         """
         conf = { 'templates': { 'test_var': 'test_val' } }
         self._configuration._Configuration__parse_templates(conf)
-        self.assertEquals(self._configuration._templates,
+        self.assertEqual(self._configuration._templates,
                           { 'testbed.test_var': 'test_val' })
 
         conf = { 'templates': {} }
         self._configuration._Configuration__parse_templates(conf)
-        self.assertEquals(self._configuration._templates, {})
+        self.assertEqual(self._configuration._templates, {})
 
         conf = { }
         self._configuration._Configuration__parse_templates(conf)
-        self.assertEquals(self._configuration._templates, {})
+        self.assertEqual(self._configuration._templates, {})
 
     def test_parse_templates_invalid_format(self):
         """
@@ -208,7 +208,7 @@ class TestConfigurationTemplates(CloubedTestCase):
                           { 'templates': 'fail' } ]
                          
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(CloubedConfigurationException,
+            self.assertRaisesRegex(CloubedConfigurationException,
                                     "format of the templates section is not valid",
                                     self._configuration._Configuration__parse_templates,
                                     invalid_conf)
@@ -224,7 +224,7 @@ class TestConfigurationTemplates(CloubedTestCase):
                           { 'templates': { 'test': 42   } } ]
                          
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(CloubedConfigurationException,
+            self.assertRaisesRegex(CloubedConfigurationException,
                                     "format of the value of the global template " \
                                     "variable test is not valid",
                                     self._configuration._Configuration__parse_templates,

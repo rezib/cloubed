@@ -61,7 +61,7 @@ class VirtController(object):
 
                 xml = storage_pool.XMLDesc(0)
                 dom = parseString(xml)
-                cur_path = dom.getElementsByTagName(u'path')[0].firstChild.data
+                cur_path = dom.getElementsByTagName('path')[0].firstChild.data
 
                 if cur_path == path:
 

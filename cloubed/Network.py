@@ -133,7 +133,7 @@ class Network:
            a tuple with False and None.
         """
         infos = self.ctl.info_networks()
-        for network_name, network_infos in infos.iteritems():
+        for network_name, network_infos in list(infos.items()):
             if network_name != self.libvirt_name and \
                 network_infos['status'] == 'active':
                 if net_conflict(self.ip_host, self._netmask,

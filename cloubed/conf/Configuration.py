@@ -55,7 +55,7 @@ class Configuration:
             parameter and raises appropriate exception if a problem is found
         """
 
-        if not conf.has_key('testbed'):
+        if 'testbed' not in conf:
             raise CloubedConfigurationException(
                       "testbed parameter is missing")
 
@@ -100,12 +100,12 @@ class Configuration:
         #   item_class: the ConfigurationItem class for the items
         #   item_list: the list to append with build ConfigurationItem objects
 
-        for item_section, meta in items.iteritems():
+        for item_section, meta in list(items.items()):
 
             item_class = meta['class']
             item_list = meta['list']
 
-            if not conf.has_key(item_section):
+            if item_section not in conf:
                 if item_section in optional_items:
                     logging.debug("loading defaut {item_section}" \
                                   .format(item_section=item_section))
@@ -134,7 +134,7 @@ class Configuration:
             appropriate exception if a problem is found
         """
 
-        if conf.has_key("templates"):
+        if "templates" in conf:
 
             templates = conf["templates"]
 
@@ -145,7 +145,7 @@ class Configuration:
             if len(templates) == 0:
                 self._templates = {}
             else:
-                for variable, value in templates.iteritems():
+                for variable, value in list(templates.items()):
                     if type(value) is not str:
                         raise CloubedConfigurationException(
                             "format of the value of the global template " \

@@ -105,9 +105,9 @@ class TestConfigurationDomainCpu(CloubedTestCase):
 
         config = { 'cpu': '2x3x4' }
         self.domain_conf._ConfigurationDomain__parse_cpu(config)
-        self.assertEquals(self.domain_conf.sockets, 2)
-        self.assertEquals(self.domain_conf.cores, 3)
-        self.assertEquals(self.domain_conf.threads, 4)
+        self.assertEqual(self.domain_conf.sockets, 2)
+        self.assertEqual(self.domain_conf.cores, 3)
+        self.assertEqual(self.domain_conf.threads, 4)
 
     def test_parse_cpu_missing(self):
         """
@@ -116,7 +116,7 @@ class TestConfigurationDomainCpu(CloubedTestCase):
         """
 
         invalid_config = { }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "cpu parameter of domain test_name is missing",
                  self.domain_conf._ConfigurationDomain__parse_cpu,
@@ -134,7 +134,7 @@ class TestConfigurationDomainCpu(CloubedTestCase):
                             { 'cpu': None } ]
 
         for invalid_config in invalid_configs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of cpu parameter of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_cpu,
@@ -153,7 +153,7 @@ class TestConfigurationDomainCpu(CloubedTestCase):
                             { 'cpu': '2x5x3x4' } ]
 
         for invalid_config in invalid_configs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of cpu topology of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_cpu,
@@ -178,7 +178,7 @@ class TestConfigurationDomainMemory(CloubedTestCase):
                            '512MB' : 512,
                            '512MiB': 512,
                            '512 M' : 512 }
-        for memory, expected_value in valid_memories.iteritems():
+        for memory, expected_value in list(valid_memories.items()):
             config = { 'memory': memory }
             self.domain_conf._ConfigurationDomain__parse_memory(config)
             self.assertEqual(self.domain_conf.memory,
@@ -191,7 +191,7 @@ class TestConfigurationDomainMemory(CloubedTestCase):
         """
 
         invalid_config = { }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "memory parameter of domain test_name is missing",
                  self.domain_conf._ConfigurationDomain__parse_memory,
@@ -207,7 +207,7 @@ class TestConfigurationDomainMemory(CloubedTestCase):
                             { 'memory': None  } ]
 
         for invalid_config in invalid_configs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of memory parameter of domain test_name is not " \
                      "valid",
@@ -224,7 +224,7 @@ class TestConfigurationDomainMemory(CloubedTestCase):
                             { 'memory': 'x'   } ]
 
         for invalid_config in invalid_configs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "memory size '.*' of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_memory,
@@ -244,7 +244,7 @@ class TestConfigurationDomainMemory(CloubedTestCase):
                             { 'memory': '1Mo' } ]
 
         for invalid_config in invalid_configs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "unknown unit for memory '.*' of domain test_name",
                      self.domain_conf._ConfigurationDomain__parse_memory,
@@ -288,7 +288,7 @@ class TestConfigurationDomainGraphics(CloubedTestCase):
                              { 'graphics': None } ]
 
         for graphics in invalid_graphics:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of graphics parameter of domain test_name is not " \
                      "valid",
@@ -304,7 +304,7 @@ class TestConfigurationDomainGraphics(CloubedTestCase):
 
         invalid_graphics = { 'graphics': 'nonexisting_graphics' }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "value nonexisting_graphics of graphics parameter of domain " \
                  "test_name is not valid",
@@ -326,7 +326,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
         """
 
         invalid_config = { }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "netifs section of domain test_name is missing",
                  self.domain_conf._ConfigurationDomain__parse_netifs,
@@ -346,7 +346,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of netifs section of domain test_name is not "\
                      "valid",
@@ -366,7 +366,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of netif 0 of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_netifs,
@@ -384,7 +384,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "network of netif 0 of domain test_name is missing",
                      self.domain_conf._ConfigurationDomain__parse_netifs,
@@ -402,7 +402,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of network of netif 0 of domain test_name is " \
                      "not valid",
@@ -421,7 +421,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of ip of netif 0 of domain test_name is not " \
                      "valid",
@@ -440,7 +440,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of mac of netif 0 of domain test_name is not " \
                      "valid",
@@ -456,7 +456,7 @@ class TestConfigurationDomainNetifs(CloubedTestCase):
 
         invalid_config = { 'netifs': [ { 'network': 'test', 'mac': 'fail' } ] }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "value of mac parameter of netif 0 of domain test_name is " \
                  "not a valid mac address",
@@ -513,7 +513,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
         """
 
         invalid_config = { }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "disks section of domain test_name is missing",
                  self.domain_conf._ConfigurationDomain__parse_disks,
@@ -533,7 +533,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of disks section of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_disks,
@@ -552,7 +552,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of disk 0 of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_disks,
@@ -571,7 +571,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "device of disk 0 of domain test_name is missing",
                      self.domain_conf._ConfigurationDomain__parse_disks,
@@ -589,7 +589,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of device of disk 0 of domain test_name is not " \
                      "valid",
@@ -631,7 +631,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of bus of disk 0 of domain test_name " \
                      "is not valid",
@@ -648,7 +648,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
         invalid_config = { 'disks': [ { 'device': 'test_device',
                                         'bus': 'fail' } ] }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "value fail of bus of disk 0 of domain test_name " \
                  "is not valid",
@@ -667,7 +667,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "storage_volume or name parameters of disk 0 of domain " \
                      "test_name are missing",
@@ -687,7 +687,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "storage_volume and name parameters of disk 0 of domain "\
                      "test_name are conflicting",
@@ -708,7 +708,7 @@ class TestConfigurationDomainDisks(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of storage_volume parameter of disk 0 of domain " \
                      "test_name is not valid",
@@ -778,7 +778,7 @@ class TestConfigurationDomainCdrom(CloubedTestCase):
                            { 'cdrom': None } ]
 
         for cdrom in invalid_cdroms:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of cdrom parameter of domain test_name is not " \
                      "valid",
@@ -834,7 +834,7 @@ class TestConfigurationDomainVirtfs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of virtfs section of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_virtfs,
@@ -853,7 +853,7 @@ class TestConfigurationDomainVirtfs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of virtfs 0 of domain test_name is not valid",
                      self.domain_conf._ConfigurationDomain__parse_virtfs,
@@ -871,7 +871,7 @@ class TestConfigurationDomainVirtfs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "source of virtfs 0 of domain test_name is missing",
                      self.domain_conf._ConfigurationDomain__parse_virtfs,
@@ -889,7 +889,7 @@ class TestConfigurationDomainVirtfs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of source of virtfs 0 of domain test_name is " \
                      "not valid",
@@ -910,7 +910,7 @@ class TestConfigurationDomainVirtfs(CloubedTestCase):
 
         for invalid_config in invalid_configs:
 
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of target of virtfs 0 of domain test_name is " \
                      "not valid",
@@ -937,7 +937,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
                                     'output': 'test_template_file_output' } ],
                        'vars': { 'var_name': 'var_value' } } }
         self.domain_conf._ConfigurationDomain__parse_templates(conf)
-        self.assertEquals(len(self.domain_conf.template_files), 1)
+        self.assertEqual(len(self.domain_conf.template_files), 1)
         self.assertDictContainsSubset(
                           {'domain.test_name.name': 'test_name'},
                           self.domain_conf.get_absolute_templates_dict())
@@ -958,7 +958,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
         """
 
         invalid_conf = { 'templates': { 'files': 42  } }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "format of the files sub-section in the templates section " \
                  "of domain test_name templates is not valid",
@@ -975,7 +975,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
         invalid_conf = { 'templates':
                              { 'files': [ { 'name': 'test_template_file_name',
                                             'output': 'test_template_file_output' } ] } }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "input parameter of a template file of domain test_name " \
                  "is missing",
@@ -993,7 +993,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
                              { 'files': [ { 'name': 'test_template_file_name',
                                             'input': 42,
                                             'output': 'test_template_file_output' } ] } }
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "format of input parameter of a template file of domain " \
                  "test_name is not valid",
@@ -1010,7 +1010,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
         invalid_conf = { 'templates':
                              { 'vars': 42 } }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "format of the vars sub-section in the templates section of " \
                  "domain test_name templates is not valid",
@@ -1027,7 +1027,7 @@ class TestConfigurationDomainTemplates(CloubedTestCase):
         invalid_conf = { 'templates':
                              { 'vars': { 'test_var_name': [] } } }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "format of the value of test_var_name template variable of " \
                  "domain test_name is not valid",

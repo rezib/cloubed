@@ -343,11 +343,11 @@ class Domain:
                           .format(ip=firstip, port=port))
             try:
                 sock.connect((firstip, port))
-            except socket.error, msg:
+            except socket.error as msg:
                 logging.debug("TCP error: {error}".format(error=msg))
                 time.sleep(1)
                 continue
-            except socket.timeout, msg:
+            except socket.timeout as msg:
                 logging.debug("TCP timeout: {error}".format(error=msg))
                 continue
             break

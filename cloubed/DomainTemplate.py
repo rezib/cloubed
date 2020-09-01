@@ -61,7 +61,7 @@ class DomainTemplate():
 
         try:
             input_file = open(self._source_file, 'r')
-        except IOError, err:
+        except IOError as err:
             raise CloubedException(
                       "error while reading template file {filename}: {err}" \
                           .format(filename=self._source_file,
@@ -74,7 +74,7 @@ class DomainTemplate():
             output_file = open(self._output_file, 'w')
             output_file.write(template_str)
             output_file.close()
-        except IOError, err:
+        except IOError as err:
             raise CloubedException(
                       "error while writing to template file {filename}: {err}" \
                           .format(filename=self._output_file,
@@ -88,7 +88,7 @@ class DomainTemplate():
                 logging.warning("removing template output file {file}" \
                                     .format(file=self._output_file))
                 os.unlink(self._output_file)
-            except OSError, err:
+            except OSError as err:
                 logging.error("error while removing file {file}: {error}" \
                                   .format(file=self._output_file,
                                           error=err))

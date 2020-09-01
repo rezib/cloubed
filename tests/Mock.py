@@ -97,7 +97,7 @@ class MockLibvirtConnect():
         """Mock of libvirt.virConnect.storagePoolCreateXML()"""
 
         dom = parseString(xml)
-        path = dom.getElementsByTagName(u'path')[0].firstChild.data
+        path = dom.getElementsByTagName('path')[0].firstChild.data
         pool = MockLibvirtStoragePool(path)
         self.pools.append(pool)
 
@@ -125,7 +125,7 @@ class MockLibvirtConnect():
         """Mock of libvirt.virConnect.networkCreateXML()"""
 
         dom = parseString(xml)
-        name = dom.getElementsByTagName(u'name')[0].firstChild.data
+        name = dom.getElementsByTagName('name')[0].firstChild.data
         net = MockLibvirtNetwork(name)
         self.networks.append(net)
 
@@ -165,7 +165,7 @@ class MockLibvirtConnect():
         """Mock of libvirt.virConnect.createXML()"""
 
         dom = parseString(xml)
-        name = dom.getElementsByTagName(u'name')[0].firstChild.data
+        name = dom.getElementsByTagName('name')[0].firstChild.data
         domain = MockLibvirtDomain(len(self.domains), name)
         self.domains.append(domain)
 

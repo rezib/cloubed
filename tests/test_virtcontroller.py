@@ -98,7 +98,7 @@ class TestVirtControllerMethods(CloubedTestCase):
         pool = MockLibvirtStoragePool('/test_path')
         pool.volumes.append('volume1')
         self.ctl.conn.pools = [ pool, ]
-        self.assertEquals(self.ctl.find_storage_volume(storage_pool,'volume1'), 'volume1')
+        self.assertEqual(self.ctl.find_storage_volume(storage_pool,'volume1'), 'volume1')
 
     def test_create_storage_volume(self):
         """Checks that VirtController.create_storage_volume() does not raise
@@ -122,7 +122,7 @@ class TestVirtControllerMethods(CloubedTestCase):
         pool_conf = ConfigurationStoragePool(self.conf, pool_item)
         pool2 = StoragePool(self.tbd, pool_conf)
 
-        self.assertRaisesRegexp(CloubedControllerException,
+        self.assertRaisesRegex(CloubedControllerException,
                                 "pool /test_path2 not found by virtualization controller",
                                 self.ctl.create_storage_volume,
                                 pool2,

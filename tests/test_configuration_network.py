@@ -71,7 +71,7 @@ class TestConfigurationNetworkForwardMode(CloubedTestCase):
                           { 'forward': [] } ]
 
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "Forward parameter format of network {network} is not " \
                      "valid".format(network=self.network_conf.name),
@@ -87,7 +87,7 @@ class TestConfigurationNetworkForwardMode(CloubedTestCase):
 
         invalid_conf = { 'forward': 'unknown' }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "Forward parameter of network {network} is not valid" \
                      .format(network=self.network_conf.name),
@@ -133,7 +133,7 @@ class TestConfigurationNetworkBridgeName(CloubedTestCase):
                          'bridge': 'test_bridge_name' }
 
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "Bridge parameter has no sense on network {network} with " \
                  "forwarding mode nat" \
@@ -151,7 +151,7 @@ class TestConfigurationNetworkBridgeName(CloubedTestCase):
         invalid_conf = { 'forward': 'bridge' }
 
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "Bridge parameter is missing on network {network} with " \
                  "bridge forwarding mode" \
@@ -172,7 +172,7 @@ class TestConfigurationNetworkBridgeName(CloubedTestCase):
 
         for invalid_conf in invalid_confs:
             self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "Bridge parameter format of network {network} is not valid" \
                      .format(network=self.network_conf.name),
@@ -232,7 +232,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
         invalid_conf = { 'forward': 'bridge',
                          'address': '10.0.0.1/24' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "address parameter has no sense on network {network} with " \
              "bridge forwarding mode" \
@@ -250,7 +250,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
                          'ip_host': '10.0.0.1',
                          'netmask': '255.255.255.0' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "ip_host and netmask parameters have no sense on network " \
              "{network} with bridge forwarding mode" \
@@ -266,7 +266,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'ip_host': '10.0.0.1' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "ip_host cannot be set without netmask parameter on network " \
              "{network}" \
@@ -282,7 +282,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'netmask': '255.255.255.0' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "netmask cannot be set without ip_host parameter on network " \
              "{network}" \
@@ -299,7 +299,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'address': [] }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "address parameter format on network {network} is not valid" \
                  .format(network=self.network_conf.name),
@@ -315,7 +315,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'ip_host': [], 'netmask': 'str' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "ip_host parameter format on network {network} is not valid" \
                  .format(network=self.network_conf.name),
@@ -324,7 +324,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'ip_host': 'str', 'netmask': 42 }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "netmask parameter format on network {network} is not valid" \
                  .format(network=self.network_conf.name),
@@ -345,7 +345,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
         for invalid_conf in invalid_confs:
 
             self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "address parameter on network {network} is not a valid " \
                  "network address".format(network=self.network_conf.name),
@@ -361,7 +361,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'ip_host': 'fail', 'netmask': '255.255.255.0' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "ip_host parameter on network {network} is not a valid IPv4 " \
              "address" \
@@ -371,7 +371,7 @@ class TestConfigurationNetworkIpHostNetmask(CloubedTestCase):
 
         invalid_conf = { 'ip_host': '10.0.0.1', 'netmask': 'fail' }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "netmask parameter on network {network} is not a valid IPv4 " \
              "netmask" \
@@ -428,7 +428,7 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
                                'end'  : '10.0.0.200' } }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "dhcp service cannot be set-up on network {network} without " \
              "ip_host and netmask" \
@@ -448,7 +448,7 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
                              { 'start': '10.0.0.100' } }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "end parameter must be defined in dhcp section of network " \
              "{network}" \
@@ -469,7 +469,7 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
                                'end': 42 } }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "end parameter format in dhcp section of network {network} is " \
              "not valid" \
@@ -490,7 +490,7 @@ class TestConfigurationNetworkDhcp(CloubedTestCase):
                                'end': 'fail' } }
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "end parameter in dhcp section of network {network} is not a " \
              "valid IPv4 address" \
@@ -541,7 +541,7 @@ class TestConfigurationNetworkDomain(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "domain parameter cannot be set-up on network {network} without dhcp" \
                  .format(network=self.network_conf.name),
@@ -563,7 +563,7 @@ class TestConfigurationNetworkDomain(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "format of domain parameter of network {network} is not valid" \
                  .format(network=self.network_conf.name),
@@ -648,7 +648,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "pxe service cannot be set-up on network {network} without dhcp" \
                  .format(network=self.network_conf.name),
@@ -669,7 +669,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "format of pxe parameter of network {network} is not valid" \
                  .format(network=self.network_conf.name),
@@ -691,7 +691,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "pxe parameter of network {network} must specify a boot file" \
                  .format(network=self.network_conf.name),
@@ -714,7 +714,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "boot_file parameter must be defined in pxe section of network " \
              "{network}" \
@@ -739,7 +739,7 @@ class TestConfigurationNetworkPxe(CloubedTestCase):
         self.network_conf._ConfigurationNetwork__parse_forward_mode(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_ip_host_netmask(invalid_conf)
         self.network_conf._ConfigurationNetwork__parse_dhcp(invalid_conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
              CloubedConfigurationException,
              "boot_file parameter format in pxe section of network {network} " \
              "is not valid" \

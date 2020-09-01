@@ -47,7 +47,7 @@ class ConfigurationStoragePool(ConfigurationItem):
             parameter and raises appropriate exception if a problem is found
         """
 
-        if not conf.has_key('path'):
+        if 'path' not in conf:
             raise CloubedConfigurationException(
                       "path parameter is missing on storage pool {name}" \
                       .format(name=self.name))
@@ -69,7 +69,7 @@ class ConfigurationStoragePool(ConfigurationItem):
 
         """ Returns the type of the item """
 
-        return u"storage pool"
+        return "storage pool"
 
     def get_templates_dict(self):
 

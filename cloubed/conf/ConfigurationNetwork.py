@@ -68,7 +68,7 @@ class ConfigurationNetwork(ConfigurationItem):
             parameter and raises appropriate exception if a problem is found.
         """
 
-        if conf.has_key('forward'):
+        if 'forward' in conf:
 
             forward = conf['forward']
 
@@ -104,7 +104,7 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # forward is not bridge -> bridge parameter has no sense
-        if self.forward_mode != 'bridge' and conf.has_key('bridge'):
+        if self.forward_mode != 'bridge' and 'bridge' in conf:
             raise CloubedConfigurationException(
                 "Bridge parameter has no sense on network {network} with " \
                 "forwarding mode {forward}" \
@@ -114,7 +114,7 @@ class ConfigurationNetwork(ConfigurationItem):
         # forward is bridge -> bridge parameter is mandatory
         elif self.forward_mode == 'bridge':
 
-            if conf.has_key('bridge'):
+            if 'bridge' in conf:
 
                 bridge = conf['bridge']
                 if type(bridge) is str:
@@ -144,20 +144,20 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # forward is bridge -> address has no sense
-        if self.forward_mode == 'bridge' and conf.has_key('address') :
+        if self.forward_mode == 'bridge' and 'address' in conf :
             raise CloubedConfigurationException(
                 "address parameter has no sense on network {network} with " \
                 "bridge forwarding mode".format(network=self.name))
 
         # forward is bridge -> ip_host and netmask have no sense
         if self.forward_mode == 'bridge' and \
-           ( conf.has_key('ip_host') or conf.has_key('netmask') ):
+           ( 'ip_host' in conf or 'netmask' in conf ):
             raise CloubedConfigurationException(
                 "ip_host and netmask parameters have no sense on network " \
                 "{network} with bridge forwarding mode" \
                     .format(network=self.name))
 
-        if conf.has_key('address'):
+        if 'address' in conf:
 
             address = conf['address']
 
@@ -184,18 +184,18 @@ class ConfigurationNetwork(ConfigurationItem):
             self.netmask = str(network.netmask)
 
         # ip_host needs netmask
-        elif conf.has_key('ip_host') and not conf.has_key('netmask'):
+        elif 'ip_host' in conf and 'netmask' not in conf:
             raise CloubedConfigurationException(
                 "ip_host cannot be set without netmask parameter on network " \
                 "{network}".format(network=self.name))
 
         # netmask needs ip_host
-        elif conf.has_key('netmask') and not conf.has_key('ip_host'):
+        elif 'netmask' in conf and 'ip_host' not in conf:
             raise CloubedConfigurationException(
                 "netmask cannot be set without ip_host parameter on network " \
                 "{network}".format(network=self.name))
 
-        elif conf.has_key('ip_host') and conf.has_key('netmask'):
+        elif 'ip_host' in conf and 'netmask' in conf:
 
             logging.warning("ip_host/netmask network parameters are " \
                             "deprecated, please use address parameter instead")
@@ -248,12 +248,12 @@ class ConfigurationNetwork(ConfigurationItem):
         # with the ip_host
 
         # dhcp cannot be set-up without ip_host/netmask
-        if self.ip_host is None and conf.has_key('dhcp'):
+        if self.ip_host is None and 'dhcp' in conf:
             raise CloubedConfigurationException(
                 "dhcp service cannot be set-up on network {network} without " \
                 "ip_host and netmask".format(network = self.name))
 
-        if conf.has_key('dhcp'):
+        if 'dhcp' in conf:
 
             dhcp_conf = conf['dhcp']
 
@@ -264,7 +264,7 @@ class ConfigurationNetwork(ConfigurationItem):
 
             for parameter in dhcp_parameters:
 
-                if not dhcp_conf.has_key(parameter):
+                if parameter not in dhcp_conf:
                     raise CloubedConfigurationException(
                         "{parameter} parameter must be defined in dhcp " \
                         "section of network {network}" \
@@ -303,12 +303,12 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # domain cannot be set-up without dhcp
-        if self.dhcp_start is None and conf.has_key('domain'):
+        if self.dhcp_start is None and 'domain' in conf:
             raise CloubedConfigurationException(
                 "domain parameter cannot be set-up on network {network} " \
                 "without dhcp".format(network = self.name))
 
-        if conf.has_key('domain'):
+        if 'domain' in conf:
 
             domain = conf['domain']
 
@@ -332,12 +332,12 @@ class ConfigurationNetwork(ConfigurationItem):
         """
 
         # pxe cannot be set-up without dhcp
-        if self.dhcp_start is None and conf.has_key('pxe'):
+        if self.dhcp_start is None and 'pxe' in conf:
             raise CloubedConfigurationException(
                 "pxe service cannot be set-up on network {network} without " \
                 "dhcp".format(network = self.name))
 
-        if conf.has_key('pxe'):
+        if 'pxe' in conf:
 
             pxe_conf = conf['pxe']
 
@@ -361,7 +361,7 @@ class ConfigurationNetwork(ConfigurationItem):
                 # check that all parameters are present and valid strings
                 for parameter in pxe_parameters:
 
-                    if not pxe_conf.has_key(parameter):
+                    if parameter not in pxe_conf:
                         raise CloubedConfigurationException(
                             "{parameter} parameter must be defined in pxe " \
                             "section of network {network}" \
@@ -397,7 +397,7 @@ class ConfigurationNetwork(ConfigurationItem):
 
         """ Returns the type of the item """
 
-        return u"network"
+        return "network"
 
     def has_local_settings(self):
 

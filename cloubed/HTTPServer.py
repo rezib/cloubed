@@ -21,8 +21,8 @@
 
 """ HTTPServer class of Cloubed """
 
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 import threading
 import logging
 import socket
@@ -34,7 +34,7 @@ class HTTPServer():
     def __init__(self):
 
         self._port = 5432
-        self._handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        self._handler = http.server.SimpleHTTPRequestHandler
         self._address = None
         self._httpd = None
         self._thread = None
@@ -77,8 +77,8 @@ class HTTPServer():
         """
 
         try:
-            self._httpd = SocketServer.TCPServer((self._address, self._port),
+            self._httpd = socketserver.TCPServer((self._address, self._port),
                                                  self._handler)
             self._httpd.serve_forever()
-        except socket.error, e:
+        except socket.error as e:
             logging.warn("error while launching TCP Server: {err}".format(err=e))

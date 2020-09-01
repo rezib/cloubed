@@ -32,7 +32,7 @@ class DomainNetif:
     def __init__(self, tbd, hostname, netif_conf):
 
         self.network = tbd.get_network_by_name(netif_conf["network"])
-        if netif_conf.has_key("mac"):
+        if "mac" in netif_conf:
             self.mac = netif_conf["mac"]
         else:
             self.mac = gen_mac("{domain:s}-{network:s}" \

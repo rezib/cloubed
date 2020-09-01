@@ -87,7 +87,7 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
         """
         invalid_conf = { }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "size parameter of storage volume {name} is missing" \
                      .format(name=self.storage_volume_conf.name),
@@ -105,7 +105,7 @@ class TestConfigurationStorageVolumeSize(CloubedTestCase):
                           { 'size': None   } ]
 
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of size parameter of storage volume {name} " \
                      "is not valid" \
@@ -176,7 +176,7 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
                                    'path': 'path2' }, ]
 
         self.create_item(conf)
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "storagepool parameter of storage volume {name} is missing" \
                      .format(name=self.storage_volume_conf.name),
@@ -199,7 +199,7 @@ class TestConfigurationStorageVolumeStoragePool(CloubedTestCase):
             ConfigurationStorageVolume(self.conf, self.item_conf)
 
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of storagepool parameter of storage volume {name} " \
                      "is not valid" \
@@ -245,7 +245,7 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
                           { 'format': None } ]
 
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of format parameter of storage volume {name} " \
                      "is not valid" \
@@ -261,7 +261,7 @@ class TestConfigurationStorageVolumeFormat(CloubedTestCase):
         """
         invalid_conf = { 'format': 'fail' }
 
-        self.assertRaisesRegexp(
+        self.assertRaisesRegex(
                  CloubedConfigurationException,
                  "value of format parameter of storage volume {name} is not valid" \
                      .format(name=self.storage_volume_conf.name),
@@ -307,7 +307,7 @@ class TestConfigurationStorageVolumeBacking(CloubedTestCase):
                           { 'backing': []   } ]
 
         for invalid_conf in invalid_confs:
-            self.assertRaisesRegexp(
+            self.assertRaisesRegex(
                      CloubedConfigurationException,
                      "format of backing parameter of storage volume {name} " \
                      "is not valid" \

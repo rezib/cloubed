@@ -27,7 +27,7 @@ def loadtestcase(testcase):
 
     # load and run tests
     suite = unittest.TestLoader().loadTestsFromTestCase(testcase)
-    print
+    print()
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 def main():

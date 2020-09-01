@@ -45,7 +45,7 @@ class ConfigurationItem(object):
             parameter and raises appropriate exception if a problem is found
         """
 
-        if not conf.has_key('name'):
+        if 'name' not in conf:
             raise CloubedConfigurationException(
                 "one {type_name} object does not have a name" \
                     .format(type_name = self._get_type()))

@@ -46,7 +46,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
             Parses the size parameter over the conf dictionary given in
             parameter and raises appropriate exception if a problem is found.
         """
-        if not conf.has_key('size'):
+        if 'size' not in conf:
             raise CloubedConfigurationException(
                       "size parameter of storage volume {name} is missing" \
                           .format(name=self.name))
@@ -65,7 +65,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
             Parses the storage pool parameter over the conf dictionary given in
             parameter and raises appropriate exception if a problem is found.
         """
-        if not conf.has_key('storagepool'):
+        if 'storagepool' not in conf:
             # if only storage, pop it for this storage volume volume
             if len(self.conf.storage_pools) == 1:
                 self.storage_pool = self.conf.storage_pools[0].name
@@ -89,7 +89,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
             Parses the format parameter over the conf dictionary given in
             parameter and raises appropriate exception if a problem is found.
         """
-        if conf.has_key('format'):
+        if 'format' in conf:
 
             vol_format = conf['format']
 
@@ -116,7 +116,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
             Parses the backing parameter over the conf dictionary given in
             parameter and raises appropriate exception if a problem is found.
         """
-        if conf.has_key('backing'):
+        if 'backing' in conf:
 
             # TODO: is size parameter useless in this case? TBC.
 
@@ -137,7 +137,7 @@ class ConfigurationStorageVolume(ConfigurationItem):
 
         """ Returns the type of the item """
 
-        return u"storage volume"
+        return "storage volume"
 
     def get_templates_dict(self):
 

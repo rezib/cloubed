@@ -20,7 +20,7 @@ class TestConfigurationLoader(CloubedTestCase):
             YAML file
         """
 
-        self.assertEquals(self.configuration_loader.file_path,
+        self.assertEqual(self.configuration_loader.file_path,
                           self.abs_filename)
 
     def test_attr_content(self):
@@ -28,7 +28,7 @@ class TestConfigurationLoader(CloubedTestCase):
             ConfigurationLoader.content should be a dict with the content of the
             YAML file
         """
-        self.assertEquals(self.configuration_loader.content,
+        self.assertEqual(self.configuration_loader.content,
                           { 'yaml': 'cloubed' })
 
 class TestConfigurationLoaderInvalid(CloubedTestCase):
@@ -43,7 +43,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
         """
         filename = "cloubed_nonexisting_file.yaml"
         abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "Not able to open file .*/config/{0}" \
                                     .format(filename),
                                 ConfigurationLoader,
@@ -58,7 +58,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
         """
         filename = "cloubed_empty.yaml"
         abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "File .*/config/{0} is not a valid YAML file " \
                                 "for Cloubed" \
                                     .format(filename),
@@ -72,7 +72,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
         """
         filename = "cloubed_invalid_yaml.txt"
         abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "File .*/config/{0} is not a valid YAML file " \
                                 "for Cloubed" \
                                     .format(filename),
@@ -86,7 +86,7 @@ class TestConfigurationLoaderInvalid(CloubedTestCase):
         """
         filename = "yaml.png"
         abs_filename = os.path.join(os.getcwd(), "tests", "config", filename)
-        self.assertRaisesRegexp(CloubedConfigurationException,
+        self.assertRaisesRegex(CloubedConfigurationException,
                                 "Error while loading .*/config/{0} file \(may " \
                                 "not be valid YAML content\):" \
                                     .format(filename),

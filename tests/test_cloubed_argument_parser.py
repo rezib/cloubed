@@ -16,9 +16,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because too few arguments
         """
         sys.argv = ["cloubed"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "too few arguments",
                                 parser.parse_args)
 
@@ -27,9 +27,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because invalid action
         """
         sys.argv = ["cloubed", "badaction"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument actions: invalid choice:",
                                 parser.parse_args)
 
@@ -38,9 +38,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because conf expects argument
         """
         sys.argv = ["cloubed", "boot", "--conf"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument -c/--conf: expected one argument",
                                 parser.parse_args)
 
@@ -49,9 +49,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because domain expects argument
         """
         sys.argv = ["cloubed", "boot", "--domain"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --domain: expected 1 argument\(s\)",
                                 parser.parse_args)
 
@@ -60,9 +60,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because unrecognized argument
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "unrecognized arguments: --toto",
                                 parser.parse_args)
 
@@ -71,9 +71,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because bootdev expects argument
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--bootdev"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --bootdev: expected 1 argument\(s\)",
                                 parser.parse_args)
 
@@ -82,9 +82,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because invalid bootdev
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--bootdev", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --bootdev: invalid choice:",
                                 parser.parse_args)
 
@@ -94,9 +94,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             argument
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--overwrite-disks"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --overwrite-disks: expected at least one argument",
                                 parser.parse_args)
 
@@ -106,9 +106,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             argument
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--recreate-networks"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --recreate-networks: expected at least one argument",
                                 parser.parse_args)
 
@@ -117,9 +117,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because filename expects argument
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--filename"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --filename: expected 1 argument\(s\)",
                                 parser.parse_args)
     
@@ -128,9 +128,9 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because event expects argument
         """
         sys.argv = ["cloubed", "wait", "--domain", "toto", "--event"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "argument --event: expected 1 argument\(s\)",
                                 parser.parse_args)
 
@@ -145,10 +145,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
         actions = [ "boot", "gen", "wait", "vars" ]
         for action in actions:
             sys.argv = ["cloubed", action]
-            parser = CloubedArgumentParser(u"test_description")
+            parser = CloubedArgumentParser("test_description")
             parser.add_args()
             parser.parse_args()
-            self.assertRaisesRegexp(CloubedArgumentException,
+            self.assertRaisesRegex(CloubedArgumentException,
                                     "--domain is required for {action} action" \
                                         .format(action=action),
                                     parser.check_required)
@@ -158,10 +158,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             Raises CloubedArgumentException because action wait requires event
         """
         sys.argv = ['cloubed', 'wait', '--domain', 'domain']
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--event is required for wait action",
                                 parser.check_required)
 
@@ -173,7 +173,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
         actions = [ "status", "cleanup" ]
         for action in actions:
             sys.argv = ["cloubed", action]
-            parser = CloubedArgumentParser(u"test_description")
+            parser = CloubedArgumentParser("test_description")
             parser.add_args()
             parser.parse_args()
             parser.check_required()
@@ -188,10 +188,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             action
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--filename", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--filename is not compatible with boot action",
                                 parser.check_optionals)
 
@@ -201,10 +201,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             action
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--event", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--event is not compatible with boot action",
                                 parser.check_optionals)
 
@@ -214,10 +214,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             action
         """
         sys.argv = ["cloubed", "gen", "--domain", "toto", "--bootdev", "hd"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--bootdev is not compatible with gen action",
                                 parser.check_optionals)
 
@@ -227,10 +227,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             with boot action
         """
         sys.argv = ["cloubed", "gen", "--domain", "toto", "--overwrite-disks", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--overwrite-disks is not compatible with gen action",
                                 parser.check_optionals)
 
@@ -240,10 +240,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             with boot action
         """
         sys.argv = ["cloubed", "gen", "--domain", "toto", "--recreate-networks", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--recreate-networks is not compatible with gen action",
                                 parser.check_optionals)
 
@@ -253,10 +253,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             action
         """
         sys.argv = ["cloubed", "gen", "--domain", "toto", "--event", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--event is not compatible with gen action",
                                 parser.check_optionals)
 
@@ -266,10 +266,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             action
         """
         sys.argv = ["cloubed", "wait", "--domain", "toto", "--bootdev", "hd"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--bootdev is not compatible with wait action",
                                 parser.check_optionals)
 
@@ -279,10 +279,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             with wait action
         """
         sys.argv = ["cloubed", "wait", "--domain", "toto", "--overwrite-disks", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--overwrite-disks is not compatible with wait action",
                                 parser.check_optionals)
 
@@ -292,10 +292,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             with wait action
         """
         sys.argv = ["cloubed", "wait", "--domain", "toto", "--recreate-networks", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--recreate-networks is not compatible with wait action",
                                 parser.check_optionals)
 
@@ -305,10 +305,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             action
         """
         sys.argv = ["cloubed", "wait", "--domain", "toto", "--filename", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "--filename is not compatible with wait action",
                                 parser.check_optionals)
 
@@ -322,7 +322,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
             bootdev
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto", "--bootdev", "network"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
         self.assertEqual(parser.parse_bootdev(), "network")
@@ -333,7 +333,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
             implicit bootdev
         """
         sys.argv = ["cloubed", "boot", "--domain", "toto"]
-        parser = CloubedArgumentParser(u"test_description")
+        parser = CloubedArgumentParser("test_description")
         parser.add_args()
         parser.parse_args()
         self.assertEqual(parser.parse_bootdev(), "hd")
@@ -348,7 +348,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
             False
         """
         sys.argv = ['cloubed', 'boot', '--domain', 'toto']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
         self.assertEqual(parser.parse_disks(), False)
@@ -360,7 +360,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
         """
         sys.argv = ['cloubed', 'boot', '--domain', 'toto',
                     '--overwrite-disks', 'disk1', 'disk2']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
         self.assertEqual(parser.parse_disks(), ['disk1', 'disk2'])
@@ -372,10 +372,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
         """
 
         expected_values = { 'yes': True, 'no': False }
-        for param, value in expected_values.items():
+        for param, value in list(expected_values.items()):
             sys.argv = ['cloubed', 'boot', '--domain', 'toto',
                         '--overwrite-disks', param]
-            parser = CloubedArgumentParser(u'test_description')
+            parser = CloubedArgumentParser('test_description')
             parser.add_args()
             parser.parse_args()
             self.assertEqual(parser.parse_disks(), value)
@@ -389,10 +389,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
         for value in values:
             sys.argv = ['cloubed', 'boot', '--domain', 'toto',
                         '--overwrite-disks', value, 'other']
-            parser = CloubedArgumentParser(u'test_description')
+            parser = CloubedArgumentParser('test_description')
             parser.add_args()
             parser.parse_args()
-            self.assertRaisesRegexp(CloubedArgumentException,
+            self.assertRaisesRegex(CloubedArgumentException,
                                     "--overwrite-disks parameter cannot " \
                                     "contain '{value}' among other values" \
                                         .format(value=value),
@@ -408,7 +408,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
             False
         """
         sys.argv = ['cloubed', 'boot', '--domain', 'toto']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
         self.assertEqual(parser.parse_networks(), False)
@@ -420,7 +420,7 @@ class TestCloubedArgumentParser(CloubedTestCase):
         """
         sys.argv = ['cloubed', 'boot', '--domain', 'toto',
                     '--recreate-networks', 'network1', 'network2']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
         self.assertEqual(parser.parse_networks(),
@@ -433,10 +433,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
         """
 
         expected_values = { 'yes': True, 'no': False }
-        for param, value in expected_values.items():
+        for param, value in list(expected_values.items()):
             sys.argv = ['cloubed', 'boot', '--domain', 'toto',
                         '--recreate-networks', param]
-            parser = CloubedArgumentParser(u'test_description')
+            parser = CloubedArgumentParser('test_description')
             parser.add_args()
             parser.parse_args()
             self.assertEqual(parser.parse_networks(), value)
@@ -451,10 +451,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
         for value in values:
             sys.argv = ['cloubed', 'boot', '--domain', 'toto',
                         '--recreate-networks', value, 'other']
-            parser = CloubedArgumentParser(u'test_description')
+            parser = CloubedArgumentParser('test_description')
             parser.add_args()
             parser.parse_args()
-            self.assertRaisesRegexp(CloubedArgumentException,
+            self.assertRaisesRegex(CloubedArgumentException,
                                     "--recreate-networks parameter cannot " \
                                     "contain '{value}' among other values" \
                                         .format(value=value),
@@ -470,10 +470,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             the 2 parts of the event name
         """
         sys.argv = ['cloubed', 'wait', '--domain', 'toto', '--event', 'part1:part2']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
-        self.assertEquals(parser.parse_event(),
+        self.assertEqual(parser.parse_event(),
                           ['part1','part2'])
 
     def test_parse_event_not_valid(self):
@@ -483,10 +483,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             valid
         """
         sys.argv = ['cloubed', 'wait', '--domain', 'toto', '--event', 'fail']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "format of --event parameter is not valid",
                                 parser.parse_event)
 
@@ -500,10 +500,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             with the 2 parts of the resource
         """
         sys.argv = ['cloubed', 'xml', '--resource', 'part1:part2']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
-        self.assertEquals(parser.parse_resource(),
+        self.assertEqual(parser.parse_resource(),
                           ['part1','part2'])
 
     def test_parse_resource_not_valid(self):
@@ -513,10 +513,10 @@ class TestCloubedArgumentParser(CloubedTestCase):
             valid
         """
         sys.argv = ['cloubed', 'xml', '--resource', 'fail']
-        parser = CloubedArgumentParser(u'test_description')
+        parser = CloubedArgumentParser('test_description')
         parser.add_args()
         parser.parse_args()
-        self.assertRaisesRegexp(CloubedArgumentException,
+        self.assertRaisesRegex(CloubedArgumentException,
                                 "format of --resource parameter is not valid",
                                 parser.parse_resource)
 

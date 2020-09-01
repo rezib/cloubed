@@ -132,7 +132,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         action = self._args.actions[0]
 
-        logging.debug(u"check for required parameters with {action} action" \
+        logging.debug("check for required parameters with {action} action" \
                           .format(action=action))
 
         required_args = {
@@ -175,9 +175,9 @@ class CloubedArgumentParser(argparse.ArgumentParser):
                 }
             }
 
-        error_str = u"{attribute} is required for {action} action"
+        error_str = "{attribute} is required for {action} action"
 
-        for attr, arg in required_args[action].iteritems():
+        for attr, arg in list(required_args[action].items()):
             if not hasattr(self._args, attr) or \
                getattr(self._args, attr) is None:
                 raise CloubedArgumentException(
@@ -192,7 +192,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         action = self._args.actions[0]
 
-        logging.debug(u"check for incoherent parameters with {action} action" \
+        logging.debug("check for incoherent parameters with {action} action" \
                           .format(action=action))
 
         # Options that are either systematically defined (ex: with default
@@ -234,12 +234,12 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             'resource': '--resource'
         }
 
-        error_str = u"{attribute} is not compatible with {action} action"
+        error_str = "{attribute} is not compatible with {action} action"
 
         # Get list of compatible args
         compatible_args = action_args[action]
         # Loop over the list of defined args
-        for arg, value in self._args.__dict__.iteritems():
+        for arg, value in list(self._args.__dict__.items()):
             if arg not in default_args \
                and value is not None \
                and arg not in compatible_args \
@@ -272,7 +272,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             if "yes" in disks:
 
                 if len(disks)>1:
-                    raise CloubedArgumentException(u"--overwrite-disks parameter" \
+                    raise CloubedArgumentException("--overwrite-disks parameter" \
                                       " cannot contain 'yes' among other values")
                 else:
                     return True
@@ -280,7 +280,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             elif "no" in disks:
 
                 if len(disks)>1:
-                    raise CloubedArgumentException(u"--overwrite-disks parameter" \
+                    raise CloubedArgumentException("--overwrite-disks parameter" \
                                       " cannot contain 'no' among other values")
                 else:
                     return False
@@ -291,7 +291,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         else:
 
-            logging.debug(u"--overwrite-disks not defined, defaulting to 'no'")
+            logging.debug("--overwrite-disks not defined, defaulting to 'no'")
             return False
 
     def parse_networks(self):
@@ -307,7 +307,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             if "yes" in networks:
 
                 if len(networks)>1:
-                    raise CloubedArgumentException(u"--recreate-networks" \
+                    raise CloubedArgumentException("--recreate-networks" \
                                       " parameter cannot contain 'yes' among" \
                                       " other values")
                 else:
@@ -316,7 +316,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
             elif "no" in networks:
 
                 if len(networks)>1:
-                    raise CloubedArgumentException(u"--recreate-networks" \
+                    raise CloubedArgumentException("--recreate-networks" \
                                       " parameter cannot contain 'no' among" \
                                       " other values")
                 else:
@@ -328,7 +328,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         else:
 
-            logging.debug(u"--recreate-networks not defined, defaulting to 'no'")
+            logging.debug("--recreate-networks not defined, defaulting to 'no'")
             return False
 
     def parse_event(self):
@@ -340,7 +340,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
         waited_event_str = self._args.event[0]
         waited_event = waited_event_str.split(':')
         if len(waited_event) is not 2:
-            raise CloubedArgumentException(u"format of --event parameter " \
+            raise CloubedArgumentException("format of --event parameter " \
                                             "is not valid")
         return waited_event
 
@@ -353,6 +353,6 @@ class CloubedArgumentParser(argparse.ArgumentParser):
         resource_str = self._args.resource[0]
         resource = resource_str.split(':')
         if len(resource) is not 2:
-            raise CloubedArgumentException(u"format of --resource parameter " \
+            raise CloubedArgumentException("format of --resource parameter " \
                                             "is not valid")
         return resource
