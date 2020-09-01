@@ -22,7 +22,7 @@
 from setuptools import setup
 
 setup(name='cloubed',
-      version='0.5',
+      version='0.6',
       description='Utility and library to easily setup virtual testbeds composed of several KVM virtual machines through libvirt',
       author='Rémi Palancher',
       author_email='remi@rezib.org',

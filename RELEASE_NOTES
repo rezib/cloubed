@@ -1,3 +1,11 @@
+cloubed 0.6
+-----------
+
+  * Add new optional CPU topology feature
+  * Add feature to control domain power status through API and CLI (#45)
+  * Add new fake IPMI gateway pwctlgw in contribs over power status API
+  * Many unit tests improvements
+
 cloubed 0.5
 -----------
 
