@@ -47,7 +47,7 @@ Then, launch the ClouBed python script that will sequentially:
 3. reboot your VM on the freshly installed CentOS system
 
 ```sh
-python install.py
+python3 install.py
 ```
 
 ### Profit!

@@ -89,7 +89,7 @@ mkdir pool
 Then, launch the python script that fully orchestrate the installation process:
 
 ```sh
-python install.py
+python3 install.py
 ```
 
 You can watch the magic using Spice client:
