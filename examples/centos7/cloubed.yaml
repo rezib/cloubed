@@ -1,0 +1,30 @@
+testbed: centos
+networks:
+    - name: net
+      forward: nat
+      address: 10.6.0.1/24
+      dhcp:
+        start: 10.6.0.100
+        end: 10.6.0.110
+      pxe: http/centos.ipxe
+domains:
+    - name: vmtest
+      cpu: 4
+      memory: 8
+      netifs:
+          - network: net   # eth0
+            ip: 10.6.0.10
+      graphics: spice
+      disks:
+          - device: sda
+            name: server
+            size: 70
+            format: qcow2
+      templates:
+          files:
+              - name: kickstart
+                input: templates/centos.ks
+                output: http/centos.ks
+              - name: ipxe
+                input: templates/centos.ipxe
+                output: http/centos.ipxe

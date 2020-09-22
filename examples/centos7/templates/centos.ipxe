@@ -1,0 +1,4 @@
+#!ipxe
+kernel ${network.net.http_server}/http/vmlinuz ksdevice=eth0 lang=en ip=dhcp ks=${network.net.http_server}/http/centos.ks
+initrd ${network.net.http_server}/http/initrd.img
+boot
