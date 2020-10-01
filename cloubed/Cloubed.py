@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -70,7 +70,7 @@ class Cloubed(metaclass=Singleton):
         #
         # connection to the hypervisor
         #
-        
+
         self.ctl = VirtController()
         if self.ctl == None:
             logging.error("Failed to open connection to the hypervisor")
@@ -81,7 +81,7 @@ class Cloubed(metaclass=Singleton):
         # self.launch_event_manager() in self.wait_event()
         #
         self._event_manager = None
-        
+
         #
         # parse configuration file
         #
