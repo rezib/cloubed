@@ -339,7 +339,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         waited_event_str = self._args.event[0]
         waited_event = waited_event_str.split(':')
-        if len(waited_event) is not 2:
+        if len(waited_event) != 2:
             raise CloubedArgumentException("format of --event parameter " \
                                             "is not valid")
         return waited_event
@@ -352,7 +352,7 @@ class CloubedArgumentParser(argparse.ArgumentParser):
 
         resource_str = self._args.resource[0]
         resource = resource_str.split(':')
-        if len(resource) is not 2:
+        if len(resource) != 2:
             raise CloubedArgumentException("format of --resource parameter " \
                                             "is not valid")
         return resource

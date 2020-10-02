@@ -264,7 +264,7 @@ class Network:
 
         # To avoid unwanted behaviour and conflicts on external LAN, DHCP and
         # PXE cannot be enable on bridge forwording networks
-        if self._forward_mode is not 'bridge':
+        if self._forward_mode != 'bridge':
 
             # ip element
             if self._with_local_settings:
