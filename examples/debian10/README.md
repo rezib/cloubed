@@ -4,52 +4,85 @@ Minimal Debian example
 ## Description
 
 This directory contains the minimal set of files for a simple testbed with
-Debian Wheezy amd64.
+Debian Buster amd64.
 
 It uses a preseed file for a fully automatic installation of Debian with PXE.
 
 The preseed is mainly based on the reference from Debian website:
-http://www.debian.org/releases/wheezy/example-preseed.txt
+http://www.debian.org/releases/buster/example-preseed.txt
 
 Here is the diff applied against this reference:
 
 ```diff
---- example-preseed.txt	2013-05-04 18:14:06.000000000 +0200
-+++ templates/preseed.cfg	2013-07-16 21:22:49.085779501 +0200
-@@ -113,7 +113,7 @@
+--- example-preseed.cfg	2020-01-12 16:42:06.000000000 +0100
++++ preseed.cfg	2020-10-02 09:33:02.584975301 +0200
+@@ -96,7 +96,7 @@
+ # If you select ftp, the mirror/country string does not need to be set.
+ #d-i mirror/protocol string ftp
+ d-i mirror/country string manual
+-d-i mirror/http/hostname string http.us.debian.org
++d-i mirror/http/hostname string deb.debian.org
+ d-i mirror/http/directory string /debian
+ d-i mirror/http/proxy string
+ 
+@@ -110,11 +110,11 @@
+ # use sudo).
+ #d-i passwd/root-login boolean false
  # Alternatively, to skip creation of a normal user account.
 -#d-i passwd/make-user boolean false
 +d-i passwd/make-user boolean false
-
+ 
  # Root password, either in clear text
 -#d-i passwd/root-password password r00tme
 -#d-i passwd/root-password-again password r00tme
 +d-i passwd/root-password password rootroot
 +d-i passwd/root-password-again password rootroot
- # or encrypted using an MD5 hash.
-@@ -317,3 +317,3 @@
+ # or encrypted using a crypt(3)  hash.
+ #d-i passwd/root-password-crypted password [crypt(3) hash]
+ 
+@@ -325,7 +325,7 @@
+ 
+ 
  ### Package selection
--#tasksel tasksel/first multiselect standard, web-server
+-#tasksel tasksel/first multiselect standard, web-server, kde-desktop
 +tasksel tasksel/first multiselect standard, ssh-server
- # If the desktop task is selected, install the kde and xfce desktops
-@@ -332,3 +332,7 @@
+ 
+ # Individual additional packages to install
+ #d-i pkgsel/include string openssh-server build-essential
+@@ -337,7 +337,7 @@
+ # installed, and what software you use. The default is not to report back,
+ # but sending reports helps the project determine what software is most
  # popular and include it on CDs.
 -#popularity-contest popularity-contest/participate boolean false
 +popularity-contest popularity-contest/participate boolean false
-+
-+# This is fairly safe to set, it makes grub install automatically to the MBR
-+# if no other operating system is detected on the machine.
-+d-i grub-installer/only_debian boolean true
-
-@@ -351,3 +355,3 @@
+ 
+ ### Boot loader installation
+ # Grub is the default boot loader (for x86). If you want lilo installed
+@@ -358,7 +358,7 @@
+ 
+ # Due notably to potential USB sticks, the location of the MBR can not be
+ # determined safely in general, so this needs to be specified:
+-#d-i grub-installer/bootdev  string /dev/sda
++d-i grub-installer/bootdev  string /dev/vda
+ # To install to the first device (assuming it is not a USB stick):
+ #d-i grub-installer/bootdev  string default
+ 
+@@ -398,7 +398,7 @@
+ # reboot into the installed system.
+ #d-i debian-installer/exit/halt boolean true
  # This will power off the machine instead of just halting it.
 -#d-i debian-installer/exit/poweroff boolean true
 +d-i debian-installer/exit/poweroff boolean true
-
-@@ -384,3 +388,3 @@
+ 
+ ### Preseeding other packages
+ # Depending on what software you choose to install, or if things go wrong
+@@ -431,5 +431,4 @@
+ # still a usable /target directory. You can chroot to /target and use it
+ # directly, or use the apt-install and in-target commands to easily install
  # packages and run commands in the target system.
 -#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
-+d-i preseed/late_command string wget http://${network.net.ip_host}:5432/http/preseed-late-command.sh -O /target/opt/preseed-late-command.sh; in-target bash /opt/preseed-late-command.sh
+-
++d-i preseed/late_command string wget ${network.net.http_server}/http/preseed-late-command.sh -O /target/opt/preseed-late-command.sh; in-target bash /opt/preseed-late-command.sh
 ```
 
 The main modifications is the late command downloaded by HTTP, using the
@@ -73,7 +106,7 @@ Before launching the installation, you will need to follow those steps:
 ### Download and extract official Debian PXE environment
 
 ```sh
-wget http://http.debian.net/debian/dists/wheezy/main/installer-amd64/current/images/netboot/netboot.tar.gz \
+wget http://http.debian.net/debian/dists/buster/main/installer-amd64/current/images/netboot/netboot.tar.gz \
     -O http/netboot.tar.gz
 tar -C http -xzf http/netboot.tar.gz
 ```
