@@ -18,7 +18,7 @@ try:
                  overwrite_disks=True,
                  recreate_networks=True)
     print(("waiting event shutdown on vm {vm}".format(vm=VM)))
-    cloubed.wait(VM, "STOPPED", "SHUTDOWN")
+    cloubed.wait(VM, "STOPPED", "SHUTDOWN", enable_http=True)
     print(("booting vm {vm}".format(vm=VM)))
     cloubed.boot(VM)
 

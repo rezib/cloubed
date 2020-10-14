@@ -11,6 +11,6 @@ cloubed $OPTS gen --domain=$VM --filename=preseed
 echo "booting VM $VM"
 cloubed $OPTS boot --domain=$VM --bootdev=network --overwrite-disks=yes --recreate-networks=yes
 echo "waiting VM $VM for shutdown"
-cloubed $OPTS wait --domain=$VM --event=stopped:shutdown
+cloubed $OPTS wait --domain=$VM --event=stopped:shutdown --enable-http
 echo "re-booting VM $VM"
 cloubed $OPTS boot --domain=$VM
