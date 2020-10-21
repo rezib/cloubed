@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -25,7 +25,7 @@ import logging
 import os
 from xml.dom.minidom import Document
 
-from cloubed.Utils import getuser
+from cloubed.Utils import getuser, clean_string_for_template
 
 class StorageVolume:
 
@@ -277,3 +277,19 @@ class StorageVolume:
             node_label = self._doc.createTextNode("virt_image_t")
             element_label.appendChild(node_label)
             element_permissions.appendChild(element_label)
+
+    def get_templates_dict(self):
+
+        """
+            Returns a dictionary with all parameters of the Storage Volume in
+            Configuration
+        """
+
+        clean_name = clean_string_for_template(self.name)
+
+        return { "storagevolume.{name}.format"      \
+                     .format(name=clean_name) : str(self._imgtype),
+                 "storagevolume.{name}.size"        \
+                     .format(name=clean_name) : str(self._size),
+                 "storagevolume.{name}.storagepool" \
+                     .format(name=clean_name) : str(self.storage_pool.name) }

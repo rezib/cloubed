@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2014 Rémi Palancher 
+# Copyright 2014-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -76,3 +76,8 @@ def getuser():
     # why not os.getlogin()? see details in python issue #584566
     # http://bugs.python.org/issue584566
     return pwd.getpwuid(os.geteuid())[0]
+
+
+def clean_string_for_template(string):
+
+    return string.replace('-','')

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -32,7 +32,7 @@ from cloubed.DomainTemplate import DomainTemplate
 from cloubed.DomainNetif import DomainNetif
 from cloubed.DomainDisk import DomainDisk
 from cloubed.DomainVirtfs import DomainVirtfs
-from cloubed.Utils import getuser
+from cloubed.Utils import getuser, clean_string_for_template
 
 class Domain:
 
@@ -83,6 +83,7 @@ class Domain:
         self.templates = []
         for template_conf in domain_conf.template_files:
             self.templates.append(DomainTemplate(template_conf))
+        self.template_vars = domain_conf.template_vars
 
         self._events = []
         self._doc = None
@@ -660,3 +661,67 @@ class Domain:
         element_target.setAttribute("type", "serial")
         element_target.setAttribute("port", "0")
         element_console.appendChild(element_target)
+
+    def get_contextual_templates_dict(self):
+
+        """
+            Returns a dictionary with all parameters of the Domain Configuration
+            with contextual prefix
+        """
+
+        return self.get_templates_dict(prefix="self")
+
+    def get_absolute_templates_dict(self):
+
+        """
+            Returns a dictionary with all parameters of the Domain Configuration
+            with absolute prefix
+        """
+
+        clean_name = clean_string_for_template(self.name)
+        return self.get_templates_dict(prefix = \
+                                       "domain.{name}".format(name=clean_name))
+
+    def get_templates_dict(self, prefix):
+
+        """
+            Returns a dictionary with all parameters of the Domain Configuration
+        """
+
+        clean_name = clean_string_for_template(self.name)
+        domain_dict = { "{prefix}.name" \
+                            .format(prefix=prefix) : str(clean_name),
+                        "{prefix}.cpu" \
+                            .format(prefix=prefix) : str(self.sockets * self.cores * self.threads),
+                        "{prefix}.sockets" \
+                            .format(prefix=prefix) : str(self.sockets),
+                        "{prefix}.cores" \
+                            .format(prefix=prefix) : str(self.cores),
+                        "{prefix}.threads" \
+                            .format(prefix=prefix) : str(self.threads),
+                        "{prefix}.memory" \
+                            .format(prefix=prefix) : str(self.memory),
+                        "{prefix}.graphics" \
+                            .format(prefix=prefix) : str(self.graphics),
+                      }
+
+        # add netifs
+        for netif in self.netifs:
+            if netif.ip:
+                network_clean_name = \
+                    clean_string_for_template(netif.network.name)
+                key = "{prefix}.{network}.ip" \
+                          .format(prefix=prefix,
+                                  network=network_clean_name)
+                domain_dict[key] = str(netif.ip)
+
+        tpl_vars_dict = {}
+
+        for var_key, var_value in list(self.template_vars.items()):
+            full_key = "{prefix}.tpl.{var_name}" \
+                           .format(prefix=prefix, var_name=var_key)
+            tpl_vars_dict[full_key] = str(var_value)
+
+        domain_dict.update(tpl_vars_dict)
+
+        return domain_dict

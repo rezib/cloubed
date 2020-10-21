@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -66,8 +66,3 @@ class ConfigurationItem(object):
     @staticmethod
     def default():
         return None
-
-    @staticmethod
-    def clean_string_for_template(string):
-
-        return string.replace('-','')

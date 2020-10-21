@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -59,7 +59,7 @@ class ConfigurationDomain(ConfigurationItem):
         self.__parse_virtfs(domain_item)
 
         self.template_files = []
-        self._template_vars = {}
+        self.template_vars = {}
         self.__parse_templates(domain_item)
 
     def __parse_cpu(self, conf):
@@ -471,7 +471,7 @@ class ConfigurationDomain(ConfigurationItem):
             self.__parse_templates_vars(conf['templates'])
         else:
             self.template_files = []
-            self._template_vars = {}
+            self.template_vars = {}
 
     def __parse_templates_files(self, conf):
         """
@@ -532,76 +532,12 @@ class ConfigurationDomain(ConfigurationItem):
                                 .format(key = key,
                                         domain = self.name))
                 # everything is clear at this point
-                self._template_vars[key] = str(value)
+                self.template_vars[key] = str(value)
         else:
-            self._template_vars = {}
+            self.template_vars = {}
 
     def _get_type(self):
 
         """ Returns the type of the item """
 
         return "domain"
-
-    def get_contextual_templates_dict(self):
-
-        """
-            Returns a dictionary with all parameters of the Domain Configuration
-            with contextual prefix
-        """
-
-        return self.get_templates_dict(prefix="self")
-
-    def get_absolute_templates_dict(self):
-
-        """
-            Returns a dictionary with all parameters of the Domain Configuration
-            with absolute prefix
-        """
-
-        clean_name = ConfigurationItem.clean_string_for_template(self.name)
-        return self.get_templates_dict(prefix = \
-                                       "domain.{name}".format(name=clean_name))
-
-    def get_templates_dict(self, prefix):
-
-        """
-            Returns a dictionary with all parameters of the Domain Configuration
-        """
-
-        clean_name = ConfigurationItem.clean_string_for_template(self.name)
-        domain_dict = { "{prefix}.name" \
-                            .format(prefix=prefix) : str(clean_name),
-                        "{prefix}.cpu" \
-                            .format(prefix=prefix) : str(self.sockets * self.cores * self.threads),
-                        "{prefix}.sockets" \
-                            .format(prefix=prefix) : str(self.sockets),
-                        "{prefix}.cores" \
-                            .format(prefix=prefix) : str(self.cores),
-                        "{prefix}.threads" \
-                            .format(prefix=prefix) : str(self.threads),
-                        "{prefix}.memory" \
-                            .format(prefix=prefix) : str(self.memory),
-                        "{prefix}.graphics" \
-                            .format(prefix=prefix) : str(self.graphics),
-                      }
-
-        # add netifs
-        for netif in self.netifs:
-            if "ip" in netif:
-                network_clean_name = \
-                    ConfigurationItem.clean_string_for_template(netif['network'])
-                key = "{prefix}.{network}.ip" \
-                          .format(prefix=prefix,
-                                  network=network_clean_name)
-                domain_dict[key] = str(netif["ip"])
-
-        tpl_vars_dict = {}
-
-        for var_key, var_value in list(self._template_vars.items()):
-            full_key = "{prefix}.tpl.{var_name}" \
-                           .format(prefix=prefix, var_name=var_key)
-            tpl_vars_dict[full_key] = str(var_value)
-
-        domain_dict.update(tpl_vars_dict)
-
-        return domain_dict

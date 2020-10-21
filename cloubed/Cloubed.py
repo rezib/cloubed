@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -260,7 +260,21 @@ class Cloubed(metaclass=Singleton):
                                    "configuration" \
                                        .format(domain=domain_name))
 
-        templates_dict = self._conf.get_templates_dict(domain_name)
+        templates_dict = { 'testbed': self._name }
+
+        templates_dict.update(self._conf.templates)
+
+        for storage_pool in self._storage_pools:
+            templates_dict.update(storage_pool.get_templates_dict())
+        for storage_volume in self._storage_volumes:
+            templates_dict.update(storage_volume.get_templates_dict())
+        for network in self._networks:
+            templates_dict.update(network.get_templates_dict())
+        for domain in self._domains:
+            templates_dict.update(domain.get_absolute_templates_dict())
+            if domain.name == domain_name:
+                templates_dict.update(domain.get_contextual_templates_dict())
+
         return templates_dict
 
     def serve_http(self, address):

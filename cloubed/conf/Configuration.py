@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -46,7 +46,7 @@ class Configuration:
         self.domains         = []
         self.__parse_items(conf)
 
-        self._templates = {} # empty dict
+        self.templates = {} # empty dict
         self.__parse_templates(conf)
 
     def __parse_testbed(self, conf):
@@ -143,7 +143,7 @@ class Configuration:
                     "format of the templates section is not valid")
 
             if len(templates) == 0:
-                self._templates = {}
+                self.templates = {}
             else:
                 for variable, value in list(templates.items()):
                     if type(value) is not str:
@@ -152,28 +152,7 @@ class Configuration:
                             "variable {variable} is not valid" \
                                 .format(variable=variable))
                     key = "testbed.{variable}".format(variable=variable)
-                    self._templates[key] = value
+                    self.templates[key] = value
         else:
             # empty dict by default
-            self._templates = {}
-
-    def get_templates_dict(self, domain_name):
-
-        """ Returns a dictionary with all parameters in configuration file """
-
-        result_dict = { 'testbed': self.testbed }
-
-        result_dict.update(self._templates)
-
-        for storage_pool in self.storage_pools:
-            result_dict.update(storage_pool.get_templates_dict())
-        for storage_volume in self.storage_volumes:
-            result_dict.update(storage_volume.get_templates_dict())
-        for network in self.networks:
-            result_dict.update(network.get_templates_dict())
-        for domain in self.domains:
-            result_dict.update(domain.get_absolute_templates_dict())
-            if domain.name == domain_name:
-                result_dict.update(domain.get_contextual_templates_dict())
-
-        return result_dict
+            self.templates = {}

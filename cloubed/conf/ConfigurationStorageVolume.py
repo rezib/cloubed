@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -138,19 +138,3 @@ class ConfigurationStorageVolume(ConfigurationItem):
         """ Returns the type of the item """
 
         return "storage volume"
-
-    def get_templates_dict(self):
-
-        """
-            Returns a dictionary with all parameters of the Storage Volume in
-            Configuration
-        """
-
-        clean_name = ConfigurationItem.clean_string_for_template(self.name)
-
-        return { "storagevolume.{name}.format"      \
-                     .format(name=clean_name) : str(self.format),
-                 "storagevolume.{name}.size"        \
-                     .format(name=clean_name) : str(self.size),
-                 "storagevolume.{name}.storagepool" \
-                     .format(name=clean_name) : str(self.storage_pool) }

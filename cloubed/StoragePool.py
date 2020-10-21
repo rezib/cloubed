@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -23,7 +23,7 @@
 
 import logging
 from xml.dom.minidom import Document
-from cloubed.Utils import getuser
+from cloubed.Utils import getuser, clean_string_for_template
 
 class StoragePool:
 
@@ -165,3 +165,12 @@ class StoragePool:
         node_path = self._doc.createTextNode(self.path)
         element_path.appendChild(node_path)
         element_target.appendChild(element_path)
+
+    def get_templates_dict(self):
+
+        """ Returns a dictionary with all parameters for the Storage Pool """
+
+        clean_name = clean_string_for_template(self.name)
+
+        return { "storagepool.{name}.path" \
+                     .format(name=clean_name) : str(self.path) }

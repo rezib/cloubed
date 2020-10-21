@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Rémi Palancher 
+# Copyright 2013-2020 Rémi Palancher
 #
 # This file is part of Cloubed.
 #
@@ -70,12 +70,3 @@ class ConfigurationStoragePool(ConfigurationItem):
         """ Returns the type of the item """
 
         return "storage pool"
-
-    def get_templates_dict(self):
-
-        """ Returns a dictionary with all parameters for the Storage Pool """
-
-        clean_name = ConfigurationItem.clean_string_for_template(self.name)
-
-        return { "storagepool.{name}.path" \
-                     .format(name=clean_name) : str(self.path) }
