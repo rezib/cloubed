@@ -707,9 +707,13 @@ class Domain:
 
         # add netifs
         for netif in self.netifs:
+            network_clean_name = \
+                clean_string_for_template(netif.network.name)
+            key = "{prefix}.{network}.mac" \
+                      .format(prefix=prefix,
+                              network=network_clean_name)
+            domain_dict[key] = netif.mac
             if netif.ip:
-                network_clean_name = \
-                    clean_string_for_template(netif.network.name)
                 key = "{prefix}.{network}.ip" \
                           .format(prefix=prefix,
                                   network=network_clean_name)
